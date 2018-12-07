@@ -10,7 +10,7 @@ class KPCA:
         self._coefficient = coefficient
         self._degree = degree
         self._sigma = sigma
-        self._n_components = n_components
+        self.n_components = n_components
         self.eigenvalues = None
         self.eigenvectors = None
 
