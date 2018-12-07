@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_moons
-from sklearn.decomposition import KernelPCA, PCA
+from sklearn.decomposition import KernelPCA
 
 from core import KPCA, Kernels
 from unittest import TestCase
