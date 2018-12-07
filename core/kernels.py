@@ -13,13 +13,12 @@ class Kernels(Enum):
 
 class Kernel:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
-                 degree: int = 3, sigma: float = None, n_components: int = None):
+                 degree: int = 3, sigma: float = None):
         self._kernel = kernel
         self._alpha = alpha
         self._coefficient = coefficient
         self._degree = degree
         self._sigma = sigma
-        self._n_components = n_components
 
     @staticmethod
     def _array_dim_check(x: np.ndarray) -> NoReturn:
@@ -153,9 +152,6 @@ class Kernel:
 
         if self._sigma is None:
             self._sigma = np.sqrt(n_features)
-
-        if self._n_components is None:
-            self._n_components = n_features
 
         # Return the kernel matrix for the chosen kernel.
         if self._kernel == Kernels.LINEAR:
