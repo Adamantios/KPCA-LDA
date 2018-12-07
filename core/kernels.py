@@ -27,7 +27,6 @@ class Kernel:
         If not, it raises a value error.
         :param x: the array to be checked.
         """
-
         if x.ndim != 2:
             raise ValueError('Input array should be 2 dimensional.')
 
@@ -40,7 +39,6 @@ class Kernel:
         :param coefficient: the coefficient parameter to be used in the kernel calculation.
         :return: The calculated kernel matrix.
         """
-
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -69,7 +67,6 @@ class Kernel:
         :param degree: the degree of the polynomial kernel.
         :return: The calculated kernel matrix.
         """
-
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -97,7 +94,6 @@ class Kernel:
         :param sigma: the sigma value to be used in the kernel calculation.
         :return: The calculated kernel matrix.
         """
-
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -119,7 +115,6 @@ class Kernel:
         :param x: a 2D array.
         :return: The calculated kernel matrix.
         """
-
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
