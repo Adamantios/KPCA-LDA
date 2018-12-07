@@ -12,7 +12,8 @@ class Kernels(Enum):
 
 
 class Kernel:
-    def __init__(self, kernel, alpha, coefficient, degree, sigma, n_components):
+    def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
+                 degree: int = 3, sigma: float = None, n_components: int = None):
         self._kernel = kernel
         self._alpha = alpha
         self._coefficient = coefficient
@@ -100,11 +101,11 @@ class Kernel:
     def calc_array(self, x: np.ndarray) -> np.ndarray:
         n_features = x.shape[1]
 
-        if self._sigma is None:
-            self._sigma = np.sqrt(n_features)
-
         if self._alpha is None:
             self._alpha = 1 / n_features
+
+        if self._sigma is None:
+            self._sigma = np.sqrt(n_features)
 
         if self._n_components is None:
             self._n_components = n_features

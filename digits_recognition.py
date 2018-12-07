@@ -1,4 +1,4 @@
-from core.kpca import KPCA, Kernels
+from core import KPCA, Kernels
 import numpy as np
 
 
