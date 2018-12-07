@@ -54,7 +54,7 @@ class TestPlot(TestCase):
 
     plt.show()
 
-    kpca = KPCA(Kernels.RBF, sigma=0.1825, n_components=2)
+    kpca = KPCA(Kernels.RBF, sigma=0.17, n_components=2)
     X_spca = kpca.fit_transform(X)[0]
 
     plt.figure(figsize=(8, 6))
@@ -66,7 +66,7 @@ class TestPlot(TestCase):
     plt.ylabel('PC2')
     plt.show()
 
-    kpca = KPCA(Kernels.LINEAR, sigma=0.1825, n_components=1)
+    kpca = KPCA(Kernels.RBF, sigma=0.17, n_components=1)
     X_spca = kpca.fit_transform(X)[0]
 
     plt.figure(figsize=(8, 6))
