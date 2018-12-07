@@ -18,7 +18,7 @@ def _array_dim_check(x: np.ndarray):
         raise AttributeError('Input array should be 2 dimensional.')
 
 
-def _linear_kernel(x: np.ndarray, coefficient) -> KernelReturnType:
+def _linear_kernel(x: np.ndarray, coefficient: float) -> KernelReturnType:
     # Check array's dimensions.
     _array_dim_check(x)
 
