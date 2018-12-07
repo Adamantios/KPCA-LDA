@@ -8,20 +8,22 @@ from unittest import TestCase
 
 from helpers import Plotter
 
-array = np.array([[16, 12, 36],
-                  [93, 43, 64],
-                  [13, 46, 86],
-                  [3, 8, 6]])
+array = np.array([[16, 12],
+                  [93, 43],
+                  [13, 46],
+                  [3, 8]])
 
 plotter = Plotter()
 
 
 class TestLinearKPCA(TestCase):
-    kpca = KPCA(Kernels.LINEAR)
+    kpca = KPCA(Kernels.LINEAR, n_components=1)
     print('Linear\n{}'.format(kpca.fit_transform(array)))
     scikit_pca = KernelPCA()
     scikit_pca.fit_transform(array)
     print('Scikit Linear {}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
+
+    plotter.scatter_pcs(kpca.fit_transform(array)[0], np.array([0, 1, 1, 0]))
 
 
 class TestPolyKPCA(TestCase):
