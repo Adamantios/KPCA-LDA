@@ -1,4 +1,4 @@
-from core.kernels import Kernels, Kernel
+from core import Kernels, Kernel
 import numpy as np
 
 
