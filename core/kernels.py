@@ -42,7 +42,7 @@ class Kernel:
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
-        # Get the number of features.
+        # Get the number of samples.
         n_samples = x.shape[0]
 
         # Initialize an array for the dot products.
@@ -70,7 +70,7 @@ class Kernel:
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
-        # Get the number of features.
+        # Get the number of samples.
         n_samples = x.shape[0]
 
         # Initialize an array for the dot products.
@@ -118,7 +118,7 @@ class Kernel:
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
-        # Get the number of features.
+        # Get the number of samples.
         n_samples = x.shape[0]
 
         # Initialize an array for the dot products.
