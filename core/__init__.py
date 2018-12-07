@@ -1,1 +1,2 @@
-from core.kpca import KPCA, Kernel
+from core.kpca import KPCA
+from core.kernels import Kernels
