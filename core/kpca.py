@@ -12,6 +12,17 @@ class KPCA:
         self._sigma = sigma
         self._n_components = n_components
 
+    def check_n_components(self, n_features: int):
+        if self._n_components is None:
+            self._n_components = n_features - 1
+
+    def fit(self, x: np.ndarray):
+        self.check_n_components(x.shape[1])
+        pass
+
+    def transform(self, x: np.ndarray):
+        pass
+
     def fit_transform(self, x: np.ndarray):
         kernel = Kernel(self._kernel, self._alpha, self._coefficient, self._degree, self._sigma, self._n_components)
         kernel.calc_array(x)
