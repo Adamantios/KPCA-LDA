@@ -8,6 +8,7 @@ class Kernel(Enum):
     LINEAR = auto()
     POLYNOMIAL = auto()
     RBF = auto()
+    MIN = auto()
 
 
 def _array_dim_check(x: np.ndarray) -> NoReturn:
@@ -69,6 +70,24 @@ def _rbf_kernel(x: np.ndarray, sigma: float) -> np.ndarray:
     return np.exp(-gamma * dists)
 
 
+def _min_kernel(x: np.ndarray) -> np.ndarray:
+    # Check array's dimensions.
+    _array_dim_check(x)
+
+    # Get the number of features.
+    n_samples = x.shape[0]
+
+    # Initialize an array for the dot products.
+    sums = np.zeros((n_samples, n_samples))
+
+    # Calculate the dot products for every pair of sample.
+    for i in range(n_samples):
+        for j in range(n_samples):
+            sums[i] += np.minimum(x[i, :], x[j, :])
+
+    return sums
+
+
 class KPCA:
     def __init__(self, x: np.ndarray, kernel: Kernel = Kernel.RBF, alpha: float = None, coefficient: float = 0,
                  degree: int = 3, sigma: float = None, n_components: int = None):
@@ -91,6 +110,8 @@ class KPCA:
             self._kernel = _poly_kernel(x, alpha, coefficient, degree)
         elif kernel == Kernel.RBF:
             self._kernel = _rbf_kernel(x, sigma)
+        elif kernel == Kernel.MIN:
+            self._kernel = _min_kernel(x)
 
     def fit(self):
         # Centering the symmetric NxN kernel matrix.
