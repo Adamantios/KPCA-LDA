@@ -23,11 +23,25 @@ class Kernel:
 
     @staticmethod
     def _array_dim_check(x: np.ndarray) -> NoReturn:
+        """
+        Checks if the passed array is 2D.
+        If not, it raises an attribute error.
+        :param x: the array to be checked.
+        """
+
         if x.ndim != 2:
             raise AttributeError('Input array should be 2 dimensional.')
 
     @staticmethod
     def _linear_kernel(x: np.ndarray, coefficient: float) -> np.ndarray:
+        """
+        Calculates a Linear Kernel matrix for the passed array.
+
+        :param x: a 2D array.
+        :param coefficient: the coefficient parameter to be used in the kernel calculation.
+        :return: The calculated kernel matrix.
+        """
+
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -47,6 +61,16 @@ class Kernel:
 
     @staticmethod
     def _poly_kernel(x: np.ndarray, alpha: float, coefficient: float, degree: int) -> np.ndarray:
+        """
+        Calculates a Polynomial Kernel matrix for the passed array.
+
+        :param x: a 2D array.
+        :param alpha: the alpha value to be used in the kernel calculation.
+        :param coefficient: coefficient: the coefficient parameter to be used in the kernel calculation.
+        :param degree: the degree of the polynomial kernel.
+        :return: The calculated kernel matrix.
+        """
+
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -67,6 +91,14 @@ class Kernel:
 
     @staticmethod
     def _rbf_kernel(x: np.ndarray, sigma: float) -> np.ndarray:
+        """
+        Calculates an Rbf Kernel matrix for the passed array.
+
+        :param x: a 2D array.
+        :param sigma: the sigma value to be used in the kernel calculation.
+        :return: The calculated kernel matrix.
+        """
+
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -82,6 +114,13 @@ class Kernel:
 
     @staticmethod
     def _min_kernel(x: np.ndarray) -> np.ndarray:
+        """
+        Calculates a Min Kernel matrix, also known as Histogram Intersection Kernel for the passed array.
+
+        :param x: a 2D array.
+        :return: The calculated kernel matrix.
+        """
+
         # Check array's dimensions.
         Kernel._array_dim_check(x)
 
@@ -99,8 +138,16 @@ class Kernel:
         return sums
 
     def calc_array(self, x: np.ndarray) -> np.ndarray:
+        """
+        Calculates the kernel matrix.
+
+        :param x: the 2D array from which the kernel will be calculated.
+        :return: The calculated kernel matrix.
+        """
+        # Get the number of features.
         n_features = x.shape[1]
 
+        # Set missing parameters.
         if self._alpha is None:
             self._alpha = 1 / n_features
 
@@ -110,6 +157,7 @@ class Kernel:
         if self._n_components is None:
             self._n_components = n_features
 
+        # Return the kernel matrix for the chosen kernel.
         if self._kernel == Kernels.LINEAR:
             return Kernel._linear_kernel(x, self._coefficient)
         elif self._kernel == Kernels.POLYNOMIAL:
