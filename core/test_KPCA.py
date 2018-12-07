@@ -22,11 +22,17 @@ class TestLinearKPCA(TestCase):
 class TestPolyKPCA(TestCase):
     kpca = KPCA(Kernels.POLYNOMIAL)
     print('Poly\n{}'.format(kpca.fit_transform(array)))
+    scikit_pca = KernelPCA(kernel='poly')
+    scikit_pca.fit_transform(array)
+    print('Scikit Poly {}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
 
 
 class TestRbfKPCA(TestCase):
     kpca = KPCA(Kernels.RBF)
     print('Rbf\n{}'.format(kpca.fit_transform(array)))
+    scikit_pca = KernelPCA(kernel='rbf')
+    scikit_pca.fit_transform(array)
+    print('Scikit Rbf {}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
 
 
 class TestMinKernel(TestCase):
