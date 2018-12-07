@@ -15,8 +15,10 @@ class KPCA:
         self.eigenvectors = None
 
     def check_n_components(self, n_features: int):
-        if self._n_components is None:
-            self._n_components = n_features - 1
+        if self.n_components is None:
+            self.n_components = n_features - 1
+        else:
+            self.n_components = min(n_features, self.n_components)
 
     def fit(self, x: np.ndarray):
         self.check_n_components(x.shape[1])
@@ -26,10 +28,10 @@ class KPCA:
         pass
 
     def fit_transform(self, x: np.ndarray):
-        self.check_n_components(x.shape[1])
-
         kernel = Kernel(self._kernel, self._alpha, self._coefficient, self._degree, self._sigma)
         kernel_matrix = kernel.calc_array(x)
+
+        self.check_n_components(kernel_matrix.shape[0])
 
         # Centering the symmetric NxN kernel matrix.
         N = kernel_matrix.shape[0]
@@ -39,7 +41,7 @@ class KPCA:
         # Obtaining eigenvalues in descending order with corresponding eigenvectors from the symmetric matrix.
         self.eigenvalues, self.eigenvectors = np.linalg.eigh(K)
 
-        alphas = np.column_stack((self.eigenvectors[:, -i] for i in range(1, self._n_components + 1)))
-        lambdas = [self.eigenvalues[-i] for i in range(1, self._n_components + 1)]
+        alphas = np.column_stack((self.eigenvectors[:, -i] for i in range(1, self.n_components + 1)))
+        lambdas = [self.eigenvalues[-i] for i in range(1, self.n_components + 1)]
 
         return alphas, lambdas
