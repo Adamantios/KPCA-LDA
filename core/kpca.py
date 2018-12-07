@@ -19,27 +19,39 @@ def _linear_kernel(x: np.ndarray, coefficient: float) -> np.ndarray:
     # Check array's dimensions.
     _array_dim_check(x)
 
-    # Calculate the Euclidean distances for every pair of values.
-    dists = pdist(x, 'sqeuclidean')
+    # Get the number of features.
+    n_samples = x.shape[0]
 
-    # Convert the distances into a symmetric matrix, where xij is the distance of xi from xj.
-    dists = squareform(dists)
+    # Initialize an array for the dot products.
+    dots = np.zeros((n_samples, n_samples))
+
+    # Calculate the dot products for every pair of sample.
+    for i in range(n_samples):
+        for j in range(n_samples):
+            dots[i, j] = np.dot(x[i, :].T, x[j, :])
 
     # Add coefficient before returning the kernel array.
-    return dists + coefficient
+    return dots + coefficient
 
 
 def _poly_kernel(x: np.ndarray, alpha: float, coefficient: float, degree: int) -> np.ndarray:
     # Check array's dimensions.
     _array_dim_check(x)
 
-    # Calculate the Euclidean distances for every pair of values.
-    dists = pdist(x, 'sqeuclidean')
+    # Get the number of features.
+    n_samples = x.shape[0]
 
-    # Convert the distances into a symmetric matrix, where xij is the distance of xi from xj.
-    dists = squareform(dists)
+    # Initialize an array for the dot products.
+    dots = np.zeros((n_samples, n_samples))
 
-    return np.power(alpha * dists + coefficient, degree)
+    # Calculate the dot products for every pair of sample.
+    for i in range(n_samples):
+        for j in range(n_samples):
+            dots[i, j] = np.dot(x[i, :].T, x[j, :])
+
+    # Multiply with alpha, add coefficient
+    # and raise the result in the power of degree before returning the kernel array.
+    return np.power(alpha * dots + coefficient, degree)
 
 
 def _rbf_kernel(x: np.ndarray, sigma: float) -> np.ndarray:
