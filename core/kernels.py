@@ -127,7 +127,7 @@ class Kernel:
         # Calculate the dot products for every pair of sample.
         for i in range(n_samples):
             for j in range(n_samples):
-                sums[i] += np.minimum(x[i, :], x[j, :])
+                sums[i, j] = np.sum(np.minimum(x[i, :], x[j, :]))
 
         return sums
 
