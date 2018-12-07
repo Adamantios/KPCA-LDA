@@ -82,6 +82,8 @@ class KPCA:
 
         if n_components is None:
             self.n_components = n_features
+        else:
+            self.n_components = n_components
 
         if kernel == Kernel.LINEAR:
             self._kernel = _linear_kernel(x, coefficient)
