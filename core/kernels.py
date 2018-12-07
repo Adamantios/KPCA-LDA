@@ -24,12 +24,12 @@ class Kernel:
     def _array_dim_check(x: np.ndarray) -> NoReturn:
         """
         Checks if the passed array is 2D.
-        If not, it raises an attribute error.
+        If not, it raises a value error.
         :param x: the array to be checked.
         """
 
         if x.ndim != 2:
-            raise AttributeError('Input array should be 2 dimensional.')
+            raise ValueError('Input array should be 2 dimensional.')
 
     @staticmethod
     def _linear_kernel(x: np.ndarray, coefficient: float) -> np.ndarray:
