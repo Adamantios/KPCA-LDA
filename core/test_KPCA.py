@@ -1,15 +1,22 @@
-import pprint
+import numpy as np
+from core import KPCA, Kernel
 from unittest import TestCase
 
-import numpy as np
+array = np.array([[1, 1, 3],
+                  [3, 4, 6],
+                  [3, 6, 6]])
 
-from core import KPCA, Kernel
+
+class TestLinearKPCA(TestCase):
+    kpca = KPCA(array, Kernel.LINEAR)
+    print('Linear\n{}'.format(kpca.fit()))
 
 
-class TestKPCA(TestCase):
-    kpca = KPCA(np.array([[1, 1, 3],
-                          [3, 4, 6],
-                          [3, 6, 6]]),
-                Kernel.LINEAR)
+class TestPolyKPCA(TestCase):
+    kpca = KPCA(array, Kernel.POLYNOMIAL)
+    print('Poly\n{}'.format(kpca.fit()))
 
-    pprint.pprint(kpca.fit())
+
+class TestRbfKPCA(TestCase):
+    kpca = KPCA(array, Kernel.RBF)
+    print('Rbf\n{}'.format(kpca.fit()))
