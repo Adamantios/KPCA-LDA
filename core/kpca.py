@@ -39,6 +39,3 @@ class KPCA:
         lambdas = [eigenvalues[-i] for i in range(1, self._n_components + 1)]
 
         return alphas, lambdas
-
-    def test(self):
-        print(self._kernel)
