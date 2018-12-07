@@ -1,27 +1,50 @@
+import numpy as np
 from enum import Enum, auto
+from typing import NoReturn, Union
 
+from scipy.spatial.distance import pdist
 
-def _linear_kernel():
-    return 1
-
-
-def _poly_kernel():
-    return 2
-
-
-def _rbf_kernel():
-    return 3
+KernelReturnType = Union[np.ndarray, NoReturn]
 
 
 class Kernel(Enum):
-    LINEAR = _linear_kernel()
-    POLYNOMIAL = _poly_kernel()
-    RBF = _rbf_kernel()
+    LINEAR = auto()
+    POLYNOMIAL = auto()
+    RBF = auto()
+
+
+def _array_dim_check(x: np.ndarray):
+    if x.ndim != 2:
+        raise AttributeError('Input array should be 2 dimensional.')
+
+
+def _linear_kernel(x: np.ndarray, coefficient) -> KernelReturnType:
+    # Check array's dimensions.
+    _array_dim_check(x)
+
+    # Calculate the Euclidean distances for every pair of values.
+    dists = pdist(x, 'sqeuclidean')
+
+    # Add coefficient before returning the kernel array.
+    return dists + coefficient
+
+
+def _poly_kernel(x: np.ndarray):
+    _array_dim_check(x)
+
+    return x
+
+
+def _rbf_kernel(x: np.ndarray):
+    _array_dim_check(x)
+
+    return x
 
 
 class KPCA:
-    def __init__(self, kernel: Kernel):
-        self._kernel = kernel.value
+    def __init__(self, kernel: Kernel, x: np.ndarray, coefficient: float):
+        if kernel == Kernel.LINEAR:
+            self._kernel = _linear_kernel(x, coefficient)
 
     def test(self):
         print(self._kernel)
