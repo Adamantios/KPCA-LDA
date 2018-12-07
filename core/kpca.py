@@ -11,6 +11,8 @@ class KPCA:
         self._degree = degree
         self._sigma = sigma
         self._n_components = n_components
+        self.eigenvalues = None
+        self.eigenvectors = None
 
     def check_n_components(self, n_features: int):
         if self._n_components is None:
@@ -35,9 +37,9 @@ class KPCA:
         K = kernel_matrix - one_n.dot(kernel_matrix) - kernel_matrix.dot(one_n) + one_n.dot(kernel_matrix).dot(one_n)
 
         # Obtaining eigenvalues in descending order with corresponding eigenvectors from the symmetric matrix.
-        eigenvalues, eigenvectors = np.linalg.eigh(K)
+        self.eigenvalues, self.eigenvectors = np.linalg.eigh(K)
 
-        alphas = np.column_stack((eigenvectors[:, -i] for i in range(1, self._n_components + 1)))
-        lambdas = [eigenvalues[-i] for i in range(1, self._n_components + 1)]
+        alphas = np.column_stack((self.eigenvectors[:, -i] for i in range(1, self._n_components + 1)))
+        lambdas = [self.eigenvalues[-i] for i in range(1, self._n_components + 1)]
 
         return alphas, lambdas
