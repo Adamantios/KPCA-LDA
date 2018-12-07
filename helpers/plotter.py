@@ -192,9 +192,6 @@ class Plotter:
             Acceptable values: 'png', 'jpg', 'jpeg'.
         """
         # If the attributes are more than two, the plot cannot be represented.
-        if x.shape[1] is None:
-            raise ValueError('Attributes cannot be more than 2.')
-
         if x.shape[1] > 2:
             raise ValueError('Attributes cannot be more than 2.')
 
