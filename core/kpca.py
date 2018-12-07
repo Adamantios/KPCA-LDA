@@ -24,13 +24,15 @@ class KPCA:
         pass
 
     def fit_transform(self, x: np.ndarray):
-        kernel = Kernel(self._kernel, self._alpha, self._coefficient, self._degree, self._sigma, self._n_components)
-        kernel.calc_array(x)
+        self.check_n_components(x.shape[1])
+
+        kernel = Kernel(self._kernel, self._alpha, self._coefficient, self._degree, self._sigma)
+        kernel_matrix = kernel.calc_array(x)
 
         # Centering the symmetric NxN kernel matrix.
-        N = self._kernel.shape[0]
+        N = kernel_matrix.shape[0]
         one_n = np.ones((N, N)) / N
-        K = self._kernel - one_n.dot(self._kernel) - self._kernel.dot(one_n) + one_n.dot(self._kernel).dot(one_n)
+        K = kernel_matrix - one_n.dot(kernel_matrix) - kernel_matrix.dot(one_n) + one_n.dot(kernel_matrix).dot(one_n)
 
         # Obtaining eigenvalues in descending order with corresponding eigenvectors from the symmetric matrix.
         eigenvalues, eigenvectors = np.linalg.eigh(K)
