@@ -6,9 +6,14 @@ from sklearn.decomposition import KernelPCA
 from core import KPCA, Kernels
 from unittest import TestCase
 
-array = np.array([[1, 1, 3],
-                  [3, 4, 6],
-                  [3, 6, 6]])
+from helpers import Plotter
+
+array = np.array([[16, 12, 36],
+                  [93, 43, 64],
+                  [13, 46, 86],
+                  [3, 8, 6]])
+
+plotter = Plotter()
 
 
 class TestLinearKPCA(TestCase):
