@@ -2,6 +2,10 @@ from core.kernels import Kernels, Kernel
 import numpy as np
 
 
+class NotFittedException(Exception):
+    pass
+
+
 class KPCA:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
                  degree: int = 3, sigma: float = None, n_components: int = None):
@@ -15,6 +19,9 @@ class KPCA:
             self.n_components = n_features
         else:
             self.n_components = min(n_features, self.n_components)
+
+    def _is_fitted(self):
+        return False if self.alphas is None and self.lambdas is None else True
 
     def fit(self, x: np.ndarray):
         # Get the kernel matrix.
@@ -42,6 +49,9 @@ class KPCA:
         return self.alphas, self.lambdas
 
     def transform(self, x: np.ndarray):
+        if not self._is_fitted():
+            raise NotFittedException('KPCA has not been fitted yet!')
+
         # pair_dist = np.array([np.sum((x - row) ** 2) for row in X])
         kernel_matrix = self.kernel.calc_array(x)
         return kernel_matrix.dot(self.alphas / self.lambdas)
