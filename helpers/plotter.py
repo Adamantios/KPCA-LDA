@@ -191,9 +191,13 @@ class Plotter:
         :param extension: the extension of the file to be saved.
             Acceptable values: 'png', 'jpg', 'jpeg'.
         """
-        # If the attributes are more than two, the plot cannot be represented.
-        if x.shape[1] > 2:
-            raise ValueError('Attributes cannot be more than 2.')
+        # If we only have one principal component in a 1D array, i.e. M convert it to a 2D M x 1.
+        if x.ndim == 1:
+            x = np.expand_dims(x, axis=1)
+
+        # If the principal components are more than two, the plot cannot be represented.
+        elif x.shape[1] > 2:
+            raise ValueError('Principal components cannot be more than 2.')
 
         # Create a subfolder for the scatter.
         create_folder(self._folder + '/' + subfolder)
