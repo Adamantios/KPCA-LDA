@@ -5,33 +5,27 @@ import numpy as np
 class KPCA:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
                  degree: int = 3, sigma: float = None, n_components: int = None):
-        self._kernel = kernel
-        self._alpha = alpha
-        self._coefficient = coefficient
-        self._degree = degree
-        self._sigma = sigma
+        self.kernel = Kernel(kernel, alpha, coefficient, degree, sigma)
         self.n_components = n_components
         self.eigenvalues = None
         self.eigenvectors = None
 
-    def check_n_components(self, n_features: int):
+    def _check_n_components(self, n_features: int) -> None:
         if self.n_components is None:
             self.n_components = n_features - 1
         else:
             self.n_components = min(n_features, self.n_components)
 
     def fit(self, x: np.ndarray):
-        self.check_n_components(x.shape[1])
+        self._check_n_components(x.shape[1])
         pass
 
     def transform(self, x: np.ndarray):
         pass
 
     def fit_transform(self, x: np.ndarray):
-        kernel = Kernel(self._kernel, self._alpha, self._coefficient, self._degree, self._sigma)
-        kernel_matrix = kernel.calc_array(x)
-
-        self.check_n_components(kernel_matrix.shape[0])
+        kernel_matrix = self.kernel.calc_array(x)
+        self._check_n_components(kernel_matrix.shape[0])
 
         # Centering the symmetric NxN kernel matrix.
         N = kernel_matrix.shape[0]
