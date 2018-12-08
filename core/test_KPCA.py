@@ -64,3 +64,12 @@ class TestPlot(TestCase):
     kpca.fit_transform(x)
 
     plotter.scatter_pcs(kpca.alphas, y)
+
+    from matplotlib import pyplot as plt
+    plt.figure(figsize=(8, 6))
+    plt.scatter(kpca.alphas[y == 0, 0], np.zeros((50)), color='red', alpha=0.5)
+    plt.scatter(kpca.alphas[y == 1, 0], np.zeros((50)), color='blue', alpha=0.5)
+    plt.scatter(kpca.alphas[25], 0, color='black', label='original projection of point X[24]', marker='^', s=100)
+    plt.scatter(kpca.transform(x[25]), 0, color='green', label='remapped point X[24]', marker='x', s=500)
+    plt.legend(scatterpoints=1)
+    plt.show()
