@@ -3,7 +3,7 @@ import numpy as np
 from typing import Generator, Tuple
 from matplotlib import pyplot as plt
 from helpers.utils import create_folder
-from helpers.datasets import get_digit_name, get_eeg_name
+from helpers.datasets import get_eeg_name
 
 
 class Plotter:
@@ -94,8 +94,8 @@ class Plotter:
         """
         # Plot num of digits randomly.
         for digit, i in self._random_picker(x, num):
-            self._plot_digit(x[digit], 'Classified as ' + get_digit_name(y_pred[digit]), 'Correct digit is ' +
-                             get_digit_name(y_true[digit]), subfolder, filename + str(i), extension)
+            self._plot_digit(x[digit], 'Classified as {}'.format(y_pred[digit]),
+                             'Correct digit is {}'.format(y_true[digit]), subfolder, filename + str(i), extension)
 
     def plot_classified_eegs(self, x, y_pred, y_true, num=None, subfolder='eegs', filename='eeg',
                              extension='png'):

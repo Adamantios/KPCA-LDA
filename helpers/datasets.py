@@ -114,20 +114,6 @@ def database_split(db_filename: str, train_filename: str, test_filename: str) ->
     DataFrame(test, dtype=numpy.str).to_csv(test_filename, index=False)
 
 
-def get_digit_name(class_num: int) -> str:
-    """
-    Gets a digit's class name by its number.
-
-    :param class_num: the number of the class name to be returned.
-    :return: String containing the class name.
-    """
-    class_names = {
-        0: 'Even',
-        1: 'Odd'
-    }
-    return class_names.get(class_num, 'Invalid')
-
-
 def get_eeg_name(class_num):
     class_names = {
         1: 'Eyes open',
