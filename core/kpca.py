@@ -43,12 +43,13 @@ class KPCA:
         kernel_centered = self._kernel_matrix - one_n.dot(self._kernel_matrix) - self._kernel_matrix.dot(one_n) \
                           + np.linalg.multi_dot([one_n, self._kernel_matrix, one_n])
 
-        # Get the eigenvalues and eigenvectors of the kernel, in descending order.
+        # Get the eigenvalues and eigenvectors of the kernel, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(kernel_centered)
 
-        # Get alphas and lambdas.
-        self.alphas = np.column_stack((eigenvectors[:, -i] for i in range(1, self.n_components + 1)))
-        self.lambdas = [eigenvalues[-i] for i in range(1, self.n_components + 1)]
+        # Get as many alphas and lambdas (eigenvectors and eigenvalues) as the new number of components,
+        # in descending order.
+        self.alphas = np.delete(np.flip(eigenvectors, axis=1), np.s_[self.n_components:], axis=1)
+        self.lambdas = np.delete(np.flip(eigenvalues), np.s_[self.n_components:])
 
         return self.alphas, self.lambdas
 
