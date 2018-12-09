@@ -17,37 +17,48 @@ plotter = Plotter()
 
 class TestLinearKPCA(TestCase):
     kpca = KPCA(Kernels.LINEAR)
-    kpca.fit_transform(array)
+    my_results = kpca.fit_transform(array)
     print('Linear \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
     scikit_pca = KernelPCA()
-    scikit_pca.fit_transform(array)
+    scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Linear \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
+
+    print('Mine \n{}'.format(my_results))
+    print('Scikit\'s \n{}'.format(scikit_results))
 
     plotter.scatter_pcs(kpca.alphas[:, 0], np.array([0, 1, 1, 0]))
 
 
 class TestPolyKPCA(TestCase):
     kpca = KPCA(Kernels.POLYNOMIAL)
-    kpca.fit_transform(array)
+    my_results = kpca.fit_transform(array)
     print('Poly \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
     scikit_pca = KernelPCA(kernel='poly')
-    scikit_pca.fit_transform(array)
+    scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Poly \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
+
+    print('Mine \n{}'.format(my_results))
+    print('Scikit\'s \n{}'.format(scikit_results))
 
 
 class TestRbfKPCA(TestCase):
     kpca = KPCA(Kernels.RBF)
-    kpca.fit_transform(array)
+    my_results = kpca.fit_transform(array)
     print('Rbf \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
     scikit_pca = KernelPCA(kernel='rbf')
-    scikit_pca.fit_transform(array)
+    scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Rbf \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
+
+    print('Mine \n{}'.format(my_results))
+    print('Scikit\'s \n{}'.format(scikit_results))
 
 
 class TestMinKernel(TestCase):
     kpca = KPCA(Kernels.MIN)
-    kpca.fit_transform(array)
+    my_results = kpca.fit_transform(array)
     print('Min \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
+
+    print('Mine \n{}'.format(my_results))
 
 
 class TestPlot(TestCase):
