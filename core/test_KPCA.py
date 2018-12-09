@@ -19,7 +19,7 @@ class TestLinearKPCA(TestCase):
     kpca = KPCA(Kernels.LINEAR)
     my_results = kpca.fit_transform(array)
     print('Linear \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
-    scikit_pca = KernelPCA()
+    scikit_pca = KernelPCA(coef0=0, n_components=4)
     scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Linear \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
 
@@ -33,7 +33,7 @@ class TestPolyKPCA(TestCase):
     kpca = KPCA(Kernels.POLYNOMIAL)
     my_results = kpca.fit_transform(array)
     print('Poly \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
-    scikit_pca = KernelPCA(kernel='poly')
+    scikit_pca = KernelPCA(kernel='poly', coef0=0, n_components=4)
     scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Poly \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
 
