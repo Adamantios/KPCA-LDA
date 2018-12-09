@@ -31,7 +31,7 @@ class Kernel:
             raise ValueError('Input array should be 2 dimensional.')
 
     @staticmethod
-    def _linear_kernel(x: np.ndarray, coefficient: float) -> np.ndarray:
+    def _linear_kernel(x: np.ndarray, y: np.ndarray, coefficient: float) -> np.ndarray:
         """
         Calculates a Linear Kernel matrix for the passed array.
 
@@ -39,25 +39,27 @@ class Kernel:
         :param coefficient: the coefficient parameter to be used in the kernel calculation.
         :return: The calculated kernel matrix.
         """
-        # Check array's dimensions.
-        Kernel._array_dim_check(x)
+        if y is not None:
+            # Calculate the dot products.
+            dots = np.array([np.dot(y.T, row) for row in x])
 
-        # Get the number of samples.
-        n_samples = x.shape[0]
+        else:
+            # Get the number of samples.
+            n_samples = x.shape[0]
 
-        # Initialize an array for the dot products.
-        dots = np.zeros((n_samples, n_samples))
+            # Initialize an array for the dot products.
+            dots = np.zeros((n_samples, n_samples))
 
-        # Calculate the dot products for every pair of sample.
-        for i in range(n_samples):
-            for j in range(n_samples):
-                dots[i, j] = np.dot(x[i, :].T, x[j, :])
+            # Calculate the dot products for every pair of sample.
+            for i in range(n_samples):
+                for j in range(n_samples):
+                    dots[i, j] = np.dot(x[i, :].T, x[j, :])
 
         # Add coefficient before returning the kernel array.
         return dots + coefficient
 
     @staticmethod
-    def _poly_kernel(x: np.ndarray, alpha: float, coefficient: float, degree: int) -> np.ndarray:
+    def _poly_kernel(x: np.ndarray, y: np.ndarray, alpha: float, coefficient: float, degree: int) -> np.ndarray:
         """
         Calculates a Polynomial Kernel matrix for the passed array.
 
@@ -67,26 +69,28 @@ class Kernel:
         :param degree: the degree of the polynomial kernel.
         :return: The calculated kernel matrix.
         """
-        # Check array's dimensions.
-        Kernel._array_dim_check(x)
+        if y is not None:
+            # Calculate the dot products.
+            dots = np.array([np.dot(y.T, row) for row in x])
 
-        # Get the number of samples.
-        n_samples = x.shape[0]
+        else:
+            # Get the number of samples.
+            n_samples = x.shape[0]
 
-        # Initialize an array for the dot products.
-        dots = np.zeros((n_samples, n_samples))
+            # Initialize an array for the dot products.
+            dots = np.zeros((n_samples, n_samples))
 
-        # Calculate the dot products for every pair of sample.
-        for i in range(n_samples):
-            for j in range(n_samples):
-                dots[i, j] = np.dot(x[i, :].T, x[j, :])
+            # Calculate the dot products for every pair of sample.
+            for i in range(n_samples):
+                for j in range(n_samples):
+                    dots[i, j] = np.dot(x[i, :].T, x[j, :])
 
         # Multiply with alpha, add coefficient
         # and raise the result in the power of degree before returning the kernel array.
         return np.power(alpha * dots + coefficient, degree)
 
     @staticmethod
-    def _rbf_kernel(x: np.ndarray, sigma: float) -> np.ndarray:
+    def _rbf_kernel(x: np.ndarray, y: np.ndarray, sigma: float) -> np.ndarray:
         """
         Calculates an Rbf Kernel matrix for the passed array.
 
@@ -94,50 +98,58 @@ class Kernel:
         :param sigma: the sigma value to be used in the kernel calculation.
         :return: The calculated kernel matrix.
         """
-        # Check array's dimensions.
-        Kernel._array_dim_check(x)
+        if y is not None:
+            # Calculate squared euclidean norm of the y array with x.
+            dists = np.array([np.sum(np.linalg.norm(y - row) ** 2) for row in x])
 
-        # Calculate the Euclidean distances for every pair of values.
-        dists = pdist(x, 'sqeuclidean')
+        else:
+            # Calculate the Euclidean distances for every pair of values.
+            dists = pdist(x, 'sqeuclidean')
+            # Convert the distances into a symmetric matrix, where xij is the distance of xi from xj.
+            dists = squareform(dists)
 
-        # Convert the distances into a symmetric matrix, where xij is the distance of xi from xj.
-        dists = squareform(dists)
-
+        # Calculate gamma.
         gamma = np.divide(1, np.multiply(2, np.square(sigma)))
 
         return np.exp(-gamma * dists)
 
     @staticmethod
-    def _min_kernel(x: np.ndarray) -> np.ndarray:
+    def _min_kernel(x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Calculates a Min Kernel matrix, also known as Histogram Intersection Kernel for the passed array.
 
         :param x: a 2D array.
         :return: The calculated kernel matrix.
         """
-        # Check array's dimensions.
-        Kernel._array_dim_check(x)
+        if y is not None:
+            # Calculate the dot products.
+            sums = np.array([np.sum(np.minimum(y, row)) for row in x])
 
-        # Get the number of samples.
-        n_samples = x.shape[0]
+        else:
+            # Get the number of samples.
+            n_samples = x.shape[0]
 
-        # Initialize an array for the dot products.
-        sums = np.zeros((n_samples, n_samples))
+            # Initialize an array for the dot products.
+            sums = np.zeros((n_samples, n_samples))
 
-        # Calculate the dot products for every pair of sample.
-        for i in range(n_samples):
-            for j in range(n_samples):
-                sums[i, j] = np.sum(np.minimum(x[i, :], x[j, :]))
+            # Calculate the dot products for every pair of sample.
+            for i in range(n_samples):
+                for j in range(n_samples):
+                    sums[i, j] = np.sum(np.minimum(x[i, :], x[j, :]))
 
         return sums
 
-    def calc_array(self, x: np.ndarray) -> np.ndarray:
+    def calc_array(self, x: np.ndarray, y: np.ndarray = None) -> np.ndarray:
         """
         Calculates the kernel matrix.
 
         :param x: the 2D array from which the kernel will be calculated.
+        :param y: an optional second 2D array, in order to calculate the kernel between x and y.
         :return: The calculated kernel matrix.
         """
+        # Check array's dimensions.
+        Kernel._array_dim_check(x)
+
         # Get the number of features.
         n_features = x.shape[1]
 
@@ -150,10 +162,10 @@ class Kernel:
 
         # Return the kernel matrix for the chosen kernel.
         if self._kernel == Kernels.LINEAR:
-            return Kernel._linear_kernel(x, self._coefficient)
+            return Kernel._linear_kernel(x, y, self._coefficient)
         elif self._kernel == Kernels.POLYNOMIAL:
-            return Kernel._poly_kernel(x, self._alpha, self._coefficient, self._degree)
+            return Kernel._poly_kernel(x, y, self._alpha, self._coefficient, self._degree)
         elif self._kernel == Kernels.RBF:
-            return Kernel._rbf_kernel(x, self._sigma)
+            return Kernel._rbf_kernel(x, y, self._sigma)
         elif self._kernel == Kernels.MIN:
-            return Kernel._min_kernel(x)
+            return Kernel._min_kernel(x, y)
