@@ -41,7 +41,7 @@ class Kernel:
         """
         if y is not None:
             # Calculate the dot products.
-            dots = np.array([np.dot(y.T, row) for row in x])
+            dots = np.dot(y, x.T)
 
         else:
             # Get the number of samples.
@@ -71,7 +71,7 @@ class Kernel:
         """
         if y is not None:
             # Calculate the dot products.
-            dots = np.array([np.dot(y.T, row) for row in x])
+            dots = np.dot(y, x.T)
 
         else:
             # Get the number of samples.
@@ -147,7 +147,16 @@ class Kernel:
         :param y: an optional second 2D array, in order to calculate the kernel between x and y.
         :return: The calculated kernel matrix.
         """
-        # Check array's dimensions.
+        # If the second array has been passed.
+        if y is not None:
+            # If it is 1D, convert it to 2D.
+            if y.ndim == 1:
+                y = np.expand_dims(y, axis=0)
+            # Otherwise check its dimensions.
+            else:
+                Kernel._array_dim_check(y)
+
+        # Check arrays dimensions.
         Kernel._array_dim_check(x)
 
         # Get the number of features.
