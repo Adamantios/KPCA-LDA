@@ -3,7 +3,7 @@ import numpy as np
 from typing import Generator, Tuple
 from matplotlib import pyplot as plt
 from helpers.utils import create_folder
-from helpers.datasets import get_email_name, get_digit_name
+from helpers.datasets import get_digit_name
 
 
 class Plotter:
@@ -11,49 +11,6 @@ class Plotter:
         self._folder = folder
         # Create a folder for the plots.
         create_folder(folder)
-
-    def _plot_email(self, email: np.ndarray, suptitle: str, title: str, subfolder: str, filename: str,
-                    extension: str) -> None:
-        """
-        Plots and saves an email's figure with two bar diagrams.
-
-        One for the frequency of the words and the characters of the email.
-
-        One for the capital letters information of the email.
-
-        :param email: the email to be plotted.
-        :param suptitle: the super title of the figure.
-        :param title: the title of the figure.
-        :param subfolder: the subfolder for the diagram to be saved.
-        :param filename: the diagram's filename.
-        :param extension: the extension of the file to be saved.
-            Acceptable values: 'png', 'jpg', 'jpeg'.
-        """
-        # Create a subfolder for the plot.
-        create_folder(self._folder + '/' + subfolder)
-
-        # Create two subplots.
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7, 9))
-        # Create a super title.
-        fig.suptitle(suptitle + '\n' + title, fontsize='large')
-
-        # Create y ax values for the the words frequencies.
-        indexes = np.arange(len(email[:-3]))
-        # Create a bar diagram for the words frequencies.
-        ax1.bar(indexes, email[:-3], align='center')
-        ax1.set_xlabel("Words", fontsize='large')
-        ax1.set_ylabel("Frequency", fontsize='large')
-
-        # Create y ax values for the the capital letters information.
-        indexes = np.arange(len(email[-3:]))
-        # Create a bar diagram for the capital letters information.
-        ax2.bar(indexes, email[-3:], align='center')
-        ax2.set_xticklabels(label for label in ['', 'average', 'longest', 'total'])
-        ax2.set_xlabel("Capitals", fontsize='large')
-
-        # Save and plot the figure.
-        fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
-        plt.show()
 
     def _plot_digit(self, digit: np.ndarray, suptitle: str, title: str, subfolder: str, filename: str,
                     extension: str) -> None:
@@ -108,26 +65,6 @@ class Plotter:
         # For each random sample, yield the sample and its index.
         for sample, i in zip(rand_samples, range(1, len(rand_samples) + 1)):
             yield sample, i
-
-    def plot_classified_emails(self, x: np.ndarray, y_pred: np.ndarray, y_true: np.ndarray, num: int = None,
-                               subfolder: str = 'emails', filename: str = 'email', extension: str = 'png') -> None:
-        """
-        Plots and saves a certain number of classified emails.
-
-        :param x: the email.
-        :param y_pred: the predicted value of the classified email.
-        :param y_true: the real value of the classified email.
-        :param num: the number of emails to be plotted.
-        :param subfolder: the subfolder for the plots to be saved.
-        :param filename: the name of the files.
-            Every filename is going to contain the filename, followed by its index.
-        :param extension: the extension of the file to be saved.
-            Acceptable values: 'png', 'jpg', 'jpeg'.
-        """
-        # Plot num of emails randomly.
-        for email, i in self._random_picker(x, num):
-            self._plot_email(x[email], 'Classified as ' + get_email_name(y_pred[email]), 'Correct email is ' +
-                             get_email_name(y_true[email]), subfolder, filename + str(i), extension)
 
     def plot_classified_digits(self, x: np.ndarray, y_pred: np.ndarray, y_true: np.ndarray, num: int = None,
                                subfolder: str = 'digits', filename: str = 'digit', extension: str = 'png') -> None:
