@@ -3,7 +3,7 @@ import numpy as np
 from typing import Generator, Tuple
 from matplotlib import pyplot as plt
 from helpers.utils import create_folder
-from helpers.datasets import get_digit_name
+from helpers.datasets import get_digit_name, get_eeg_name
 
 
 class Plotter:
@@ -42,6 +42,17 @@ class Plotter:
         ax.set_yticks([])
 
         # Save and plot the image.
+        fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
+        plt.show()
+
+    def _plot_eeg(self, eeg, suptitle, title, subfolder, filename, extension):
+        create_folder(self._folder + '/' + subfolder)
+        fig, ax = plt.subplots(figsize=(9, 4))
+        fig.suptitle(suptitle + '\n' + title, fontsize='large')
+        ax.plot(eeg)
+        ax.set_xticks([])
+        ax.set_xlabel("1 second", fontsize='large')
+        ax.set_ylabel("EEG Value", fontsize='large')
         fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
@@ -85,6 +96,14 @@ class Plotter:
         for digit, i in self._random_picker(x, num):
             self._plot_digit(x[digit], 'Classified as ' + get_digit_name(y_pred[digit]), 'Correct digit is ' +
                              get_digit_name(y_true[digit]), subfolder, filename + str(i), extension)
+
+    def plot_classified_eegs(self, x, y_pred, y_true, num=None, subfolder='eegs', filename='eeg',
+                             extension='png'):
+        create_folder(self._folder + '/' + subfolder)
+
+        for eeg, i in self._random_picker(x, num):
+            self._plot_eeg(x[eeg], 'Classified as ' + get_eeg_name(y_pred[eeg]),
+                           'Correct condition is ' + get_eeg_name(y_true[eeg]), subfolder, filename + str(i), extension)
 
     def heatmap_correlation(self, data: np.ndarray, xlabel: str, ylabel: str, subfolder: str = 'heatmaps',
                             filename: str = 'heatmap_correlation', extension: str = 'png') -> None:
