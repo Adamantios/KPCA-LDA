@@ -2,29 +2,38 @@ import logging
 import logging.handlers
 from datetime import datetime
 from os import path, makedirs
+from definitions import OUT_PATH
 
 
-def create_folder(folder_name: str) -> None:
-    """Creates a folder in the project root.
+def create_folder(folder_name: str) -> str:
+    """Creates a folder in an oyt folder under root.
 
     :param folder_name: the name of the folder to be created.
     """
-    if not path.exists(folder_name):
-        makedirs(folder_name)
+    # Create out path if needed.
+    if not path.exists(OUT_PATH):
+        makedirs(OUT_PATH)
+
+    # Set the folder's path.
+    folder_path = path.join(OUT_PATH, folder_name)
+    if not path.exists(folder_path):
+        makedirs(folder_path)
+
+    return folder_path
 
 
 class Logger:
     def __init__(self, name: str = 'ResultsLogger', folder: str = 'logs', filename: str = 'results',
                  extension: str = 'log'):
         # Create folder if it does not exist.
-        create_folder(folder)
+        folder_path = create_folder(folder)
 
         # Set up a logger.
         self._logger = logging.getLogger(name)
         self._logger.setLevel(logging.INFO)
 
         # Add the log message handler to the logger.
-        handler = logging.handlers.RotatingFileHandler(folder + '/' + filename + '.' + extension)
+        handler = logging.handlers.RotatingFileHandler(path.join(folder_path, filename) + '.' + extension)
         self._logger.addHandler(handler)
 
         self._add_header()

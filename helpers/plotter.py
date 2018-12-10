@@ -8,9 +8,8 @@ from helpers.datasets import get_eeg_name
 
 class Plotter:
     def __init__(self, folder='plots'):
-        self._folder = folder
         # Create a folder for the plots.
-        create_folder(folder)
+        self._folder = create_folder(folder)
 
     def _plot_digit(self, digit: np.ndarray, suptitle: str, title: str, subfolder: str, filename: str,
                     extension: str) -> None:
