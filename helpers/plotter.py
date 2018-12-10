@@ -4,6 +4,7 @@ from typing import Generator, Tuple
 from matplotlib import pyplot as plt
 from helpers.utils import create_folder
 from helpers.datasets import get_eeg_name
+from mpl_toolkits.mplot3d import Axes3D
 
 
 class Plotter:
@@ -164,6 +165,10 @@ class Plotter:
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
+    def scatter_all_dimensions(self, x: np.ndarray, y: np.ndarray, subfolder: str = 'scatters',
+                               filename: str = 'scatter_pcs', extension: str = 'png') -> None:
+        pass
+
     def scatter_pcs(self, x: np.ndarray, y: np.ndarray, subfolder: str = 'scatters', filename: str = 'scatter_pcs',
                     extension: str = 'png') -> None:
         """
@@ -181,39 +186,68 @@ class Plotter:
             x = np.expand_dims(x, axis=1)
 
         # If the principal components are more than two, the plot cannot be represented.
-        elif x.shape[1] > 2:
-            raise ValueError('Principal components cannot be more than 2.')
+        elif x.shape[1] > 3:
+            raise ValueError('Principal components cannot be more than 3.')
 
         # Create a subfolder for the scatter.
         create_folder(self._folder + '/' + subfolder)
 
         # Create a figure.
-        plt.figure(figsize=(8, 6))
+        fig = plt.figure(figsize=(8, 6))
 
         # Get the class labels and count each label's instances.
         labels, counts = np.unique(y, return_counts=True)
 
-        # For every class, scatter it's principal components.
-        for i, count in zip(labels, counts):
-            # If there is one pc, plot 1D.
-            if x.shape[1] == 1:
-                plt.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5)
-            # Plot 2D.
-            else:
-                plt.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5)
+        # If there is one pc, plot 1D.
+        if x.shape[1] == 1:
+            # Create an ax.
+            ax = fig.add_subplot(111)
 
-        # Set xlabel.
-        plt.xlabel('pc1')
+            # For every class, scatter it's principal components.
+            for i, count in zip(labels, counts):
+                ax.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5)
 
-        # Set the title and ylabel, if needed.
-        if x.shape[1] == 2:
-            plt.title('The first two principal components')
-            plt.ylabel('pc2')
+            ax.set_title('The first principal component')
+            # Set xlabel.
+            ax.set_xlabel('pc1')
+            ax.set_xticks([])
+            ax.set_yticks([])
+
+        # If there are 2 pcs plot 2D.
+        elif x.shape[1] == 2:
+            # Create an ax.
+            ax = fig.add_subplot(111)
+
+            # For every class, scatter it's principal components.
+            for i, count in zip(labels, counts):
+                ax.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5)
+
+            ax.set_title('The first two principal components')
+            # Set xlabel.
+            ax.set_xlabel('pc1')
+            ax.set_ylabel('pc2')
+            ax.set_xticks([])
+            ax.set_yticks([])
+
+        # If there are 3 pcs plot 3D.
         else:
-            plt.title('The first principal component')
+            # Create a 3D ax.
+            ax = fig.add_subplot(111, projection='3d')
+            # For every class, scatter it's principal components.
+            for i, count in zip(labels, counts):
+                ax.scatter(x[y == i, 0], x[y == i, 1], x[y == i, 2], alpha=0.5)
+
+            ax.set_title('The first three principal components')
+            # Set xlabel.
+            ax.set_xlabel('pc1')
+            ax.set_ylabel('pc2')
+            ax.set_zlabel('pc3')
+            ax.set_xticks([])
+            ax.set_yticks([])
+            ax.set_zticks([])
 
         # Save and plot the scatterplot.
-        plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
+        fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
     def pca_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, subfolder: str = 'pca_analysis',
