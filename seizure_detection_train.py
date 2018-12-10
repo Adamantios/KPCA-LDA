@@ -42,17 +42,17 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test)
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KernelPCA(kernel='linear', random_state=0)
+    pca = KernelPCA(kernel='rbf', gamma=0.01, random_state=0)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
     plotter.pca_analysis(helpers.utils.calc_explained_var_ratio(x_train), num_of_features,
-                         subfolder='pca_analysis/all_components', filename='linear')
+                         subfolder='pca_analysis/all_components', filename='rbf')
 
-    plotter.scatter_pcs(pca.alphas_[:, :3], y_train, filename='linear_3pcs')
-    plotter.scatter_pcs(pca.alphas_[:, :2], y_train, filename='linear_2pcs')
-    plotter.scatter_pcs(pca.alphas_[:, 0], y_train, filename='linear_1pc')
+    plotter.scatter_pcs(pca.alphas_[:, :3], y_train, subfolder='scatters/rbf', filename='rbf_3pcs')
+    plotter.scatter_pcs(pca.alphas_[:, :2], y_train, subfolder='scatters/rbf', filename='rbf_2pcs')
+    plotter.scatter_pcs(pca.alphas_[:, 0], y_train, subfolder='scatters/rbf', filename='rbf_1pc')
 
     x_test = pca.transform(x_test)
 
