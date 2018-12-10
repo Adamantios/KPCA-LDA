@@ -61,6 +61,11 @@ def cm_to_accuracies(cm: np.ndarray) -> np.ndarray:
     return cm.diagonal()
 
 
+def calc_explained_var_ratio(x_transformed) -> np.ndarray:
+    explained_variance = np.var(x_transformed, axis=0)
+    return explained_variance / np.sum(explained_variance)
+
+
 class Logger:
     def __init__(self, name: str = 'ResultsLogger', folder: str = 'logs', filename: str = 'results',
                  extension: str = 'log'):
