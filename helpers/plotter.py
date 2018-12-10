@@ -180,10 +180,14 @@ class Plotter:
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def pca_analysis(self, explained_var_ratio: np.ndarray, subfolder: str = 'scatters', filename: str = 'scatter_pcs',
-                     extension: str = 'png') -> None:
+    def pca_analysis(self, explained_var_ratio: np.ndarray, decimals: int = 2, subfolder: str = 'scatters',
+                     filename: str = 'scatter_pcs', extension: str = 'png') -> None:
         # Create a subfolder for the scatter.
         create_folder(self._folder + '/' + subfolder)
+
+        # Convert values to percentage, round them and cumulative sum all the variance ratios, so that we get an array,
+        # which contains the total proportion of variance explained with as many components as it's index.
+        pov = np.cumsum(np.round(explained_var_ratio, decimals=2 + decimals) * 100)
 
         # plt.figure(figsize=(6, 6))
 
@@ -192,7 +196,7 @@ class Plotter:
         plt.title('PCA Analysis')
         plt.ylim(0, 100)
         plt.style.context('seaborn-paper')
-        plt.plot(explained_var_ratio)
+        plt.plot(pov)
 
         # Save and plot the scatterplot.
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
