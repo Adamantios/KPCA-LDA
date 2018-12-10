@@ -41,7 +41,7 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test)
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = PCA(whiten=True, random_state=0)
+    pca = PCA(n_components=75, whiten=True, random_state=0)
     logger.log('\t' + str(pca.get_params()))
     pca.fit(x_train)
 
@@ -136,13 +136,13 @@ def main():
     # plotter.heatmap_correlation(pca_components, 'Features', 'Principal components', filename='heatmap_pca')
 
     # Create model, fit and predict.
-    y_predicted, support_vectors = fit_predict(x_train_clean, y_train_clean, x_test_clean)
+    # y_predicted, support_vectors = fit_predict(x_train_clean, y_train_clean, x_test_clean)
 
     # Show prediction information.
-    show_prediction_info(y_test, y_predicted, support_vectors)
+    # show_prediction_info(y_test, y_predicted, support_vectors)
 
     # Show some of the classification results.
-    display_classification_results(x_test, y_test, y_predicted)
+    # display_classification_results(x_test, y_test, y_predicted)
 
     # Close the logger.
     logger.close()
