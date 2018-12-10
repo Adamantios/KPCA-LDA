@@ -179,3 +179,21 @@ class Plotter:
         # Save and plot the scatterplot.
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
+
+    def pca_analysis(self, explained_var_ratio: np.ndarray, subfolder: str = 'scatters', filename: str = 'scatter_pcs',
+                     extension: str = 'png') -> None:
+        # Create a subfolder for the scatter.
+        create_folder(self._folder + '/' + subfolder)
+
+        # plt.figure(figsize=(6, 6))
+
+        plt.ylabel('POV')
+        plt.xlabel('Number of Features')
+        plt.title('PCA Analysis')
+        plt.ylim(0, 100)
+        plt.style.context('seaborn-paper')
+        plt.plot(explained_var_ratio)
+
+        # Save and plot the scatterplot.
+        plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
+        plt.show()
