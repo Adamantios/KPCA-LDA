@@ -36,15 +36,18 @@ def create_excel(data: dict = None, folder: str = 'excels', filename: str = 'exc
     :param extension: the file's extension.
     :param sheet_name: the excel's sheet name.
     """
-    # Create folder for the file.
+    # Create folder for the file, if it doesn't exist..
     folder_path = create_folder(folder)
-    # Create a dataframe from the passed data.
-    dataframe = pandas.DataFrame(data, index=[0])
-    # Set decimals to 4.
-    dataframe = dataframe.round(4)
+    # Set the filepath.
+    filepath = path.join(folder_path, filename)
+    # Add extension.
+    filepath = '{}.{}'.format(filepath, extension)
+
+    # Create a dataframe from the passed data and set decimals to 4.
+    dataframe = pandas.DataFrame(data, index=[0]).round(4)
+
     # Dump dataframe to excel file.
-    dataframe.to_excel('{}/{}.{}'.format(folder_path, filename, extension), sheet_name=sheet_name, index=False,
-                       engine='xlsxwriter')
+    dataframe.to_excel(filepath, sheet_name=sheet_name, index=False, engine='xlsxwriter')
 
 
 class Logger:
