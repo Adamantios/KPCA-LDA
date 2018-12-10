@@ -10,7 +10,7 @@ from sklearn.decomposition import PCA
 import helpers
 
 # Create a logger and a plotter.
-logger, plotter = helpers.Logger(filename='seizure_detection_results'), helpers.Plotter()
+logger, plotter = helpers.Logger(filename='seizure_detection_train_results'), helpers.Plotter()
 
 
 def get_x_y():

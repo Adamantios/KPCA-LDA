@@ -10,7 +10,7 @@ from sklearn.decomposition import PCA
 from typing import Tuple, Optional
 
 # Create a logger and a plotter.
-logger, plotter = helpers.Logger(filename='digits_recognition_results'), helpers.Plotter()
+logger, plotter = helpers.Logger(filename='digits_recognition_train_results'), helpers.Plotter()
 
 
 def get_x_y() -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarray]:
