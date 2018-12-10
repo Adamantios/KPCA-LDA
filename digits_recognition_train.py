@@ -2,6 +2,7 @@ import time
 import numpy
 import pandas
 import helpers
+from sklearn.model_selection import train_test_split
 from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.svm import SVC
@@ -19,10 +20,13 @@ def get_x_y() -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray, numpy.ndarra
     :return: x_train, y_train, x_test and y_test.
     """
     logger.log('Loading Dataset...')
-    x_train, y_train = helpers.datasets.load_digits()
-    logger.log(str(len(y_train)) + ' training data loaded')
-    x_test, y_test = helpers.datasets.load_digits(train=False)
-    logger.log(str(len(y_test)) + ' testing data loaded')
+    x, y = helpers.datasets.load_digits()
+    logger.log(str(len(y)) + ' data loaded')
+
+    logger.log('Splitting to 60% train and 40% test data...')
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=0)
+    logger.log(str(len(y_train)) + ' training data available.')
+    logger.log(str(len(y_test)) + ' testing data available.')
 
     return x_train, y_train, x_test, y_test
 
