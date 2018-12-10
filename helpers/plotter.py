@@ -172,7 +172,7 @@ class Plotter:
     def scatter_pcs(self, x: np.ndarray, y: np.ndarray, subfolder: str = 'scatters', filename: str = 'scatter_pcs',
                     extension: str = 'png') -> None:
         """
-        Plots and saves a scatterplot with the first one or the first two principal components.
+        Plots and saves a scatterplot with the first one, two or three principal components.
 
         :param x: the principal components to plot.
         :param y: the class labels.
