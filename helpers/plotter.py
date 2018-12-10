@@ -216,14 +216,23 @@ class Plotter:
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def pca_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, decimals: int = 2,
-                     subfolder: str = 'pca_analysis', filename: str = 'pov_vs_k', extension: str = 'png') -> None:
+    def pca_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, subfolder: str = 'pca_analysis',
+                     filename: str = 'pov_vs_k', extension: str = 'png') -> None:
+        """
+        Create a pov vs k plot.
+
+        :param explained_var_ratio: the explained variance ratio.
+        :param num_of_features: the number of features.
+        :param subfolder: the subfolder for the plot to be saved.
+        :param filename: the plot's filename.
+        :param extension: the file's extension.
+        """
         # Create a subfolder for the scatterplot.
         create_folder(self._folder + '/' + subfolder)
 
         # Convert values to percentage, round them and cumulative sum all the variance ratios, so that we get an array,
         # which contains the total proportion of variance explained with as many components as it's index.
-        pov = np.cumsum(np.round(explained_var_ratio, decimals=2 + decimals) * 100)
+        pov = np.cumsum(np.round(explained_var_ratio, decimals=4) * 100)
 
         # Create a figure.
         plt.figure(figsize=(7, 5))
