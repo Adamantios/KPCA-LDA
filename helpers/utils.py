@@ -62,6 +62,11 @@ def cm_to_accuracies(cm: np.ndarray) -> np.ndarray:
 
 
 def calc_explained_var_ratio(x_transformed) -> np.ndarray:
+    """
+    Calculates the explained variance ratio from the pca's x transformed array.
+    :param x_transformed: the pca transformed x array.
+    :return: the explained variance ratio.
+    """
     explained_variance = np.var(x_transformed, axis=0)
     return explained_variance / np.sum(explained_variance)
 
