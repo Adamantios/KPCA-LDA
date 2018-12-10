@@ -209,7 +209,8 @@ class Plotter:
 
             # For every class, scatter it's principal components.
             for i, count in zip(labels, counts):
-                ax.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5)
+                ax.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5, label='{} class'.format(i))
+                ax.legend()
 
             ax.set_title('The first principal component')
             # Set xlabel and clear x and y ticks.
@@ -224,7 +225,8 @@ class Plotter:
 
             # For every class, scatter it's principal components.
             for i, count in zip(labels, counts):
-                ax.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5)
+                ax.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5, label='{} class'.format(i))
+                ax.legend()
 
             ax.set_title('The first two principal components')
             # Set x and y labels and clear x and y ticks.
@@ -239,7 +241,8 @@ class Plotter:
             ax = fig.add_subplot(111, projection='3d')
             # For every class, scatter it's principal components.
             for i, count in zip(labels, counts):
-                ax.scatter(x[y == i, 0], x[y == i, 1], x[y == i, 2], alpha=0.5)
+                ax.scatter(x[y == i, 0], x[y == i, 1], x[y == i, 2], alpha=0.5, label='{} class'.format(i))
+                ax.legend()
 
             ax.set_title('The first three principal components')
             # Set x, y and z labels, and clear x, y and z ticks.
