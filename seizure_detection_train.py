@@ -19,7 +19,7 @@ def get_x_y():
     logger.log(str(len(y)) + ' data loaded')
 
     logger.log('Splitting to 60% train and 40% test data...')
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.4, random_state=0)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
     logger.log(str(len(y_train)) + ' training data available.')
     logger.log(str(len(y_test)) + ' testing data available.')
 
