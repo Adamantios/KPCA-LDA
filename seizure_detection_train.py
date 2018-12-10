@@ -74,24 +74,32 @@ def fit_predict(x_train, y_train, x_test):
     return y_predicted, model.support_vectors_
 
 
-def show_prediction_info(y_test, y_predicted, support_vectors):
-    logger.log('Model\'s scores:')
-    accuracy = metrics.accuracy_score(y_test, y_predicted)
-    precision = metrics.precision_score(y_test, y_predicted, average='macro')
-    recall = metrics.recall_score(y_test, y_predicted, average='macro')
-    f1 = metrics.f1_score(y_test, y_predicted, average='macro')
-    logger.log('Accuracy: {:.4}'.format(accuracy))
-    logger.log('Precision: {:.4}'.format(precision))
-    logger.log('Recall: {:.4}'.format(recall))
-    logger.log('F1: {:.4}'.format(f1))
+def show_prediction_info(y_test, y_predicted, support_vectors, save: bool = True, folder: str = 'results',
+                         filename: str = 'seizure_detection_train', extension: str = 'xlsx',
+                         sheet_name: str = 'results'):
+    # Get the accuracy of each class.
+    accuracies = helpers.utils.cm_to_accuracies(metrics.confusion_matrix(y_test, y_predicted))
 
-    # Calculate and print accuracy for each class.
-    logger.log('Accuracy for each class: ')
-    cm = metrics.confusion_matrix(y_test, y_predicted)
-    cm = cm.astype('float') / cm.sum(axis=1)[:, numpy.newaxis]
-    logger.log(cm.diagonal())
+    # Create results dictionary.
+    results = {'Epileptic Seizure Accuracy': accuracies[0],
+               'Tumor Located Accuracy': accuracies[1],
+               'Healthy Area Accuracy': accuracies[2],
+               'Eyes Closed Accuracy': accuracies[3],
+               'Eyes Opened Accuracy': accuracies[4],
+               'Accuracy': metrics.accuracy_score(y_test, y_predicted),
+               'Precision': metrics.precision_score(y_test, y_predicted, average='macro'),
+               'Recall': metrics.recall_score(y_test, y_predicted, average='macro'),
+               'F1': metrics.f1_score(y_test, y_predicted, average='macro'),
+               'Support Vectors': len(support_vectors)}
 
-    logger.log(str(len(support_vectors)) + ' support vectors used.')
+    # Log results.
+    logger.log('Model\'s Results:')
+    for key, value in results.items():
+        logger.log('{text}: {number:.{points}g}'.format(text=key, number=value, points=4))
+
+    # Create excel if save is True.
+    if save:
+        helpers.utils.create_excel(results, folder, filename, extension, sheet_name)
 
 
 def display_classification_results(x_test, y_test, y_predicted):
