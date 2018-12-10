@@ -169,10 +169,6 @@ class Plotter:
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def scatter_all_dimensions(self, x: np.ndarray, y: np.ndarray, subfolder: str = 'scatters',
-                               filename: str = 'scatter_pcs', extension: str = 'png') -> None:
-        pass
-
     def scatter_pcs(self, x: np.ndarray, y: np.ndarray, subfolder: str = 'scatters', filename: str = 'scatter_pcs',
                     extension: str = 'png') -> None:
         """
