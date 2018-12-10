@@ -194,13 +194,13 @@ class Plotter:
         labels, counts = np.unique(y, return_counts=True)
 
         # For every class, scatter it's principal components.
-        for i, count, color in zip(range(labels.size), counts, ['red', 'blue']):
+        for i, count in zip(range(labels.size), counts):
             # If there is one pc, plot 1D.
             if x.shape[1] == 1:
-                plt.scatter(x[y == i, 0], np.zeros((count, 1)), color=color, alpha=0.5)
+                plt.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5)
             # Plot 2D.
             else:
-                plt.scatter(x[y == i, 0], x[y == i, 1], color=color, alpha=0.5)
+                plt.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5)
 
         # Set xlabel.
         plt.xlabel('pc1')
