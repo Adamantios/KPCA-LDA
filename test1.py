@@ -56,5 +56,6 @@ def main():
     # Close the logger.
     logger.close()
 
-    if __name__ == '__main__':
-        main()
+
+if __name__ == '__main__':
+    main()
