@@ -46,13 +46,31 @@ class Plotter:
         plt.show()
 
     def _plot_eeg(self, eeg, suptitle, title, subfolder, filename, extension):
+        """
+        Plots an eeg.
+
+        :param eeg: the eeg to be plotted.
+        :param suptitle: the plot's supertitle.
+        :param title: the plot's title.
+        :param subfolder: the subfolder where the plot will be placed.
+        :param filename: the plot's filename.
+        :param extension: the extension of the filename.
+        """
+        # Create a subfolder for the plot's image.
         create_folder(self._folder + '/' + subfolder)
+        # Create a subplot.
         fig, ax = plt.subplots(figsize=(9, 4))
+        # Create a super title.
         fig.suptitle(suptitle + '\n' + title, fontsize='large')
+        # Create the plot.
         ax.plot(eeg)
+
+        # Remove xticks, add xlabel and ylabel.
         ax.set_xticks([])
         ax.set_xlabel("1 second", fontsize='large')
         ax.set_ylabel("EEG Value", fontsize='large')
+
+        # Save and plot the image.
         fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
@@ -99,8 +117,20 @@ class Plotter:
 
     def plot_classified_eegs(self, x, y_pred, y_true, num=None, subfolder='eegs', filename='eeg',
                              extension='png'):
-        create_folder(self._folder + '/' + subfolder)
+        """
+        Plots and saves a certain number of classified eegs.
 
+        :param x: the eegs.
+        :param y_pred: the predicted values of the classified eeg.
+        :param y_true: the real value of the classified eegs.
+        :param num: the number of eegs to be plotted.
+        :param subfolder: the subfolder for the plots to be saved.
+        :param filename: the name of the files.
+            Every filename is going to contain the filename, followed by its index.
+        :param extension: the extension of the file to be saved.
+            Acceptable values: 'png', 'jpg', 'jpeg'.
+        """
+        # Plot num of eegs randomly.
         for eeg, i in self._random_picker(x, num):
             self._plot_eeg(x[eeg], 'Classified as ' + get_eeg_name(y_pred[eeg]),
                            'Correct condition is ' + get_eeg_name(y_true[eeg]), subfolder, filename + str(i), extension)
@@ -158,18 +188,25 @@ class Plotter:
         # Create a subfolder for the scatter.
         create_folder(self._folder + '/' + subfolder)
 
+        # Create a figure.
         plt.figure(figsize=(8, 6))
 
+        # Get the class labels and count each label's instances.
         labels, counts = np.unique(y, return_counts=True)
 
+        # For every class, scatter it's principal components.
         for i, count, color in zip(range(labels.size), counts, ['red', 'blue']):
+            # If there is one pc, plot 1D.
             if x.shape[1] == 1:
                 plt.scatter(x[y == i, 0], np.zeros((count, 1)), color=color, alpha=0.5)
+            # Plot 2D.
             else:
                 plt.scatter(x[y == i, 0], x[y == i, 1], color=color, alpha=0.5)
 
+        # Set xlabel.
         plt.xlabel('pc1')
 
+        # Set the title and ylabel, if needed.
         if x.shape[1] == 2:
             plt.title('The first two principal components')
             plt.ylabel('pc2')
@@ -182,7 +219,7 @@ class Plotter:
 
     def pca_analysis(self, explained_var_ratio: np.ndarray, decimals: int = 2, subfolder: str = 'scatters',
                      filename: str = 'scatter_pcs', extension: str = 'png') -> None:
-        # Create a subfolder for the scatter.
+        # Create a subfolder for the scatterplot.
         create_folder(self._folder + '/' + subfolder)
 
         # Convert values to percentage, round them and cumulative sum all the variance ratios, so that we get an array,
@@ -191,6 +228,7 @@ class Plotter:
 
         # plt.figure(figsize=(6, 6))
 
+        # Set labels, title, y tick limits and style and create the plot.
         plt.ylabel('POV')
         plt.xlabel('Number of Features')
         plt.title('PCA Analysis')
