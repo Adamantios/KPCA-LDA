@@ -2,6 +2,9 @@ import logging
 import logging.handlers
 from datetime import datetime
 from os import path, makedirs
+
+import pandas
+
 from definitions import OUT_PATH
 
 
@@ -20,6 +23,28 @@ def create_folder(folder_name: str) -> str:
         makedirs(folder_path)
 
     return folder_path
+
+
+def create_excel(data: dict = None, folder: str = 'excels', filename: str = 'excel', extension: str = 'xlsx',
+                 sheet_name: str = 'sheet1') -> None:
+    """
+    Creates an excel file from a dictionary.
+
+    :param data: the data contained in a dict.
+    :param folder: the folder under which the file is going to be created.
+    :param filename: the excel's filename.
+    :param extension: the file's extension.
+    :param sheet_name: the excel's sheet name.
+    """
+    # Create folder for the file.
+    folder_path = create_folder(folder)
+    # Create a dataframe from the passed data.
+    dataframe = pandas.DataFrame(data, index=[0])
+    # Set decimals to 4.
+    dataframe = dataframe.round(4)
+    # Dump dataframe to excel file.
+    dataframe.to_excel('{}/{}.{}'.format(folder_path, filename, extension), sheet_name=sheet_name, index=False,
+                       engine='xlsxwriter')
 
 
 class Logger:
