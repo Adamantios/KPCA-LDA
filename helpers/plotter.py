@@ -7,6 +7,10 @@ from helpers.datasets import get_eeg_name
 from mpl_toolkits.mplot3d import Axes3D
 
 
+class TooManyDimensionsError(Exception):
+    pass
+
+
 class Plotter:
     def __init__(self, folder='plots'):
         # Create a folder for the plots.
@@ -187,7 +191,8 @@ class Plotter:
 
         # If the principal components are more than two, the plot cannot be represented.
         elif x.shape[1] > 3:
-            raise ValueError('Principal components cannot be more than 3.')
+            raise TooManyDimensionsError('Principal components cannot be more than 3. '
+                                         'Cannot plot more than 3 dimensions.')
 
         # Create a subfolder for the scatter.
         create_folder(self._folder + '/' + subfolder)
