@@ -42,12 +42,12 @@ def main():
                            ('svc', LinearSVC())])
 
     # Grid parameters.
-    param_grid = dict(pca__kernel={'linear', 'poly', 'rbf'},
-                      pca__gamma={0.05, 0.01, 0.005, 0.001},
-                      pca__degree={2, 3, 4},
-                      pca__coef0={0, 10, 100, 1000})
+    param_grid = dict(pca__kernel=['linear', 'poly', 'rbf'],
+                      pca__gamma=[0.05, 0.01, 0.005, 0.001],
+                      pca__degree=[2, 3, 4],
+                      pca__coef0=[0, 10, 100, 1000])
 
-    grid_search = GridSearchCV(pipe, param_grid, n_jobs=-1, scoring='accuracy', verbose=10)
+    grid_search = GridSearchCV(pipe, param_grid, n_jobs=-1, scoring='accuracy', verbose=10, cv=3)
 
     grid_results = grid_search.fit(x_train, y_train)
 
