@@ -196,6 +196,9 @@ class Plotter:
         # Create a figure.
         fig = plt.figure(figsize=(8, 6))
 
+        # Use a style.
+        plt.style.use('seaborn-pastel')
+
         # Get the class labels and count each label's instances.
         labels, counts = np.unique(y, return_counts=True)
 
