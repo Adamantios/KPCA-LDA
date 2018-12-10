@@ -41,10 +41,13 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test)
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    # Keep 95% of the information
-    pca = PCA(.95, whiten=True, random_state=0)
+    pca = PCA(whiten=True, random_state=0)
     logger.log('\t' + str(pca.get_params()))
     pca.fit(x_train)
+
+    # Plot pca pov vs k.
+    plotter.pca_analysis(pca.explained_variance_ratio_)
+
     x_train = pca.transform(x_train)
     x_test = pca.transform(x_test)
 
