@@ -226,14 +226,16 @@ class Plotter:
         # which contains the total proportion of variance explained with as many components as it's index.
         pov = np.cumsum(np.round(explained_var_ratio, decimals=2 + decimals) * 100)
 
-        # plt.figure(figsize=(6, 6))
+        # Create a figure.
+        plt.figure(figsize=(7, 5))
+        # Use a style.
+        plt.style.use('seaborn-darkgrid')
 
-        # Set labels, title, y tick limits and style and create the plot.
+        # Set labels, title and y tick limits and create the plot.
         plt.ylabel('POV')
         plt.xlabel('Number of Features')
         plt.title('PCA Analysis')
-        plt.ylim(0, 100)
-        plt.style.context('seaborn-paper')
+        plt.ylim(50, 100)
         plt.plot(pov)
 
         # Save and plot the scatterplot.
