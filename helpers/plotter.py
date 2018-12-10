@@ -194,7 +194,7 @@ class Plotter:
         create_folder(self._folder + '/' + subfolder)
 
         # Create a figure.
-        fig = plt.figure(figsize=(8, 6))
+        fig = plt.figure(figsize=(10, 8))
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -276,7 +276,7 @@ class Plotter:
         pov = np.cumsum(np.round(explained_var_ratio, decimals=4) * 100)
 
         # Create a figure.
-        plt.figure(figsize=(7, 5))
+        plt.figure(figsize=(10, 8))
         # Use a style.
         plt.style.use('seaborn-darkgrid')
 
