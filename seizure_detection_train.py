@@ -5,7 +5,7 @@ from sklearn import metrics
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from sklearn.decomposition import PCA
+from sklearn.decomposition import KernelPCA
 
 import helpers
 
@@ -27,6 +27,7 @@ def get_x_y():
 
 
 def preprocess(x_train, y_train, x_test):
+    num_of_features = len(x_train[1])
     logger.log('Preprocessing...')
 
     # logger.log('\tSymmetrize training dataset...')
@@ -41,17 +42,16 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test)
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = PCA(n_components=75, whiten=True, random_state=0)
+    pca = KernelPCA(kernel='linear', random_state=0)
     logger.log('\t' + str(pca.get_params()))
-    pca.fit(x_train)
-
+    x_train = pca.fit_transform(x_train)
     # Plot pca pov vs k.
-    plotter.pca_analysis(pca.explained_variance_ratio_)
+    plotter.pca_analysis(helpers.utils.calc_explained_var_ratio(x_train), num_of_features,
+                         subfolder='pca_analysis/all_components', filename='linear')
 
-    x_train = pca.transform(x_train)
     x_test = pca.transform(x_test)
 
-    return x_train, y_train, x_test, pca.components_
+    return x_train, y_train, x_test, pca.alphas_
 
 
 def fit_predict(x_train, y_train, x_test):
@@ -126,7 +126,7 @@ def main():
     # plotter.heatmap_correlation(pandas.DataFrame(x_train).corr(), 'Features', 'Features')
 
     # Preprocess data.
-    x_train_clean, y_train_clean, x_test_clean, pca_components = preprocess(x_train, y_train, x_test)
+    x_train_clean, y_train_clean, x_test_clean, eigenvectors = preprocess(x_train, y_train, x_test)
 
     # logger.log('Creating heatmap of the principal components correlation...')
     # plotter.heatmap_correlation(pandas.DataFrame(pca_components).corr(),

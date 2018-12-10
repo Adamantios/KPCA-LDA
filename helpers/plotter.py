@@ -216,8 +216,8 @@ class Plotter:
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def pca_analysis(self, explained_var_ratio: np.ndarray, decimals: int = 2, subfolder: str = 'pca_analysis',
-                     filename: str = 'pov_vs_k', extension: str = 'png') -> None:
+    def pca_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, decimals: int = 2,
+                     subfolder: str = 'pca_analysis', filename: str = 'pov_vs_k', extension: str = 'png') -> None:
         # Create a subfolder for the scatterplot.
         create_folder(self._folder + '/' + subfolder)
 
@@ -234,8 +234,8 @@ class Plotter:
         plt.ylabel('POV')
         plt.xlabel('Number of Features')
         plt.title('PCA Analysis')
-        plt.ylim(50, 100)
-        plt.plot(pov)
+        plt.ylim(0, 100)
+        plt.plot(pov[:num_of_features])
 
         # Save and plot the scatterplot.
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
