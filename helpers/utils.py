@@ -1,11 +1,10 @@
 import logging
 import logging.handlers
+import numpy as np
+import pandas
+from definitions import OUT_PATH
 from datetime import datetime
 from os import path, makedirs
-
-import pandas
-
-from definitions import OUT_PATH
 
 
 def create_folder(folder_name: str) -> str:
@@ -48,6 +47,18 @@ def create_excel(data: dict = None, folder: str = 'excels', filename: str = 'exc
 
     # Dump dataframe to excel file.
     dataframe.to_excel(filepath, sheet_name=sheet_name, index=False, engine='xlsxwriter')
+
+
+def cm_to_accuracies(cm: np.ndarray) -> np.ndarray:
+    """
+    Convert confusion matrix to an array with accuracy for each class.
+    :param cm: the confusion matrix.
+    :return: Accuracy for each class
+    """
+    # Divide confusion matrix row's values with their sums.
+    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    # Return the diagonal, which is the accuracy of each class.
+    return cm.diagonal()
 
 
 class Logger:
