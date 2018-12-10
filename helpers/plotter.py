@@ -208,7 +208,7 @@ class Plotter:
                 ax.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5)
 
             ax.set_title('The first principal component')
-            # Set xlabel.
+            # Set xlabel and clear x and y ticks.
             ax.set_xlabel('pc1')
             ax.set_xticks([])
             ax.set_yticks([])
@@ -223,7 +223,7 @@ class Plotter:
                 ax.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5)
 
             ax.set_title('The first two principal components')
-            # Set xlabel.
+            # Set x and y labels and clear x and y ticks.
             ax.set_xlabel('pc1')
             ax.set_ylabel('pc2')
             ax.set_xticks([])
@@ -238,7 +238,7 @@ class Plotter:
                 ax.scatter(x[y == i, 0], x[y == i, 1], x[y == i, 2], alpha=0.5)
 
             ax.set_title('The first three principal components')
-            # Set xlabel.
+            # Set x, y and z labels, and clear x, y and z ticks.
             ax.set_xlabel('pc1')
             ax.set_ylabel('pc2')
             ax.set_zlabel('pc3')
