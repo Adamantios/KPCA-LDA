@@ -204,7 +204,7 @@ class Kernel:
             self._alpha = 1 / n_features
 
         if self._sigma is None:
-            self._sigma = np.sqrt(n_features)
+            self._sigma = np.sqrt(n_features / 2)
 
         # Return the kernel matrix for the chosen kernel.
         if self._kernel == Kernels.LINEAR:
