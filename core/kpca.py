@@ -117,7 +117,7 @@ class KPCA:
         kernel_matrix = KPCA._center_matrix(kernel_matrix)
 
         # Return the projected data.
-        return kernel_matrix.dot(self.alphas / np.sqrt(self.lambdas))
+        return kernel_matrix.T.dot(self.alphas / np.sqrt(self.lambdas))
 
     def fit_transform(self, x: np.ndarray):
         """
