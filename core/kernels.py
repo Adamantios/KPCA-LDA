@@ -41,8 +41,10 @@ class Kernel:
         """
         if x.ndim == 1:
             raise InvalidDimensionsException('Input arrays should be 2 dimensional.'
+                                             'Got {} instead.'
                                              'You could use np.expand_dims(array),'
-                                             ' in order to convert a 1D array to 2D.')
+                                             ' in order to convert a 1D array to 2D.'
+                                             .format(x.shape))
         if x.ndim != 2:
             raise InvalidDimensionsException('Input arrays should be 2 dimensional.')
 
