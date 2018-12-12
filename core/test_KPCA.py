@@ -42,10 +42,10 @@ class TestPolyKPCA(TestCase):
 
 
 class TestRbfKPCA(TestCase):
-    kpca = KPCA(Kernels.RBF)
+    kpca = KPCA(Kernels.RBF, sigma=2, coefficient=0)
     my_results = kpca.fit_transform(array)
     print('Rbf \n{}\n{}\n'.format(kpca.alphas, kpca.lambdas))
-    scikit_pca = KernelPCA(kernel='rbf')
+    scikit_pca = KernelPCA(kernel='rbf', gamma=1 / 8, coef0=1)
     scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Rbf \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
 
