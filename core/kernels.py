@@ -19,6 +19,10 @@ class InvalidKernelException(Exception):
     pass
 
 
+class IncompatibleShapesException(Exception):
+    pass
+
+
 class Kernel:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
                  degree: int = 3, sigma: float = None):
@@ -27,40 +31,58 @@ class Kernel:
         self._coefficient = coefficient
         self._degree = degree
         self._sigma = sigma
-        self._x_fitted = None
 
     @staticmethod
     def _array_dim_check(x: np.ndarray) -> NoReturn:
         """
         Checks if the passed array is 2D.
-        If not, it raises a value error.
+        If not, it raises an InvalidDimensionsException.
+
         :param x: the array to be checked.
         """
         if x.ndim == 1:
-            raise InvalidDimensionsException('Input array should be 2 dimensional.'
-                                             'You could use np.expand_dims(), in order to convert it to 2D.')
+            raise InvalidDimensionsException('Input arrays should be 2 dimensional.'
+                                             'You could use np.expand_dims(array),'
+                                             ' in order to convert a 1D array to 2D.')
         if x.ndim != 2:
-            raise InvalidDimensionsException('Input array should be 2 dimensional.')
+            raise InvalidDimensionsException('Input arrays should be 2 dimensional.')
 
-    def _linear_kernel(self, x: np.ndarray, coefficient: float) -> np.ndarray:
+    @staticmethod
+    def _arrays_check(x: np.ndarray, y: np.ndarray) -> NoReturn:
         """
-        Calculates a Linear Kernel matrix for the passed array.
+        Checks if the passed array is 2D.
+        If not, it raises a value error.
 
-        :param x: a 2D array.
-        :param coefficient: the coefficient parameter to be used in the kernel calculation.
+        :param x: the array to be checked.
+        """
+        Kernel._array_dim_check(x)
+
+        if y is not None:
+            Kernel._array_dim_check(y)
+            if x.shape[1] != y.shape[1]:
+                raise IncompatibleShapesException(
+                    'Arrays columns should be the same. Got {} and {} instead'.format(x.shape[1], y.shape[1]))
+
+    @staticmethod
+    def _linear_kernel(x: np.ndarray, y: np.ndarray, coefficient: float) -> np.ndarray:
+        """
+        Calculates the linear kernel matrix between x and y or for x if y is not passed.
+
+        :param x: the 2D array from which the kernel will be calculated.
+        :param y: the optional 1D or 2D array with which the kernel will be calculated between x.
         :return: The calculated kernel matrix.
         """
-        # Get the number of samples.
-        n_samples = x.shape[0]
-
-        # Initialize an array for the dot products.
-        dots = np.zeros((n_samples, n_samples))
-
-        if self._x_fitted is not None:
-            # Calculate the dot products for every pair of sample.
-            dots = np.dot(x.T, self._x_fitted)
+        if y is not None:
+            # Calculate the dot products.
+            dots = np.dot(x, y.T)
 
         else:
+            # Get the number of samples.
+            n_samples = x.shape[0]
+
+            # Initialize an array for the dot products.
+            dots = np.zeros((n_samples, n_samples))
+
             # Calculate the dot products for every pair of sample.
             for i in range(n_samples):
                 for j in range(n_samples):
@@ -69,19 +91,21 @@ class Kernel:
         # Add coefficient before returning the kernel array.
         return dots + coefficient
 
-    def _poly_kernel(self, x: np.ndarray, alpha: float, coefficient: float, degree: int) -> np.ndarray:
+    @staticmethod
+    def _poly_kernel(x: np.ndarray, y: np.ndarray, alpha: float, coefficient: float, degree: int) -> np.ndarray:
         """
-        Calculates a Polynomial Kernel matrix for the passed array.
+        Calculates the polynomial kernel matrix between x and y or for x if y is not passed.
 
-        :param x: a 2D array.
+        :param x: the 2D array from which the kernel will be calculated.
+        :param y: the optional 1D or 2D array with which the kernel will be calculated between x.
         :param alpha: the alpha value to be used in the kernel calculation.
         :param coefficient: coefficient: the coefficient parameter to be used in the kernel calculation.
         :param degree: the degree of the polynomial kernel.
         :return: The calculated kernel matrix.
         """
-        if self._x_fitted is not None:
+        if y is not None:
             # Calculate the dot products.
-            dots = np.dot(self._x_fitted, x.T)
+            dots = np.dot(x, y.T)
 
         else:
             # Get the number of samples.
@@ -99,17 +123,19 @@ class Kernel:
         # and raise the result in the power of degree before returning the kernel array.
         return np.power(alpha * dots + coefficient, degree)
 
-    def _rbf_kernel(self, x: np.ndarray, sigma: float) -> np.ndarray:
+    @staticmethod
+    def _rbf_kernel(x: np.ndarray, y: np.ndarray, sigma: float) -> np.ndarray:
         """
-        Calculates an Rbf Kernel matrix for the passed array.
+        Calculates the rbf kernel matrix between x and y or for x if y is not passed.
 
-        :param x: a 2D array.
+        :param x: the 2D array from which the kernel will be calculated.
+        :param y: the optional 1D or 2D array with which the kernel will be calculated between x.
         :param sigma: the sigma value to be used in the kernel calculation.
         :return: The calculated kernel matrix.
         """
-        if self._x_fitted is not None:
+        if y is not None:
             # Calculate squared euclidean norm of the y array with x.
-            dists = np.array([np.sum(np.linalg.norm(self._x_fitted - row) ** 2) for row in x])
+            dists = np.array([np.sum(np.linalg.norm(y - row) ** 2) for row in x])
 
         else:
             # Calculate the Euclidean distances for every pair of values.
@@ -122,16 +148,20 @@ class Kernel:
 
         return np.exp(-gamma * dists)
 
-    def _min_kernel(self, x: np.ndarray) -> np.ndarray:
+    @staticmethod
+    def _min_kernel(x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
-        Calculates a Min Kernel matrix, also known as Histogram Intersection Kernel for the passed array.
+        Calculates the Min Kernel matrix, also known as Histogram Intersection Kernel,
+        between x and y or for x if y is not passed.
 
+        :param x: the 2D array from which the kernel will be calculated.
+        :param y: the optional 1D or 2D array with which the kernel will be calculated between x.
         :param x: a 2D array.
         :return: The calculated kernel matrix.
         """
-        if self._x_fitted is not None:
+        if y is not None:
             # Calculate the dot products.
-            sums = np.array([np.sum(np.minimum(self._x_fitted, row)) for row in x])
+            sums = np.array([np.sum(np.minimum(y, row)) for row in x])
 
         else:
             # Get the number of samples.
@@ -147,15 +177,16 @@ class Kernel:
 
         return sums
 
-    def calc_array(self, x: np.ndarray) -> np.ndarray:
+    def calc_matrix(self, x: np.ndarray, y: np.ndarray = None) -> np.ndarray:
         """
-        Calculates the kernel matrix.
+        Calculates the kernel matrix between x and y or for x if y is not passed.
 
         :param x: the 2D array from which the kernel will be calculated.
+        :param y: the optional 1D or 2D array with which the kernel will be calculated between x.
         :return: The calculated kernel matrix.
         """
         # Check arrays dimensions.
-        Kernel._array_dim_check(x)
+        Kernel._arrays_check(x, y)
 
         # Get the number of features.
         n_features = x.shape[1]
@@ -169,14 +200,12 @@ class Kernel:
 
         # Return the kernel matrix for the chosen kernel.
         if self._kernel == Kernels.LINEAR:
-            self._x_fitted = self._linear_kernel(x, self._coefficient)
+            return Kernel._linear_kernel(x, y, self._coefficient)
         elif self._kernel == Kernels.POLYNOMIAL:
-            self._x_fitted = self._poly_kernel(x, self._alpha, self._coefficient, self._degree)
+            return Kernel._poly_kernel(x, y, self._alpha, self._coefficient, self._degree)
         elif self._kernel == Kernels.RBF:
-            self._x_fitted = self._rbf_kernel(x, self._sigma)
+            return Kernel._rbf_kernel(x, y, self._sigma)
         elif self._kernel == Kernels.MIN:
-            self._x_fitted = self._min_kernel(x)
+            return Kernel._min_kernel(x, y)
         else:
             raise InvalidKernelException('Please choose a valid Kernel method.')
-
-        return self._x_fitted

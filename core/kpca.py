@@ -9,11 +9,11 @@ class NotFittedException(Exception):
 class KPCA:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
                  degree: int = 3, sigma: float = None, n_components: int = None):
-        self._is_fitted = False
         self.kernel = Kernel(kernel, alpha, coefficient, degree, sigma)
         self.n_components = n_components
         self.alphas = None
         self.lambdas = None
+        self._x_fit = None
 
     def _check_n_components(self, n_features: int) -> None:
         if self.n_components is None:
@@ -39,6 +39,10 @@ class KPCA:
         :param kernel_matrix: the matrix to be centered.
         :return: the centered matrix.
         """
+        # If kernel is 1D, which means that we only have 1 test sample,
+        # expand its dimension in order to be 2D.
+        if kernel_matrix.ndim == 1:
+            return np.expand_dims(kernel_matrix, axis=0)
 
         # Get the kernel's shape.
         m, n = kernel_matrix.shape
@@ -51,7 +55,7 @@ class KPCA:
                + np.linalg.multi_dot([one_m, kernel_matrix, one_n])
 
     @staticmethod
-    def _center_symmetric_kernel(kernel_matrix: np.ndarray) -> np.ndarray:
+    def _center_symmetric_matrix(kernel_matrix: np.ndarray) -> np.ndarray:
         """
         Centers a matrix. Slightly more efficient than the _center_matrix function.
 
@@ -68,14 +72,22 @@ class KPCA:
                + np.linalg.multi_dot([one_n, kernel_matrix, one_n])
 
     def fit(self, x: np.ndarray):
+        """
+        Creates eigenvalues and eigenvectors.
+
+        :param x: the array to be fitted.
+        :return: n_components number of eigenvalues and eigenvectors.
+        """
+        self._x_fit = x
+
         # Get the kernel matrix.
-        kernel_matrix = self.kernel.calc_array(x)
+        kernel_matrix = self.kernel.calc_matrix(self._x_fit)
 
         # Correct the number of components if needed.
         self._check_n_components(kernel_matrix.shape[0])
 
         # Center the kernel matrix.
-        kernel_matrix = KPCA._center_symmetric_kernel(kernel_matrix)
+        kernel_matrix = KPCA._center_symmetric_matrix(kernel_matrix)
 
         # Get the eigenvalues and eigenvectors of the kernel, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(kernel_matrix)
@@ -85,23 +97,34 @@ class KPCA:
         self.alphas = np.delete(np.flip(eigenvectors, axis=1), np.s_[self.n_components:], axis=1)
         self.lambdas = np.delete(np.flip(eigenvalues), np.s_[self.n_components:])
 
-        # Set is fitted flag to true.
-        self._is_fitted = True
-
         return self.alphas, self.lambdas
 
     def transform(self, x: np.ndarray):
-        if not self._is_fitted:
+        """
+        Projects the given data to the created feature space.
+
+        :param x: the data to be projected.
+        :return: The projected data.
+        """
+        # If KPCA has not been fitted yet, raise an Exception.
+        if self._x_fit is None:
             raise NotFittedException('KPCA has not been fitted yet!')
 
         # Calculate the kernel matrix.
-        kernel_matrix = self.kernel.calc_array(x)
+        kernel_matrix = self.kernel.calc_matrix(self._x_fit, x)
 
         # Center the kernel matrix.
         kernel_matrix = KPCA._center_matrix(kernel_matrix)
 
+        # Return the projected data.
         return kernel_matrix.dot(self.alphas / np.sqrt(self.lambdas))
 
     def fit_transform(self, x: np.ndarray):
+        """
+        Equivalent to fit().transform(), but slightly more efficiently.
+
+        :param x: the data to be fitted and then transformed.
+        :return: the projected data.
+        """
         self.fit(x)
         return self.transform(x)
