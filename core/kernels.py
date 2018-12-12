@@ -1,6 +1,6 @@
 import numpy as np
 from enum import Enum, auto
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist, squareform, cdist
 
 
 class Kernels(Enum):
@@ -134,8 +134,7 @@ class Kernel:
         :return: The calculated kernel matrix.
         """
         if y is not None:
-            # Calculate squared euclidean norm of the y array with x.
-            dists = np.array([np.sum(np.linalg.norm(y - row) ** 2) for row in x])
+            dists = cdist(x, y)
 
         else:
             # Calculate the Euclidean distances for every pair of values.
@@ -160,17 +159,20 @@ class Kernel:
         :return: The calculated kernel matrix.
         """
         if y is not None:
-            # Calculate the dot products.
-            sums = np.array([np.sum(np.minimum(y, row)) for row in x])
+            # Initialize an array for the sums.
+            sums = np.zeros((y.shape[0], x.shape[0]))
+            for i in range(y.shape[0]):
+                for j in range(x.shape[0]):
+                    sums[i, j] = np.sum(np.minimum(x[i, :], y[j, :]))
 
         else:
             # Get the number of samples.
             n_samples = x.shape[0]
 
-            # Initialize an array for the dot products.
+            # Initialize an array for the sums.
             sums = np.zeros((n_samples, n_samples))
 
-            # Calculate the dot products for every pair of sample.
+            # Calculate the sums for every pair of sample.
             for i in range(n_samples):
                 for j in range(n_samples):
                     sums[i, j] = np.sum(np.minimum(x[i, :], x[j, :]))
