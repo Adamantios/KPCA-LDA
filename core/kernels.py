@@ -164,23 +164,29 @@ class Kernel:
         :param x: a 2D array.
         :return: The calculated kernel matrix.
         """
+        # Get the x's number of samples.
+        x_n_samples = x.shape[0]
+
         if y is not None:
+            # Get the y's number of samples.
+            y_n_samples = y.shape[0]
+
             # Initialize an array for the sums.
-            sums = np.zeros((y.shape[0], x.shape[0]))
-            for i in range(y.shape[0]):
-                for j in range(x.shape[0]):
+            sums = np.zeros((y_n_samples, x_n_samples))
+            for i in range(y_n_samples):
+                for j in range(x_n_samples):
                     sums[i, j] = np.sum(np.minimum(x[i, :], y[j, :]))
 
         else:
             # Get the number of samples.
-            n_samples = x.shape[0]
+            x_n_samples = x_n_samples
 
             # Initialize an array for the sums.
-            sums = np.zeros((n_samples, n_samples))
+            sums = np.zeros((x_n_samples, x_n_samples))
 
             # Calculate the sums for every pair of sample.
-            for i in range(n_samples):
-                for j in range(n_samples):
+            for i in range(x_n_samples):
+                for j in range(x_n_samples):
                     sums[i, j] = np.sum(np.minimum(x[i, :], x[j, :]))
 
         return sums
