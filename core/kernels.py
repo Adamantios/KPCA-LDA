@@ -40,13 +40,17 @@ class Kernel:
         :param x: the array to be checked.
         """
         if x.ndim == 1:
-            raise InvalidDimensionsException('Input arrays should be 2 dimensional.'
-                                             'Got {} instead.'
-                                             'You could use np.expand_dims(array),'
-                                             ' in order to convert a 1D array to 2D.'
+            raise InvalidDimensionsException('Input arrays should be 2 dimensional.\n'
+                                             'Got {} instead.\n'
+                                             'You could use np.expand_dims(array, axis=0), '
+                                             'in order to convert a 1D array with one sample to 2D\n'
+                                             'or np.expand_dims(array, axis=1), '
+                                             'in order to convert a 1D array with one feature to 2D.'
                                              .format(x.shape))
         if x.ndim != 2:
-            raise InvalidDimensionsException('Input arrays should be 2 dimensional.')
+            raise InvalidDimensionsException('Input arrays should be 2 dimensional.\n'
+                                             'Got {} instead.'
+                                             .format(x.shape))
 
     @staticmethod
     def _arrays_check(x: np.ndarray, y: np.ndarray) -> None:
