@@ -1,6 +1,5 @@
 import numpy as np
 from enum import Enum, auto
-from typing import NoReturn
 from scipy.spatial.distance import pdist, squareform
 
 
@@ -33,7 +32,7 @@ class Kernel:
         self._sigma = sigma
 
     @staticmethod
-    def _array_dim_check(x: np.ndarray) -> NoReturn:
+    def _array_dim_check(x: np.ndarray) -> None:
         """
         Checks if the passed array is 2D.
         If not, it raises an InvalidDimensionsException.
@@ -48,12 +47,13 @@ class Kernel:
             raise InvalidDimensionsException('Input arrays should be 2 dimensional.')
 
     @staticmethod
-    def _arrays_check(x: np.ndarray, y: np.ndarray) -> NoReturn:
+    def _arrays_check(x: np.ndarray, y: np.ndarray) -> None:
         """
-        Checks if the passed array is 2D.
-        If not, it raises a value error.
+        Checks the passed arrays dimensions.
+        If y is passed too, then check if the column size of the two arrays is the same.
 
-        :param x: the array to be checked.
+        :param x: the x array to be checked.
+        :param y: the y array to be checked.
         """
         Kernel._array_dim_check(x)
 
@@ -61,7 +61,7 @@ class Kernel:
             Kernel._array_dim_check(y)
             if x.shape[1] != y.shape[1]:
                 raise IncompatibleShapesException(
-                    'Arrays columns should be the same. Got {} and {} instead'.format(x.shape[1], y.shape[1]))
+                    'Arrays column size should be the same. Got {} and {} instead'.format(x.shape[1], y.shape[1]))
 
     @staticmethod
     def _linear_kernel(x: np.ndarray, y: np.ndarray, coefficient: float) -> np.ndarray:
