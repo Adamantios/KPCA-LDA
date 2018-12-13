@@ -1,3 +1,5 @@
+from typing import Union
+
 from core.kernels import Kernels, Kernel
 import numpy as np
 
@@ -12,7 +14,7 @@ class InvalidNumberOfComponents(Exception):
 
 class KPCA:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
-                 degree: int = 3, sigma: float = None, n_components: int = None):
+                 degree: int = 3, sigma: float = None, n_components: Union[int, float] = None):
         self.kernel = Kernel(kernel, alpha, coefficient, degree, sigma)
         self.n_components = n_components
         self.alphas = None
@@ -26,6 +28,9 @@ class KPCA:
         # If n_components passed is bigger than n_features, use n_features.
         elif self.n_components > n_features:
             self.n_components = n_features
+        # If n components have been given, pass
+        elif 1 <= self.n_components <= n_features:
+            pass
         # If pov has been passed, return as many n_components as needed.
         elif 0 < self.n_components < 1:
             self.n_components = self._pov_to_n_components()
@@ -33,7 +38,9 @@ class KPCA:
         else:
             raise InvalidNumberOfComponents('The number of components should be between 1 and {}, '
                                             'or between (0, 1) for the pov, '
-                                            'in order to choose the number of components automatically.')
+                                            'in order to choose the number of components automatically.\n'
+                                            'Got {} instead.'
+                                            .format(n_features, self.n_components))
 
     @staticmethod
     def _one_ns(shape: int) -> np.ndarray:
@@ -111,8 +118,8 @@ class KPCA:
         self._check_n_components(kernel_matrix.shape[0])
 
         # Get as many alphas and lambdas (eigenvectors and eigenvalues) as the number of components.
-        self.alphas = np.delete(eigenvectors, np.s_[self.n_components:], axis=1)
-        self.lambdas = np.delete(eigenvalues, np.s_[self.n_components:])
+        self.alphas = np.delete(self.alphas, np.s_[self.n_components:], axis=1)
+        self.lambdas = np.delete(self.lambdas, np.s_[self.n_components:])
 
         return kernel_matrix
 
@@ -173,6 +180,11 @@ class KPCA:
         return params
 
     def _pov_to_n_components(self) -> int:
+        """
+        Gets the number of components needed in order to succeed the pov given.
+
+        :return: the number of components.
+        """
         # Get the proportion of variance.
         pov = np.cumsum(self.get_explained_var())
 
