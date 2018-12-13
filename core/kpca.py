@@ -97,7 +97,7 @@ class KPCA:
         self.alphas = np.delete(np.flip(eigenvectors, axis=1), np.s_[self.n_components:], axis=1)
         self.lambdas = np.delete(np.flip(eigenvalues), np.s_[self.n_components:])
 
-        return self.alphas, self.lambdas
+        return kernel_matrix
 
     def transform(self, x: np.ndarray):
         """
@@ -126,5 +126,8 @@ class KPCA:
         :param x: the data to be fitted and then transformed.
         :return: the projected data.
         """
-        self.fit(x)
-        return self.transform(x)
+        # Calc kernel and center it.
+        kernel_matrix = KPCA._center_matrix(self.fit(x))
+
+        # Return the projected data.
+        return kernel_matrix.T.dot(self.alphas / np.sqrt(self.lambdas))
