@@ -22,7 +22,7 @@ class KPCA:
             self.n_components = min(n_features - 1, self.n_components)
 
     @staticmethod
-    def _get_one_ns(shape: int) -> np.ndarray:
+    def _one_ns(shape: int) -> np.ndarray:
         """
         Creates a (shape, shape) symmetric matrix of all 1's divided by shape.
 
@@ -48,7 +48,7 @@ class KPCA:
         m, n = kernel_matrix.shape
 
         # Create one n matrices.
-        one_m, one_n = KPCA._get_one_ns(m), KPCA._get_one_ns(n)
+        one_m, one_n = KPCA._one_ns(m), KPCA._one_ns(n)
 
         # Center the kernel matrix.
         return kernel_matrix - one_m.dot(kernel_matrix) - kernel_matrix.dot(one_n) \
@@ -65,7 +65,7 @@ class KPCA:
         # Get the kernel's shape.
         n = kernel_matrix.shape[0]
         # Create one n matrix.
-        one_n = KPCA._get_one_ns(n)
+        one_n = KPCA._one_ns(n)
 
         # Center the kernel matrix.
         return kernel_matrix - one_n.dot(kernel_matrix) - kernel_matrix.dot(one_n) \
@@ -131,3 +131,27 @@ class KPCA:
 
         # Return the projected data.
         return kernel_matrix.T.dot(self.alphas / np.sqrt(self.lambdas))
+
+    def get_pov(self) -> np.ndarray:
+        """
+        Calculates the proportion of variance.
+
+        :return: the proportion of variance.
+        """
+
+        if self._x_fit is None:
+            raise NotFittedException('KPCA has not been fitted yet!')
+
+        explained_variance = np.var(self.lambdas, axis=0)
+        return explained_variance / np.sum(explained_variance)
+
+    def get_params(self) -> dict:
+        """
+        Getter for the kpca's parameters.
+
+        :return: the kpca's parameters.
+        """
+        params = self.kernel.get_params()
+        params['n_components'] = self.n_components if self.n_components is not None else 'auto'
+
+        return params

@@ -223,3 +223,22 @@ class Kernel:
             return Kernel._min_kernel(x, y)
         else:
             raise InvalidKernelException('Please choose a valid Kernel method.')
+
+    def get_params(self) -> dict:
+        """
+        Getter for the kernel's parameters.
+
+        :return: the kernel's parameters.
+        """
+
+        # For default params return auto.
+        def param_value(param): return param if param is not None else 'auto'
+
+        # Create params dictionary.
+        params = dict(kernel=param_value(self._kernel.name),
+                      alpha=param_value(self._alpha),
+                      coefficient=param_value(self._coefficient),
+                      degree=param_value(self._degree),
+                      sigma=param_value(self._sigma))
+
+        return params
