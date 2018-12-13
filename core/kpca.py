@@ -188,7 +188,7 @@ class KPCA:
         # Get the proportion of variance.
         pov = np.cumsum(self.get_explained_var())
 
-        # Get the index of the nearest pov value with the given pov.
+        # Get the index of the nearest pov value with the given pov preference.
         nearest_value_index = (np.abs(pov - self.n_components)).argmin()
 
         return nearest_value_index + 1
