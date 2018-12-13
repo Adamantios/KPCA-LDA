@@ -7,11 +7,12 @@ class _Decomposer(ABC):
         pass
 
     @abstractmethod
-    def fit(self, x: np.ndarray) -> np.ndarray:
+    def fit(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Method to fit the decomposer.
 
         :param x: the array to be fitted.
+        :param y: optional array containing the class labels.
         :return: the fitted x.
         """
         pass
@@ -27,11 +28,12 @@ class _Decomposer(ABC):
         pass
 
     @abstractmethod
-    def fit_transform(self, x: np.ndarray) -> np.ndarray:
+    def fit_transform(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Equivalent to fit().transform(), but slightly more efficient.
 
         :param x: the data to be fitted and then transformed.
+        :param y: optional array containing the class labels
         :return: the projected data.
         """
         pass
