@@ -17,9 +17,9 @@ class KPCA:
 
     def _check_n_components(self, n_features: int) -> None:
         if self.n_components is None:
-            self.n_components = n_features
+            self.n_components = n_features - 1
         else:
-            self.n_components = min(n_features, self.n_components)
+            self.n_components = min(n_features - 1, self.n_components)
 
     @staticmethod
     def _get_one_ns(shape: int) -> np.ndarray:
