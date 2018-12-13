@@ -132,18 +132,17 @@ class KPCA:
         # Return the projected data.
         return kernel_matrix.T.dot(self.alphas / np.sqrt(self.lambdas))
 
-    def get_pov(self) -> np.ndarray:
+    def get_explained_var(self) -> np.ndarray:
         """
         Calculates the proportion of variance.
 
         :return: the proportion of variance.
         """
-
+        # If KPCA has not been fitted yet, raise an Exception.
         if self._x_fit is None:
             raise NotFittedException('KPCA has not been fitted yet!')
 
-        explained_variance = np.var(self.lambdas, axis=0)
-        return explained_variance / np.sum(explained_variance)
+        return self.lambdas / np.sum(self.lambdas)
 
     def get_params(self) -> dict:
         """

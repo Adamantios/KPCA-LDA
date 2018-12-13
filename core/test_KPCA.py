@@ -18,7 +18,7 @@ plotter = Plotter()
 class TestLinearKPCA(TestCase):
     kpca = KPCA(Kernels.LINEAR)
     my_results = kpca.fit_transform(array)
-    print('Linear \n{}\n{}\nPov is:{}\n'.format(kpca.alphas, kpca.lambdas, kpca.get_pov()))
+    print('Linear \n{}\n{}\nPov is:{}\n'.format(kpca.alphas, kpca.lambdas, kpca.get_explained_var()))
     scikit_pca = KernelPCA(coef0=0)
     scikit_results = scikit_pca.fit_transform(array)
     print('Scikit Linear \n{}\n{}\n'.format(scikit_pca.alphas_, scikit_pca.lambdas_))
