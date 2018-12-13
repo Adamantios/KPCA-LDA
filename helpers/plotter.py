@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from typing import Generator, Tuple
+from typing import Generator, Tuple, Callable
 from matplotlib import pyplot as plt
 from helpers.utils import create_folder
 from helpers.datasets import get_eeg_name
@@ -169,18 +169,22 @@ class Plotter:
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def scatter_pcs(self, x: np.ndarray, y: np.ndarray, subfolder: str = 'scatters', filename: str = 'scatter_pcs',
-                    extension: str = 'png') -> None:
+    def scatter_pcs(self, x: np.ndarray, y: np.ndarray, class_labels: Callable[[int], str] = None,
+                    subfolder: str = 'scatters', filename: str = 'scatter_pcs', extension: str = 'png') -> None:
         """
         Plots and saves a scatterplot with the first one, two or three principal components.
 
         :param x: the principal components to plot.
         :param y: the class labels.
+        :param class_labels: an optional function which gets the class labels from their indexes.
         :param subfolder: the subfolder for the heatmap to be saved.
         :param filename: the heatmap's filename.
         :param extension: the extension of the file to be saved.
             Acceptable values: 'png', 'jpg', 'jpeg'.
         """
+        if class_labels is None:
+            def class_labels(index: int): return index
+
         # If we only have one principal component in a 1D array, i.e. M convert it to a 2D M x 1.
         if x.ndim == 1:
             x = np.expand_dims(x, axis=1)
@@ -209,7 +213,8 @@ class Plotter:
 
             # For every class, scatter it's principal components.
             for i, count in zip(labels, counts):
-                ax.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5, label='{} class'.format(i))
+                ax.scatter(x[y == i, 0], np.zeros((count, 1)), alpha=0.5,
+                           label='{} class'.format(class_labels(i)))
                 ax.legend()
 
             ax.set_title('The first principal component')
@@ -225,7 +230,7 @@ class Plotter:
 
             # For every class, scatter it's principal components.
             for i, count in zip(labels, counts):
-                ax.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5, label='{} class'.format(i))
+                ax.scatter(x[y == i, 0], x[y == i, 1], alpha=0.5, label='{} class'.format(class_labels(i)))
                 ax.legend()
 
             ax.set_title('The first two principal components')
@@ -241,7 +246,8 @@ class Plotter:
             ax = fig.add_subplot(111, projection='3d')
             # For every class, scatter it's principal components.
             for i, count in zip(labels, counts):
-                ax.scatter(x[y == i, 0], x[y == i, 1], x[y == i, 2], alpha=0.5, label='{} class'.format(i))
+                ax.scatter(x[y == i, 0], x[y == i, 1], x[y == i, 2], alpha=0.5,
+                           label='{} class'.format(class_labels(i)))
                 ax.legend()
 
             ax.set_title('The first three principal components')
