@@ -130,7 +130,7 @@ class KPCA:
         kernel_matrix = KPCA._center_matrix(self.fit(x))
 
         # Return the projected data.
-        return kernel_matrix.T.dot(self.alphas / np.sqrt(self.lambdas))
+        return kernel_matrix.T.dot(self.alphas / np.sqrt(np.abs(self.lambdas)))
 
     def get_explained_var(self) -> np.ndarray:
         """
