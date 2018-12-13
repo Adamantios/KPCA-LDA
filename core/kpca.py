@@ -1,5 +1,5 @@
 from typing import Union
-
+from core.decomposer import _Decomposer
 from core.kernels import Kernels, Kernel
 import numpy as np
 
@@ -12,9 +12,10 @@ class InvalidNumberOfComponents(Exception):
     pass
 
 
-class KPCA:
-    def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
-                 degree: int = 3, sigma: float = None, n_components: Union[int, float] = None):
+class KPCA(_Decomposer):
+    def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0, degree: int = 3,
+                 sigma: float = None, n_components: Union[int, float] = None):
+        super().__init__()
         self.kernel = Kernel(kernel, alpha, coefficient, degree, sigma)
         self.n_components = n_components
         self.alphas = None
@@ -92,7 +93,21 @@ class KPCA:
         return kernel_matrix - one_n.dot(kernel_matrix) - kernel_matrix.dot(one_n) \
                + np.linalg.multi_dot([one_n, kernel_matrix, one_n])
 
-    def fit(self, x: np.ndarray):
+    def _pov_to_n_components(self) -> int:
+        """
+        Gets the number of components needed in order to succeed the pov given.
+
+        :return: the number of components.
+        """
+        # Get the proportion of variance.
+        pov = np.cumsum(self.get_explained_var())
+
+        # Get the index of the nearest pov value with the given pov preference.
+        nearest_value_index = (np.abs(pov - self.n_components)).argmin()
+
+        return nearest_value_index + 1
+
+    def fit(self, x: np.ndarray) -> np.ndarray:
         """
         Creates eigenvalues and eigenvectors.
 
@@ -123,7 +138,7 @@ class KPCA:
 
         return kernel_matrix
 
-    def transform(self, x: np.ndarray):
+    def transform(self, x: np.ndarray) -> np.ndarray:
         """
         Projects the given data to the created feature space.
 
@@ -143,9 +158,9 @@ class KPCA:
         # Return the projected data.
         return kernel_matrix.T.dot(self.alphas / np.sqrt(self.lambdas))
 
-    def fit_transform(self, x: np.ndarray):
+    def fit_transform(self, x: np.ndarray) -> np.ndarray:
         """
-        Equivalent to fit().transform(), but slightly more efficiently.
+        Equivalent to fit().transform(), but slightly more efficient.
 
         :param x: the data to be fitted and then transformed.
         :return: the projected data.
@@ -178,17 +193,3 @@ class KPCA:
         params['n_components'] = self.n_components if self.n_components is not None else 'auto'
 
         return params
-
-    def _pov_to_n_components(self) -> int:
-        """
-        Gets the number of components needed in order to succeed the pov given.
-
-        :return: the number of components.
-        """
-        # Get the proportion of variance.
-        pov = np.cumsum(self.get_explained_var())
-
-        # Get the index of the nearest pov value with the given pov preference.
-        nearest_value_index = (np.abs(pov - self.n_components)).argmin()
-
-        return nearest_value_index + 1
