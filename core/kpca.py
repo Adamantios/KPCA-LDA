@@ -6,6 +6,10 @@ class NotFittedException(Exception):
     pass
 
 
+class InvalidNumberOfComponents(Exception):
+    pass
+
+
 class KPCA:
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
                  degree: int = 3, sigma: float = None, n_components: int = None):
@@ -16,10 +20,20 @@ class KPCA:
         self._x_fit = None
 
     def _check_n_components(self, n_features: int) -> None:
+        # If num of components has not been passed, return n_features - 1.
         if self.n_components is None:
             self.n_components = n_features - 1
+        # If n_components passed is bigger than n_features, use n_features.
+        elif self.n_components > n_features:
+            self.n_components = n_features
+        # If pov has been passed, return as many n_components as needed.
+        elif 0 < self.n_components < 1:
+            self.n_components = self._pov_to_n_components()
+        # Otherwise raise exception.
         else:
-            self.n_components = min(n_features - 1, self.n_components)
+            raise InvalidNumberOfComponents('The number of components should be between 1 and {}, '
+                                            'or between (0, 1) for the pov, '
+                                            'in order to choose the number of components automatically.')
 
     @staticmethod
     def _one_ns(shape: int) -> np.ndarray:
@@ -83,19 +97,22 @@ class KPCA:
         # Get the kernel matrix.
         kernel_matrix = self.kernel.calc_matrix(self._x_fit)
 
-        # Correct the number of components if needed.
-        self._check_n_components(kernel_matrix.shape[0])
-
         # Center the kernel matrix.
         kernel_matrix = KPCA._center_symmetric_matrix(kernel_matrix)
 
         # Get the eigenvalues and eigenvectors of the kernel, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(kernel_matrix)
 
-        # Get as many alphas and lambdas (eigenvectors and eigenvalues) as the new number of components,
-        # in descending order.
-        self.alphas = np.delete(np.flip(eigenvectors, axis=1), np.s_[self.n_components:], axis=1)
-        self.lambdas = np.delete(np.flip(eigenvalues), np.s_[self.n_components:])
+        # Sort the eigenvalues and eigenvectors in descending order.
+        self.alphas = np.flip(eigenvectors, axis=1)
+        self.lambdas = np.flip(eigenvalues)
+
+        # Correct the number of components if needed.
+        self._check_n_components(kernel_matrix.shape[0])
+
+        # Get as many alphas and lambdas (eigenvectors and eigenvalues) as the number of components.
+        self.alphas = np.delete(eigenvectors, np.s_[self.n_components:], axis=1)
+        self.lambdas = np.delete(eigenvalues, np.s_[self.n_components:])
 
         return kernel_matrix
 
@@ -154,3 +171,12 @@ class KPCA:
         params['n_components'] = self.n_components if self.n_components is not None else 'auto'
 
         return params
+
+    def _pov_to_n_components(self) -> int:
+        # Get the proportion of variance.
+        pov = np.cumsum(self.get_explained_var())
+
+        # Get the index of the nearest pov value with the given pov.
+        nearest_value_index = (np.abs(pov - self.n_components)).argmin()
+
+        return nearest_value_index + 1
