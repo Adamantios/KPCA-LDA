@@ -1,11 +1,7 @@
 from typing import Union
-from core.decomposer import _Decomposer
+from core.decomposer import _Decomposer, NotFittedException
 from core.kernels import Kernels, Kernel
 import numpy as np
-
-
-class NotFittedException(Exception):
-    pass
 
 
 class InvalidNumberOfComponents(Exception):

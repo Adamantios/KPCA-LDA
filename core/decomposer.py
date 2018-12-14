@@ -2,6 +2,10 @@ import numpy as np
 from abc import abstractmethod, ABC
 
 
+class NotFittedException(Exception):
+    pass
+
+
 class _Decomposer(ABC):
     def __init__(self):
         pass
