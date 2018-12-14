@@ -16,6 +16,7 @@ class KPCA(_Decomposer):
         self.n_components = n_components
         self.alphas = None
         self.lambdas = None
+        self.explained_var = None
         self._x_fit = None
 
     def _check_n_components(self, n_features: int) -> None:
@@ -38,6 +39,9 @@ class KPCA(_Decomposer):
                                             'in order to choose the number of components automatically.\n'
                                             'Got {} instead.'
                                             .format(n_features, self.n_components))
+
+        # Keep explained var for n components only.
+        self.explained_var = self.explained_var[:self.n_components]
 
     @staticmethod
     def _one_ns(shape: int) -> np.ndarray:
@@ -96,7 +100,7 @@ class KPCA(_Decomposer):
         :return: the number of components.
         """
         # Get the proportion of variance.
-        pov = np.cumsum(self.get_explained_var())
+        pov = np.cumsum(self.explained_var)
 
         # Get the index of the nearest pov value with the given pov preference.
         nearest_value_index = (np.abs(pov - self.n_components)).argmin()
@@ -124,6 +128,9 @@ class KPCA(_Decomposer):
         # Sort the eigenvalues and eigenvectors in descending order.
         self.alphas = np.flip(eigenvectors, axis=1)
         self.lambdas = np.flip(eigenvalues)
+
+        # Calculate explained var.
+        self.explained_var = self.lambdas / np.sum(self.lambdas)
 
         # Correct the number of components if needed.
         self._check_n_components(kernel_matrix.shape[0])
@@ -166,18 +173,6 @@ class KPCA(_Decomposer):
 
         # Return the projected data.
         return kernel_matrix.T.dot(self.alphas / np.sqrt(np.abs(self.lambdas)))
-
-    def get_explained_var(self) -> np.ndarray:
-        """
-        Calculates the proportion of variance.
-
-        :return: the proportion of variance.
-        """
-        # If KPCA has not been fitted yet, raise an Exception.
-        if self._x_fit is None:
-            raise NotFittedException('KPCA has not been fitted yet!')
-
-        return self.lambdas / np.sum(self.lambdas)
 
     def get_params(self) -> dict:
         """

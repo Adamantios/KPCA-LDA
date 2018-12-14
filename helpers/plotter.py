@@ -263,13 +263,12 @@ class Plotter:
         fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def pov_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, subfolder: str = 'pca_analysis',
+    def pov_analysis(self, explained_var_ratio: np.ndarray, subfolder: str = 'pca_analysis',
                      filename: str = 'pov_vs_k', extension: str = 'png') -> None:
         """
         Create a pov vs k plot.
 
         :param explained_var_ratio: the explained variance ratio.
-        :param num_of_features: the number of features.
         :param subfolder: the subfolder for the plot to be saved.
         :param filename: the plot's filename.
         :param extension: the file's extension.
@@ -291,7 +290,7 @@ class Plotter:
         plt.xlabel('Number of Features')
         plt.title('PCA Analysis')
         plt.ylim(0, 100)
-        plt.plot(pov[:num_of_features])
+        plt.plot(pov)
 
         # Save and plot the scatterplot.
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
