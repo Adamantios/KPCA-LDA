@@ -1,5 +1,7 @@
 from unittest import TestCase
 import numpy as np
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
 import helpers
 from core import Lda
 
@@ -22,9 +24,16 @@ class TestLda(TestCase):
         lda = Lda()
         w = lda.fit(self._x, self._y)
         print('W:\n{}\n'.format(w))
-        self._plotter.scatter_pcs(w, np.array([0, 1, 2]))
+        self._plotter.scatter_pcs(w, np.array([0, 1, 3]))
 
         w = lda.transform(self._x)
+        print('Transformed X:\n{}\n'.format(w))
+        self._plotter.scatter_pcs(w, self._y)
+
+        print('Scikit:\n')
+
+        lda = LinearDiscriminantAnalysis()
+        w = lda.fit_transform(self._x, self._y)
         print('Transformed X:\n{}\n'.format(w))
         self._plotter.scatter_pcs(w, self._y)
 
