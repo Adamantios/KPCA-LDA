@@ -37,6 +37,14 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
+    pca = KPCA(Kernels.LINEAR)
+    logger.log('\t' + str(pca.get_params()))
+    x_train = pca.fit_transform(x_train)
+
+    # Plot pca pov vs k.
+    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components-1', filename='linear')
+
+    logger.log('\tApplying Principal Component Analysis with params:')
     pca = KPCA(Kernels.LINEAR, n_components=0.9)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
@@ -53,7 +61,9 @@ def preprocess(x_train, y_train, x_test):
 
     x_test = pca.transform(x_test)
 
+    logger.log('\tApplying Linear Discriminant Analysis with params:')
     lda = LinearDiscriminantAnalysis()
+    logger.log('\t' + str(lda.get_params()))
     x_train = lda.fit_transform(x_train, y_train)
     x_test = lda.transform(x_test)
 
