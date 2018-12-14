@@ -1,6 +1,5 @@
 import numpy as np
-from typing import Tuple
-from core.decomposer import _Decomposer
+from core.decomposer import _Decomposer, NotFittedException
 
 
 class Lda(_Decomposer):
@@ -85,6 +84,13 @@ class Lda(_Decomposer):
         return sw
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Fits the Lda model with a given dataset.
+
+        :param x: the data to be fitted.
+        :param y: the class labels.
+        :return: an array of the eigenvectors created.
+        """
         self._check_if_possible(x)
         self.__set_state(x, y)
 
@@ -118,9 +124,26 @@ class Lda(_Decomposer):
         return self._w
 
     def transform(self, x: np.ndarray) -> np.ndarray:
+        """
+        Project the data to the new dimension.
+
+        :param x: the data to be transformed.
+        :return: the projected data.
+        """
+        # If KPCA has not been fitted yet, raise an Exception.
+        if self._w is None:
+            raise NotFittedException('KPCA has not been fitted yet!')
+
         return np.dot(x, self._w)
 
     def fit_transform(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Equivalent to fit().transform().
+
+        :param x: the data to be fitted and then transformed.
+        :param y: the class labels.
+        :return: the transformed data.
+        """
         self.fit(x, y)
         return self.transform(x)
 
