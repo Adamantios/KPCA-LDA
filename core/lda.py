@@ -9,13 +9,27 @@ class Lda(_Decomposer):
 
         self._labels = None
         self._labels_counts = None
+        self._n_classes = None
+        self._n_features = None
 
-    def _n_classes(self):
+    @staticmethod
+    def _check_if_possible(x: np.ndarray) -> None:
+        if x.shape[0] < 2:
+            raise ValueError('Cannot perform Lda for 1 sample.')
+
+    def __set_state(self, x: np.ndarray, y: np.ndarray) -> None:
         """
-        Calculates the number of the classes.
-        :return: The number of the classes.
+        Sets the object's state.
+
+        :param x: array containing the samples.
+        :param y: array containing the labels.
         """
-        return len(self._labels)
+        # Get the labels and the number of instances for every class.
+        self._labels, self._labels_counts = np.unique(y, return_counts=True)
+        # Get the number of classes.
+        self._n_classes = len(self._labels)
+        # Get the number of features.
+        self._n_features = x.shape[1]
 
     def _class_means(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
@@ -25,14 +39,12 @@ class Lda(_Decomposer):
         :param y: array containing the features.
         :return: array containing the means.
         """
-        # Get the number of classes and the number of features.
-        n_features = x.shape[1]
         # Instantiate an array to hold the mean of every feature for each class.
-        means = np.zeros((self._n_classes(), n_features))
+        means = np.zeros((self._n_classes, self._n_features))
 
         # Sum the means of the features of the same classes.
-        for c, label in zip(range(self._n_classes()), self._labels):
-            for f in range(n_features):
+        for c, label in zip(range(self._n_classes), self._labels):
+            for f in range(self._n_features):
                 means[c, f] += np.sum(np.mean(x[y == label, f]))
 
         return means
@@ -46,11 +58,11 @@ class Lda(_Decomposer):
         :return: The between class scatter matrix.
         """
         # Instantiate an array for the between class scatter matrix.
-        sb = np.zeros((self._n_classes(), self._n_classes()))
+        sb = np.zeros((self._n_features, self._n_features))
 
         # Calculate between class scatter matrix
         for count in self._labels_counts:
-            sb += np.multiply(count, np.dot(means_diff, means_diff.T))
+            sb += np.multiply(count, np.dot(means_diff.T, means_diff))
 
         return sb
 
@@ -61,22 +73,19 @@ class Lda(_Decomposer):
         :return: the within class scatter matrix.
         """
         # Instantiate an array for the within class scatter matrix.
-        sw = np.zeros((self._n_classes(), self._n_classes()))
-
-        feature_mean_dist = np.zeros(x.shape[1])
+        sw = np.zeros((self._n_features, self._n_features))
 
         # Calculate within class scatter matrix
-        for label in self._labels:
-            for feature in x[y == label]:
-                feature_mean_dist[feature] += feature - class_means[label, feature]
-
-            sw += np.dot(feature_mean_dist, feature_mean_dist.T)
+        for label, label_index in zip(self._labels, range(self._n_classes)):
+            # Calculate for every class(label param) the distance of each feature from its mean.
+            features_means_dists = x[y == label] - class_means[label_index]
+            sw += np.dot(features_means_dists.T, features_means_dists)
 
         return sw
 
     def fit(self, x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        # Get the labels and the number of instances for every class.
-        self._labels, self._labels_counts = np.unique(y, return_counts=True)
+        self._check_if_possible(x)
+        self.__set_state(x, y)
 
         # Calculate the x mean using float64 to get a more accurate result.
         x_mean = x.mean(dtype=np.float64)
