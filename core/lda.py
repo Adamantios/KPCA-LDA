@@ -11,6 +11,7 @@ class Lda(_Decomposer):
         self._labels_counts = None
         self._n_classes = None
         self._n_features = None
+        self.w = None
 
     @staticmethod
     def _check_if_possible(x: np.ndarray) -> None:
@@ -98,6 +99,21 @@ class Lda(_Decomposer):
 
         # Get the within class scatter matrix array.
         sw = self._sw(x, y, class_means)
+
+        # Calculate the product of the sw's inverse and sb.
+        sw_inv_sb = np.dot(np.linalg.inv(sw), sb)
+
+        # Get the eigenvalues and eigenvectors of the sw-1*sb, in ascending order.
+        eigenvalues, eigenvectors = np.linalg.eigh(sw_inv_sb)
+
+        # Get the indexes of the negative or zero eigenvalues.
+        unwanted_indexes = np.where(eigenvalues <= 0)
+
+        # Get all the non negative or zero eigenvectors.
+        self.w = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # Sort the eigenvalues and eigenvectors in descending order.
+        self.w = np.flip(self.w, axis=1)
 
         return sb, sw
 
