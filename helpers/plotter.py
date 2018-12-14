@@ -263,7 +263,7 @@ class Plotter:
         fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def pov_analysis(self, explained_var_ratio: np.ndarray, subfolder: str = 'pca_analysis',
+    def pov_analysis(self, explained_var_ratio: np.ndarray, subfolder: str = 'pov_analysis',
                      filename: str = 'pov_vs_k', extension: str = 'png') -> None:
         """
         Create a pov vs k plot.
@@ -288,9 +288,13 @@ class Plotter:
         # Set labels, title and y tick limits and create the plot.
         plt.ylabel('POV')
         plt.xlabel('Number of Features')
-        plt.title('PCA Analysis')
+        plt.title('POV Analysis')
         plt.ylim(0, 100)
-        plt.plot(pov)
+        plt.plot(range(1, len(pov) + 1, 1), pov)
+
+        # If there are less than 9 features, specify the tick labels.
+        if len(pov) < 9:
+            plt.xticks(range(1, len(pov) + 1, 1))
 
         # Save and plot the scatterplot.
         plt.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
