@@ -32,10 +32,10 @@ class TestLda(TestCase):
 
         print('Scikit:\n')
 
-        lda = LinearDiscriminantAnalysis()
-        w = lda.fit_transform(self._x, self._y)
-        print('Transformed X:\n{}\n'.format(w))
-        self._plotter.scatter_pcs(w, self._y)
+        scikit_lda = LinearDiscriminantAnalysis()
+        scikit_w = scikit_lda.fit_transform(self._x, self._y)
+        print('Transformed X:\n{}\n'.format(scikit_w))
+        self._plotter.scatter_pcs(scikit_w, self._y)
 
     def test_transform(self):
         self.fail()
