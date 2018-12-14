@@ -19,7 +19,8 @@ y = array[:, -1]
 class TestLda(TestCase):
     def test_fit(self):
         lda = Lda()
-        print(lda.fit(x, y))
+        sb, sw = lda.fit(x, y)
+        print('{}\n{}\n'.format(sb, sw))
 
     def test_transform(self):
         self.fail()
