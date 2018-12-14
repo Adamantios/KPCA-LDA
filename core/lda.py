@@ -14,6 +14,13 @@ class Lda(_Decomposer):
 
     @staticmethod
     def _check_if_possible(x: np.ndarray) -> None:
+        """
+        Checks if it possible to perform LDA.
+
+        If not, raises an exception.
+
+        :param x: the passed data.
+        """
         if x.shape[0] < 2:
             raise ValueError('Cannot perform Lda for 1 sample.')
 
