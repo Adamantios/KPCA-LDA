@@ -32,7 +32,7 @@ class TestLda(TestCase):
 
         print('Scikit:\n')
 
-        scikit_lda = LinearDiscriminantAnalysis()
+        scikit_lda = LinearDiscriminantAnalysis(solver='eigen')
         scikit_w = scikit_lda.fit_transform(self._x, self._y)
         print('Transformed X:\n{}\n'.format(scikit_w))
         self._plotter.scatter_pcs(scikit_w, self._y)
