@@ -12,7 +12,7 @@ array = np.array([[16, 12],
                   [13, 46],
                   [3, 8]])
 
-plotter = Plotter()
+plotter = Plotter('tests/plots/kpca')
 
 
 class TestLinearKPCA(TestCase):
