@@ -137,7 +137,7 @@ class Lda(_Decomposer):
         :param x: the data to be transformed.
         :return: the projected data.
         """
-        # If KPCA has not been fitted yet, raise an Exception.
+        # If LDA has not been fitted yet, raise an Exception.
         if self._w is None:
             raise NotFittedException('KPCA has not been fitted yet!')
 
