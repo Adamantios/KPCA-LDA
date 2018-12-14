@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Tuple, List
 from pandas import read_csv, DataFrame
 from sklearn.model_selection import train_test_split
+from definitions import __DIGITS_TEST_PATH, __DIGITS_TRAIN_PATH, __SEIZURE_PATH, __SEIZURE_TEST_PATH, \
+    __SEIZURE_TRAIN_PATH
 
 Labels = List[str]
 Dataset = Tuple[numpy.ndarray, numpy.ndarray]
@@ -38,7 +40,7 @@ def load_digits(train: bool = True) -> Dataset:
     :return: Array containing the mnist handwritten digits dataset.
     """
     # Create a filename based on the train value.
-    filename = 'datasets/mnist_train.csv' if train else 'datasets/mnist_test.csv'
+    filename = __DIGITS_TRAIN_PATH if train else __DIGITS_TEST_PATH
 
     # Read the dataset and get its values.
     dataset = read_csv(filename, names=_get_mnist_labels(), nrows=2500).values
@@ -63,15 +65,13 @@ def load_seizure(train: bool = True) -> Dataset:
 
     :return: Array containing the epileptic seizure dataset.
     """
-    # The filename of the dataset.
-    db_filename = 'datasets/epileptic_seizure.csv'
-    # Create Path objects using the paths were the train and test files should be.
-    train_file = Path('datasets/epileptic_seizure_train.csv')
-    test_file = Path('datasets/epileptic_seizure_test.csv')
+    # Create Path objects using the paths wHere the train and test files should be.
+    train_file = Path(__SEIZURE_TRAIN_PATH)
+    test_file = Path(__SEIZURE_TEST_PATH)
 
     # If the files from the given paths do not exist, create them by splitting the epileptic seizure dataset.
     if not train_file.is_file() or not test_file.is_file():
-        database_split(db_filename, train_file.absolute(), test_file.absolute())
+        database_split(__SEIZURE_PATH, train_file.absolute(), test_file.absolute())
 
     # Create a filename based on the train value.
     filename = train_file.absolute() if train else test_file.absolute()

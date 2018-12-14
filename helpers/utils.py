@@ -2,7 +2,7 @@ import logging
 import logging.handlers
 import numpy as np
 import pandas
-from definitions import OUT_PATH
+from definitions import __OUT_PATH
 from datetime import datetime
 from os import path, makedirs
 
@@ -13,11 +13,11 @@ def create_folder(folder_name: str) -> str:
     :param folder_name: the name of the folder to be created.
     """
     # Create out path if needed.
-    if not path.exists(OUT_PATH):
-        makedirs(OUT_PATH)
+    if not path.exists(__OUT_PATH):
+        makedirs(__OUT_PATH)
 
     # Set the folder's path.
-    folder_path = path.join(OUT_PATH, folder_name)
+    folder_path = path.join(__OUT_PATH, folder_name)
     if not path.exists(folder_path):
         makedirs(folder_path)
 
