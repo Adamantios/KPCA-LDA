@@ -30,7 +30,7 @@ class _Decomposer(ABC):
     @abstractmethod
     def fit_transform(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
-        Equivalent to fit().transform(), but slightly more efficient.
+        Equivalent to fit().transform(), but more efficient, if possible.
 
         :param x: the data to be fitted and then transformed.
         :param y: optional array containing the class labels
