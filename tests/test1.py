@@ -29,7 +29,7 @@ def show_prediction_info(grid_results):
                'Std': stds,
                'Params': params}
 
-    helpers.utils.create_excel(results, 'excel-results', 'kpca_grid_search', 'gridsearch_results')
+    helpers.utils.create_excel(results, 'excel-results', 'kpca_grid_search', 'xlsx', 'gridsearch_results')
 
 
 def main():
