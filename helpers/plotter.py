@@ -263,7 +263,7 @@ class Plotter:
         fig.savefig(self._folder + '/' + subfolder + '/' + filename + '.' + extension)
         plt.show()
 
-    def pca_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, subfolder: str = 'pca_analysis',
+    def pov_analysis(self, explained_var_ratio: np.ndarray, num_of_features: int, subfolder: str = 'pca_analysis',
                      filename: str = 'pov_vs_k', extension: str = 'png') -> None:
         """
         Create a pov vs k plot.
