@@ -20,9 +20,13 @@ class TestLda(TestCase):
 
     def test_fit(self):
         lda = Lda()
-        sb, sw = lda.fit(self._x, self._y)
-        print('SB:\n{}\nSW:\n{}\nW:\n{}\n'.format(sb, sw, lda.w))
-        self._plotter.scatter_pcs(lda.w, np.array([0, 1, 2]))
+        w = lda.fit(self._x, self._y)
+        print('W:\n{}\n'.format(w))
+        self._plotter.scatter_pcs(w, np.array([0, 1, 2]))
+
+        w = lda.transform(self._x)
+        print('Transformed X:\n{}\n'.format(w))
+        self._plotter.scatter_pcs(w, self._y)
 
     def test_transform(self):
         self.fail()

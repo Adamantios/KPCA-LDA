@@ -11,7 +11,7 @@ class Lda(_Decomposer):
         self._labels_counts = None
         self._n_classes = None
         self._n_features = None
-        self.w = None
+        self._w = None
 
     @staticmethod
     def _check_if_possible(x: np.ndarray) -> None:
@@ -84,7 +84,7 @@ class Lda(_Decomposer):
 
         return sw
 
-    def fit(self, x: np.ndarray, y: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def fit(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         self._check_if_possible(x)
         self.__set_state(x, y)
 
@@ -110,18 +110,19 @@ class Lda(_Decomposer):
         unwanted_indexes = np.where(eigenvalues <= 0)
 
         # Get all the non negative or zero eigenvectors.
-        self.w = np.delete(eigenvectors, unwanted_indexes, axis=1)
+        self._w = np.delete(eigenvectors, unwanted_indexes, axis=1)
 
         # Sort the eigenvalues and eigenvectors in descending order.
-        self.w = np.flip(self.w, axis=1)
+        self._w = np.flip(self._w, axis=1)
 
-        return sb, sw
+        return self._w
 
     def transform(self, x: np.ndarray) -> np.ndarray:
-        pass
+        return np.dot(x, self._w)
 
     def fit_transform(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        pass
+        self.fit(x, y)
+        return self.transform(x)
 
     def get_params(self) -> dict:
         pass
