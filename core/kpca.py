@@ -133,7 +133,7 @@ class KPCA(_Decomposer):
         self.explained_var = self.lambdas / np.sum(self.lambdas)
 
         # Correct the number of components if needed.
-        self._check_n_components(kernel_matrix.shape[0])
+        self._check_n_components(self._x_fit.shape[1])
 
         # Get as many alphas and lambdas (eigenvectors and eigenvalues) as the number of components.
         self.alphas = np.delete(self.alphas, np.s_[self.n_components:], axis=1)
