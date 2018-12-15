@@ -39,7 +39,7 @@ def preprocess(x_train, y_train, x_test):
     logger.log('\tApplying Principal Component Analysis with params:')
     pca = KPCA(Kernels.LINEAR)
     logger.log('\t' + str(pca.get_params()))
-    x_train = pca.fit_transform(x_train)
+    pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
     plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components-1', filename='linear')
@@ -107,20 +107,21 @@ def show_prediction_info(y_test, y_predicted, save: bool = True, folder: str = '
     accuracies = helpers.utils.cm_to_accuracies(metrics.confusion_matrix(y_test, y_predicted))
 
     # Create results dictionary.
-    results = {'Epileptic Seizure Accuracy': accuracies[4],
-               'Tumor Located Accuracy': accuracies[3],
-               'Healthy Area Accuracy': accuracies[2],
-               'Eyes Closed Accuracy': accuracies[1],
-               'Eyes Opened Accuracy': accuracies[0],
-               'Accuracy': metrics.accuracy_score(y_test, y_predicted),
-               'Precision': metrics.precision_score(y_test, y_predicted, average='macro'),
-               'Recall': metrics.recall_score(y_test, y_predicted, average='macro'),
-               'F1': metrics.f1_score(y_test, y_predicted, average='macro')}
+    results = {'Epileptic Seizure Accuracy': [accuracies[4]],
+               'Tumor Located Accuracy': [accuracies[3]],
+               'Healthy Area Accuracy': [accuracies[2]],
+               'Eyes Closed Accuracy': [accuracies[1]],
+               'Eyes Opened Accuracy': [accuracies[0]],
+               'Accuracy': [metrics.accuracy_score(y_test, y_predicted)],
+               'Precision': [metrics.precision_score(y_test, y_predicted, average='macro')],
+               'Recall': [metrics.recall_score(y_test, y_predicted, average='macro')],
+               'F1': [metrics.f1_score(y_test, y_predicted, average='macro')]}
 
     # Log results.
     logger.log('Model\'s Results:')
-    for key, value in results.items():
-        logger.log('{text}: {number:.{points}g}'.format(text=key, number=value, points=4))
+    for key, values in results.items():
+        for value in values:
+            logger.log('{text}: {number:.{points}g}'.format(text=key, number=value, points=4))
 
     # Create excel if save is True.
     if save:
