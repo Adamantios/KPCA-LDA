@@ -40,7 +40,7 @@ class Lda(_Decomposer):
 
     def _class_means(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
-        Calculates the means for every class.
+        Calculates the mean of every feature for each class.
 
         :param x: array containing the data.
         :param y: array containing the features.
@@ -60,8 +60,7 @@ class Lda(_Decomposer):
         """
         Calculates the between class scatter matrix.
 
-        :param means_diff: the differences between
-        the means of the features of the same classes and the total mean.
+        :param means_diff: the differences between the mean classes and the total classes mean.
         :return: The between class scatter matrix.
         """
         # Instantiate an array for the between class scatter matrix.
