@@ -3,9 +3,10 @@ from core.decomposer import _Decomposer, NotFittedException
 
 
 class Lda(_Decomposer):
-    def __init__(self):
+    def __init__(self, remove_zeros=True):
         super().__init__()
 
+        self.remove_zeros = remove_zeros
         self._labels = None
         self._labels_counts = None
         self._n_classes = None
@@ -131,14 +132,18 @@ class Lda(_Decomposer):
         # Get the eigenvalues and eigenvectors of the sw-1*sb, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(sw_inv_sb)
 
-        # Get the indexes of the negative or zero eigenvalues.
-        unwanted_indexes = np.where(eigenvalues <= 0)
+        # If user has chosen to remove the eigenvectors which have zero eigenvalues.
+        if self.remove_zeros:
+            # Get the indexes of the zero eigenvalues.
+            unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
 
-        # Get all the non negative or zero eigenvectors.
-        self._w = np.delete(eigenvectors, unwanted_indexes, axis=1)
+            # Get all eigenvectors which have zero eigenvalues.
+            eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
 
         # Sort the eigenvalues and eigenvectors in descending order.
-        self._w = np.flip(self._w, axis=1)
+        self._w = np.flip(eigenvectors, axis=1)
+
+        self._w = np.delete(eigenvectors, np.s_[self._n_classes - 1:], axis=1)
 
         return self._w
 
