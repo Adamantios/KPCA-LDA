@@ -16,7 +16,7 @@ logger, plotter = helpers.Logger(folder='logs/digits-tests', filename='rbf_kpca+
 
 def get_x_y():
     logger.log('Loading Dataset...')
-    x, y = helpers.datasets.load_seizure()
+    x, y = helpers.datasets.load_digits()
     logger.log(str(len(y)) + ' data loaded')
 
     logger.log('Splitting to 70% train and 30% test data...')

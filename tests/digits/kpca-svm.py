@@ -19,7 +19,7 @@ logger, plotter = helpers.Logger(filename='digits_detection_kpca+svm_gridsearch'
 
 def get_x_y():
     logger.log('Loading Dataset...')
-    x, y = helpers.datasets.load_seizure()
+    x, y = helpers.datasets.load_digits()
     logger.log(str(len(y)) + ' data loaded')
 
     logger.log('Splitting to 70% train and 30% test data...')
@@ -79,7 +79,7 @@ def main():
     param_grid = [
         {'C': [10, 100, 1000], 'kernel': ['linear']},
         {'C': [10, 100, 1000], 'kernel': ['poly'], 'degree': [2, 3, 4]},
-        {'C': [10, 30, 100, 1000], 'kernel': ['rbf']},
+        {'C': [10, 100, 1000], 'kernel': ['rbf']},
     ]
 
     grid_search = GridSearchCV(model, param_grid, n_jobs=-1, scoring='accuracy', verbose=10, cv=4)

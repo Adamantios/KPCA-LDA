@@ -38,7 +38,7 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.POLYNOMIAL, alpha=4.5, degree=2, n_components=178)
+    pca = KPCA(Kernels.POLYNOMIAL, alpha=0.1, degree=2, n_components=178)
     logger.log('\t' + str(pca.get_params()))
     pca.fit_transform(x_train)
 
@@ -46,7 +46,7 @@ def preprocess(x_train, y_train, x_test):
     plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components', filename='polynomial')
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.POLYNOMIAL, alpha=4.5, degree=2, n_components=0.99)
+    pca = KPCA(Kernels.POLYNOMIAL, alpha=0.1, degree=2, n_components=0.99)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
