@@ -37,15 +37,15 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.LINEAR)
+    pca = KPCA(Kernels.LINEAR, n_components=178)
     logger.log('\t' + str(pca.get_params()))
     pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
-    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components-1', filename='linear')
+    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components', filename='linear')
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.LINEAR, n_components=0.9)
+    pca = KPCA(Kernels.LINEAR, n_components=0.99)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 

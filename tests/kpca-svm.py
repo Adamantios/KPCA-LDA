@@ -40,7 +40,7 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.RBF, sigma=4.5)
+    pca = KPCA(Kernels.RBF, sigma=4.5, n_components=0.99)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
@@ -76,9 +76,9 @@ def main():
 
     # Grid parameters.
     param_grid = [
-        {'C': [1, 10, 100], 'kernel': ['linear']},
-        {'C': [1, 10, 100], 'gamma': [0.01, 0.001], 'kernel': ['poly'], 'degree': [2, 3, 4]},
-        {'C': [1, 10, 100], 'gamma': [0.01, 0.001], 'kernel': ['rbf']},
+        {'C': [10, 100, 1000], 'kernel': ['linear']},
+        {'C': [10, 100, 1000], 'gamma': [0.1, 0.01], 'kernel': ['poly'], 'degree': [2, 3, 4]},
+        {'C': [10, 100, 1000], 'gamma': [0.1, 0.01], 'kernel': ['rbf']},
     ]
 
     grid_search = GridSearchCV(model, param_grid, n_jobs=-1, scoring='accuracy', verbose=10, cv=4)
