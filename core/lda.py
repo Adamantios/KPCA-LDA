@@ -78,14 +78,25 @@ class Lda(_Decomposer):
 
         :return: the within class scatter matrix.
         """
-        # Instantiate an array for the within class scatter matrix.
-        sw = np.zeros((self._n_features, self._n_features))
+        # Instantiate an array for the si and the within class scatter matrix.
+        si, sw = np.zeros((self._n_features, self._n_features)), np.zeros((self._n_features, self._n_features))
 
         # Calculate within class scatter matrix
         for label, label_index in zip(self._labels, range(self._n_classes)):
-            # Calculate for every class(label param) the distance of each feature from its mean.
-            features_means_dists = x[y == label] - class_means[label_index]
-            sw += np.dot(features_means_dists.T, features_means_dists)
+
+            grouping_mask = y == label
+            grouped_samples = x[grouping_mask]
+            n_grouped_samples = grouped_samples.shape[0]
+            diffs = np.zeros((n_grouped_samples, self._n_features))
+
+            # Calculate for every class the difference of each sample's feature from the mean feature.
+            for sample, sample_index in zip(grouped_samples, range(n_grouped_samples)):
+                for feature in range(self._n_features):
+                    diffs[sample_index, feature] = sample[feature] - class_means[label_index, feature]
+
+                sample_diff_2d = np.expand_dims(diffs[sample_index], axis=1)
+                si += np.dot(sample_diff_2d, sample_diff_2d.T)
+            sw += si
 
         return sw
 
@@ -106,11 +117,11 @@ class Lda(_Decomposer):
         # Get the class means of every feature.
         class_means = self._class_means(x, y)
 
-        # Get the between class scatter matrix array.
-        sb = self._sb(class_means - x_mean)
-
         # Get the within class scatter matrix array.
         sw = self._sw(x, y, class_means)
+
+        # Get the between class scatter matrix array.
+        sb = self._sb(class_means - x_mean)
 
         # Calculate the product of the sw's inverse and sb.
         sw_inv_sb = np.dot(np.linalg.inv(sw), sb)
