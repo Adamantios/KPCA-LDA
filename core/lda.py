@@ -78,12 +78,13 @@ class Lda(_Decomposer):
 
         :return: the within class scatter matrix.
         """
-        # Instantiate an array for the si and the within class scatter matrix.
-        si, sw = np.zeros((self._n_features, self._n_features)), np.zeros((self._n_features, self._n_features))
+        # Instantiate an array for the within class scatter matrix.
+        sw = np.zeros((self._n_features, self._n_features))
 
         # Calculate within class scatter matrix
         for label, label_index in zip(self._labels, range(self._n_classes)):
-
+            # Instantiate an array for the Si matrix.
+            si = np.zeros((self._n_features, self._n_features))
             grouping_mask = y == label
             grouped_samples = x[grouping_mask]
             n_grouped_samples = grouped_samples.shape[0]
