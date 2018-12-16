@@ -82,7 +82,7 @@ class Lda(_Decomposer):
         sw = np.zeros((self._n_features, self._n_features))
 
         # Calculate within class scatter matrix
-        for label, label_index in zip(self._labels, range(self._n_classes)):
+        for label, label_index in enumerate(self._labels):
             # Instantiate an array for the Si matrix.
             si = np.zeros((self._n_features, self._n_features))
             grouping_mask = y == label
