@@ -77,8 +77,8 @@ def main():
     # Grid parameters.
     param_grid = [
         {'C': [10, 100, 1000], 'kernel': ['linear']},
-        {'C': [10, 100, 1000], 'gamma': [0.1, 0.01], 'kernel': ['poly'], 'degree': [2, 3, 4]},
-        {'C': [10, 100, 1000], 'gamma': [0.1, 0.01], 'kernel': ['rbf']},
+        {'C': [10, 100, 1000], 'kernel': ['poly'], 'degree': [2, 3, 4]},
+        {'C': [10, 30, 100, 1000], 'kernel': ['rbf']},
     ]
 
     grid_search = GridSearchCV(model, param_grid, n_jobs=-1, scoring='accuracy', verbose=10, cv=4)
