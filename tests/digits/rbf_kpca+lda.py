@@ -10,7 +10,8 @@ from sklearn.svm import SVC
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Create a logger and a plotter.
-logger, plotter = helpers.Logger(filename='seizure_detection_rbf_kpca+lda'), helpers.Plotter()
+logger, plotter = helpers.Logger(folder='logs/digits-tests', filename='rbf_kpca+lda'), helpers.Plotter(
+    folder='plots/digits-tests')
 
 
 def get_x_y():

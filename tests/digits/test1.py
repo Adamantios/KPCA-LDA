@@ -7,7 +7,8 @@ from sklearn.decomposition import KernelPCA
 import helpers
 
 # Create a logger and a plotter.
-logger, plotter = helpers.Logger(filename='kpca_grid_search'), helpers.Plotter()
+logger, plotter = helpers.Logger(folder='logs/digits-tests', filename='kpca_grid_search'), helpers.Plotter(
+    folder='plots/digits-tests')
 
 
 def get_x_y():
