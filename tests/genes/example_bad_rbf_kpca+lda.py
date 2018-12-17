@@ -16,7 +16,7 @@ logger, plotter = helpers.Logger(folder='logs/genes-tests', filename='example_ba
 
 def get_x_y():
     logger.log('Loading Dataset...')
-    x, y = helpers.datasets.load_digits()
+    x, y = helpers.datasets.load_genes()
     logger.log(str(len(y)) + ' data loaded')
 
     logger.log('Splitting to 70% train and 30% test data...')

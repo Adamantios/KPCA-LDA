@@ -15,7 +15,7 @@ logger, plotter = helpers.Logger(folder='logs/genes-tests', filename='kpca_grid_
 
 def get_x_y():
     logger.log('Loading Dataset...')
-    x, y = helpers.datasets.load_digits()
+    x, y = helpers.datasets.load_genes()
     logger.log(str(len(y)) + ' data loaded')
     return x, y
 
