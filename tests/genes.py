@@ -108,11 +108,11 @@ def show_prediction_info(y_test, y_predicted, save: bool = True, folder: str = '
     accuracies = helpers.utils.cm_to_accuracies(metrics.confusion_matrix(y_test, y_predicted))
 
     # Create results dictionary.
-    results = {'BRCA Accuracy': [accuracies[0]],
-               'COAD Accuracy': [accuracies[1]],
-               'KIRC Accuracy': [accuracies[2]],
-               'LUAD Accuracy': [accuracies[3]],
-               'PRAD Accuracy': [accuracies[4]],
+    results = {'Breast invasive carcinoma Accuracy': [accuracies[0]],
+               'Colon adenocarcinoma Accuracy': [accuracies[1]],
+               'Kidney renal clear cell carcinoma Accuracy': [accuracies[2]],
+               'Lung adenocarcinoma Accuracy': [accuracies[3]],
+               'Prostate adenocarcinoma Accuracy': [accuracies[4]],
                'Accuracy': [metrics.accuracy_score(y_test, y_predicted)],
                'Precision': [metrics.precision_score(y_test, y_predicted, average='macro')],
                'Recall': [metrics.recall_score(y_test, y_predicted, average='macro')],
