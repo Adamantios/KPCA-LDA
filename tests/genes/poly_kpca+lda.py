@@ -10,13 +10,13 @@ from sklearn.svm import SVC
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Create a logger and a plotter.
-logger, plotter = helpers.Logger(folder='logs/genes-tests',
-                                 filename='rbf_kpca+lda'), helpers.Plotter(folder='plots/genes-tests')
+logger, plotter = helpers.Logger(folder='logs/genes-tests', filename='poly_kpca+lda'), helpers.Plotter(
+    folder='plots/genes-tests')
 
 
 def get_x_y():
     logger.log('Loading Dataset...')
-    x, y = helpers.datasets.load_genes()
+    x, y = helpers.datasets.load_digits()
     logger.log(str(len(y)) + ' data loaded')
 
     logger.log('Splitting to 70% train and 30% test data...')
@@ -38,27 +38,27 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.RBF, sigma=4.5, n_components=178)
+    pca = KPCA(Kernels.POLYNOMIAL, alpha=0.01, degree=2, n_components=20531)
     logger.log('\t' + str(pca.get_params()))
     pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
-    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components', filename='rbf')
+    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components', filename='polynomial')
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.RBF, sigma=4.5, n_components=0.99)
+    pca = KPCA(Kernels.POLYNOMIAL, alpha=0.01, degree=2, n_components=0.99)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
-    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/pov_0.9', filename='rbf')
+    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/pov_0.99', filename='polynomial')
 
     plotter.scatter_pcs(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/pca/rbf', filename='pov_0.9_3pcs')
+                        subfolder='scatters/pca/polynomial', filename='pov_0.99_3pcs')
     plotter.scatter_pcs(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/pca/rbf', filename='pov_0.9_2pcs')
+                        subfolder='scatters/pca/polynomial', filename='pov_0.99_2pcs')
     plotter.scatter_pcs(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/pca/rbf', filename='pov_0.9_1pc')
+                        subfolder='scatters/pca/polynomial', filename='pov_0.99_1pc')
 
     x_test = pca.transform(x_test)
 
@@ -69,14 +69,14 @@ def preprocess(x_train, y_train, x_test):
     x_test = lda.transform(x_test)
 
     # Plot lda pov vs k.
-    plotter.pov_analysis(lda.explained_variance_ratio_, subfolder='lda_analysis/pov_0.9', filename='rbf')
+    plotter.pov_analysis(lda.explained_variance_ratio_, subfolder='lda_analysis/pov_0.9', filename='polynomial')
 
     plotter.scatter_pcs(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/lda/rbf', filename='pov_0.9_3pcs')
+                        subfolder='scatters/lda/polynomial', filename='pov_0.9_3pcs')
     plotter.scatter_pcs(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/lda/rbf', filename='pov_0.9_2pcs')
+                        subfolder='scatters/lda/polynomial', filename='pov_0.9_2pcs')
     plotter.scatter_pcs(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/lda/rbf', filename='pov_0.9_1pc')
+                        subfolder='scatters/lda/polynomial', filename='pov_0.9_1pc')
 
     return x_train, y_train, x_test
 
@@ -130,7 +130,19 @@ def show_prediction_info(y_test, y_predicted, save: bool = True, folder: str = '
 
 
 def display_classification_results(x_test, y_test, y_predicted):
-    pass
+    logger.log('Plotting some random correctly classified EEGs.')
+    # Get indexes of misclassified digits.
+    eegs_indexes = numpy.where(y_test == y_predicted)[0]
+    # Plot some random misclassified digits.
+    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4,
+                                 filename='correct')
+
+    logger.log('Plotting some random misclassified EEGs.')
+    # Get indexes of misclassified digits.
+    eegs_indexes = numpy.where(y_test != y_predicted)[0]
+    # Plot some random misclassified digits.
+    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4,
+                                 filename='misclassified')
 
 
 def main():
