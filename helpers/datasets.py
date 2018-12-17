@@ -4,7 +4,7 @@ from typing import Tuple, List
 from pandas import read_csv, DataFrame
 from sklearn.model_selection import train_test_split
 from definitions import __DIGITS_TEST_PATH, __DIGITS_TRAIN_PATH, __SEIZURE_PATH, __SEIZURE_TEST_PATH, \
-    __SEIZURE_TRAIN_PATH
+    __SEIZURE_TRAIN_PATH, __GENES_DATA_PATH, __GENES_LABELS_PATH, __GENES_TEST_PATH, __GENES_TRAIN_PATH
 
 Labels = List[str]
 Dataset = Tuple[numpy.ndarray, numpy.ndarray]
@@ -24,6 +24,21 @@ def _get_mnist_labels() -> Labels:
         names.append('pixel' + str(i))
 
     return names
+
+
+def load_genes(train: bool = True) -> Dataset:
+    # Read the dataset and get its values.
+    data = read_csv(__GENES_DATA_PATH)
+    labels = read_csv(__GENES_LABELS_PATH)
+
+    # Get x and y.
+    x = data.iloc[:, 1:].values
+    y = labels.iloc[:, 1].values
+
+    from sklearn import preprocessing
+    le = preprocessing.LabelEncoder()
+
+    return x, le.fit_transform(y)
 
 
 def load_digits(train: bool = True) -> Dataset:
