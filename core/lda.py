@@ -97,9 +97,9 @@ class Lda(_Decomposer):
         sb = np.zeros((self._n_features, self._n_features))
 
         for label, mean_vec, count in zip(self._labels, class_means, self._labels_counts):
-            mean_vec = mean_vec.reshape(self._n_features, 1)  # make column vector
-            x_mean = x_mean.reshape(self._n_features, 1)  # make column vector
-            sb += count * (mean_vec - x_mean).dot((mean_vec - x_mean).T)
+            mean_vec_2d = np.expand_dims(mean_vec, axis=1)
+            x_mean_2d = np.expand_dims(x_mean, axis=1)
+            sb += count * (mean_vec_2d - x_mean_2d).dot((mean_vec_2d - x_mean_2d).T)
 
         return sb
 
