@@ -80,8 +80,8 @@ class Lda(_Decomposer):
                 for feature in range(self._n_features):
                     diffs[sample_index, feature] = sample[feature] - class_means[label_index, feature]
 
-                sample_diff_2d = np.expand_dims(diffs[sample_index], axis=1)
-                si += np.dot(sample_diff_2d, sample_diff_2d.T)
+                sample_diff = np.expand_dims(diffs[sample_index], axis=1)
+                si += np.dot(sample_diff, sample_diff.T)
             sw += si
 
         return sw
