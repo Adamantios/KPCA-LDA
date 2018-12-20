@@ -171,7 +171,7 @@ class KPCA(_Model, _Decomposer):
         # Get the eigenvalues and eigenvectors of the kernel, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(kernel_matrix)
         # Process the eigenvalues and eigenvectors and store them.
-        self.alphas, self.lambdas = self._clean_eigs(eigenvalues, eigenvectors)
+        self.lambdas, self.alphas = self._clean_eigs(eigenvalues, eigenvectors)
 
         # Calculate explained var.
         self.explained_var = self.lambdas / np.sum(self.lambdas)
