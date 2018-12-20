@@ -1,7 +1,11 @@
 from typing import Union
 
 import numpy as np
-from core.decomposer import _Decomposer, NotFittedException, InvalidNumberOfComponents
+from core.decomposer import _Decomposer, NotFittedException, InvalidNumOfComponentsException, OneSamplePassedException
+
+
+class LdaNotFeasibleException(Exception):
+    pass
 
 
 class Lda(_Decomposer):
@@ -17,8 +21,7 @@ class Lda(_Decomposer):
         self._n_features = None
         self._w = None
 
-    @staticmethod
-    def _check_if_possible(x: np.ndarray) -> None:
+    def _check_if_possible(self, x: np.ndarray) -> None:
         """
         Checks if it possible to perform LDA.
 
@@ -26,8 +29,16 @@ class Lda(_Decomposer):
 
         :param x: the passed data.
         """
-        if x.shape[0] < 2:
-            raise ValueError('Cannot perform Lda for 1 sample.')
+        n_samples = x.shape[0]
+
+        if n_samples < 2:
+            raise OneSamplePassedException('Cannot perform Lda for 1 sample.')
+
+        if n_samples < self._n_features:
+            raise LdaNotFeasibleException('Lda is not feasible, '
+                                          'if the number of components is less than the number of features.'
+                                          'You seem to have {} components and {} features.'
+                                          .format(n_samples, self._n_features))
 
     def __set_state(self, x: np.ndarray, y: np.ndarray) -> None:
         """
@@ -84,11 +95,11 @@ class Lda(_Decomposer):
             self.n_components = self._pov_to_n_components()
         # Otherwise raise exception.
         else:
-            raise InvalidNumberOfComponents('The number of components should be between 1 and {}, '
-                                            'or between (0, 1) for the pov, '
-                                            'in order to choose the number of components automatically.\n'
-                                            'Got {} instead.'
-                                            .format(self._n_classes, self.n_components))
+            raise InvalidNumOfComponentsException('The number of components should be between 1 and {}, '
+                                                  'or between (0, 1) for the pov, '
+                                                  'in order to choose the number of components automatically.\n'
+                                                  'Got {} instead.'
+                                                  .format(self._n_classes, self.n_components))
 
         # Keep explained var for n components only.
         self.explained_var = self.explained_var[:self.n_components]
