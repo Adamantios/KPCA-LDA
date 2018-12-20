@@ -1,10 +1,11 @@
 from typing import Union
-from core.decomposer import _Decomposer, NotFittedException, InvalidNumOfComponentsException, OneSamplePassedException
+from core.abstract_models import _Decomposer, NotFittedException, InvalidNumOfComponentsException, \
+    OneSamplePassedException, _Model
 from core.kernels import Kernels, Kernel
 import numpy as np
 
 
-class KPCA(_Decomposer):
+class KPCA(_Model, _Decomposer):
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0, degree: int = 3,
                  sigma: float = None, n_components: Union[int, float] = None):
         super().__init__()
@@ -194,6 +195,6 @@ class KPCA(_Decomposer):
         :return: the kpca's parameters.
         """
         params = self.kernel.get_params()
-        params['n_components'] = self.n_components if self.n_components is not None else 'auto'
+        params['n_components'] = self._param_value(self.n_components)
 
         return params

@@ -1,13 +1,14 @@
 import numpy as np
 from typing import Union
-from core.decomposer import _Decomposer, NotFittedException, InvalidNumOfComponentsException, OneSamplePassedException
+from core.abstract_models import _Decomposer, NotFittedException, InvalidNumOfComponentsException, \
+    OneSamplePassedException, _Model
 
 
 class LdaNotFeasibleException(Exception):
     pass
 
 
-class Lda(_Decomposer):
+class Lda(_Model, _Decomposer):
     def __init__(self, n_components: Union[int, float] = None, remove_zeros: bool = True):
         super().__init__()
 
@@ -252,4 +253,13 @@ class Lda(_Decomposer):
         return self.transform(x)
 
     def get_params(self) -> dict:
-        pass
+        """
+        Getter for the lda's parameters.
+
+        :return: the lda's parameters.
+        """
+        # Create params dictionary.
+        params = dict(n_components=self._param_value(self.n_components),
+                      remove_zeros=self.remove_zeros)
+
+        return params

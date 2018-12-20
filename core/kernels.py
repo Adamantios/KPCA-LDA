@@ -1,5 +1,6 @@
 import numpy as np
 from enum import Enum, auto
+from core.abstract_models import _Model
 from scipy.spatial.distance import pdist, squareform, cdist
 
 
@@ -22,9 +23,10 @@ class IncompatibleShapesException(Exception):
     pass
 
 
-class Kernel:
-    def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0,
-                 degree: int = 3, sigma: float = None):
+class Kernel(_Model):
+    def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0, degree: int = 3,
+                 sigma: float = None):
+        super().__init__()
         self._kernel = kernel
         self._alpha = alpha
         self._coefficient = coefficient
@@ -230,15 +232,11 @@ class Kernel:
 
         :return: the kernel's parameters.
         """
-
-        # For default params return auto.
-        def param_value(param): return param if param is not None else 'auto'
-
         # Create params dictionary.
-        params = dict(kernel=param_value(self._kernel.name),
-                      alpha=param_value(self._alpha),
-                      coefficient=param_value(self._coefficient),
-                      degree=param_value(self._degree),
-                      sigma=param_value(self._sigma))
+        params = dict(kernel=self._param_value(self._kernel.name),
+                      alpha=self._param_value(self._alpha),
+                      coefficient=self._param_value(self._coefficient),
+                      degree=self._param_value(self._degree),
+                      sigma=self._param_value(self._sigma))
 
         return params
