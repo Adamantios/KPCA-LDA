@@ -7,10 +7,11 @@ import numpy as np
 
 class KPCA(_Model, _Decomposer):
     def __init__(self, kernel: Kernels = Kernels.RBF, alpha: float = None, coefficient: float = 0, degree: int = 3,
-                 sigma: float = None, n_components: Union[int, float] = None):
+                 sigma: float = None, n_components: Union[int, float] = None, remove_zeros: bool = True):
         super().__init__()
         self.kernel = Kernel(kernel, alpha, coefficient, degree, sigma)
         self.n_components = n_components
+        self.remove_zeros = remove_zeros
         self.alphas = None
         self.lambdas = None
         self.explained_var = None
