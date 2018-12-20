@@ -128,9 +128,10 @@ class KPCA(_Model, _Decomposer):
         :param eigenvectors: the eigenvectors to be cleaned.
         :return: tuple containing the clean eigenvalues and eigenvectors.
         """
-        # Get the indexes of the negative eigenvalues.
+        # Get the indexes of the negative eigenvalues, if they exist.
         unwanted_indexes = np.where(eigenvalues < 0)
 
+        # If negative eigenvalues exist, warn the user.
         if len(unwanted_indexes) > 0:
             warnings.warn('Negative eigenvalues where encountered!', RuntimeWarning)
 
