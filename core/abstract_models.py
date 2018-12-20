@@ -1,5 +1,6 @@
 import numpy as np
 from abc import abstractmethod, ABC
+from typing import Union
 
 
 class NotFittedException(Exception):
@@ -12,6 +13,24 @@ class InvalidNumOfComponentsException(Exception):
 
 class OneSamplePassedException(Exception):
     pass
+
+
+class _Model(object):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def _param_value(param: any) -> Union[any, str]:
+        """ For param with value None, return the string auto. """
+        return param if param is not None else 'auto'
+
+    def get_params(self) -> dict:
+        """
+        Getter for the model's parameters and its values.
+
+        :return: a dictionary containing the model's parameters and its values.
+        """
+        return {}
 
 
 class _Decomposer(ABC):
@@ -61,14 +80,5 @@ class _Decomposer(ABC):
         :param x: the data to be fitted and then transformed.
         :param y: optional array containing the class labels
         :return: the projected data.
-        """
-        pass
-
-    @abstractmethod
-    def get_params(self) -> dict:
-        """
-        Getter for the decomposer's parameters.
-
-        :return: the decomposer's parameters.
         """
         pass
