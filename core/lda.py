@@ -73,10 +73,8 @@ class Lda(_Decomposer):
         for label, label_index in enumerate(self._labels):
             # Instantiate an array for the Si matrix.
             si = np.zeros((self._n_features, self._n_features))
-            # Create a mask with True values for the data of the current class.
-            grouping_mask = y == label
             # Get the samples of the current class.
-            grouped_samples = x[grouping_mask]
+            grouped_samples = x[y == label]
             # Get the number of the samples of the current class.
             n_grouped_samples = grouped_samples.shape[0]
 
