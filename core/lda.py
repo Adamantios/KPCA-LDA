@@ -178,6 +178,33 @@ class Lda(_Model, _Decomposer):
 
         return sb
 
+    def _clean_eigs(self, eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Processes the eigenvalues and eigenvectors and returns them clean.
+
+        :param eigenvalues: the eigenvalues to be cleaned.
+        :param eigenvectors: the eigenvectors to be cleaned.
+        :return: tuple containing the clean eigenvalues and eigenvectors.
+        """
+        # Get the indexes of the negative eigenvalues.
+        unwanted_indexes = np.where(eigenvalues < 0)
+        # Get all the eigenvalues which are not negative and eigenvectors corresponding to them.
+        eigenvalues = np.delete(eigenvalues, unwanted_indexes)
+        eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # If user has chosen to remove the eigenvectors which have zero eigenvalues.
+        if self.remove_zeros:
+            # Get the indexes of the zero eigenvalues.
+            unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
+            # Get all eigenvectors which do not have zero eigenvalues.
+            eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # Sort the eigenvectors and the eigenvalues in descending order.
+        eigenvectors = np.flip(eigenvectors, axis=1)
+        eigenvalues = np.flip(eigenvalues)
+
+        return eigenvalues, eigenvectors
+
     def fit(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Fits the Lda model with a given dataset.
@@ -251,30 +278,3 @@ class Lda(_Model, _Decomposer):
                       remove_zeros=self.remove_zeros)
 
         return params
-
-    def _clean_eigs(self, eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Processes the eigenvalues and eigenvectors and returns them clean.
-
-        :param eigenvalues: the eigenvalues to be cleaned.
-        :param eigenvectors: the eigenvectors to be cleaned.
-        :return: tuple containing the clean eigenvalues and eigenvectors.
-        """
-        # Get the indexes of the negative eigenvalues.
-        unwanted_indexes = np.where(eigenvalues < 0)
-        # Get all the eigenvalues which are not negative and eigenvectors corresponding to them.
-        eigenvalues = np.delete(eigenvalues, unwanted_indexes)
-        eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
-
-        # If user has chosen to remove the eigenvectors which have zero eigenvalues.
-        if self.remove_zeros:
-            # Get the indexes of the zero eigenvalues.
-            unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
-            # Get all eigenvectors which do not have zero eigenvalues.
-            eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
-
-        # Sort the eigenvectors and the eigenvalues in descending order.
-        eigenvectors = np.flip(eigenvectors, axis=1)
-        eigenvalues = np.flip(eigenvalues)
-
-        return eigenvalues, eigenvectors
