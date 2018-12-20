@@ -61,6 +61,9 @@ class Lda(_Decomposer):
         """
         Calculates the within class scatter matrix.
 
+        :param x: array containing the data.
+        :param y: array containing the features.
+        :param class_means: array containing the mean vector of every class.
         :return: the within class scatter matrix.
         """
         # Instantiate an array for the within class scatter matrix.
@@ -94,8 +97,8 @@ class Lda(_Decomposer):
         """
         Calculates the between class scatter matrix.
 
-        :param means_diff: the differences between the mean classes and the total classes mean.
-        :return: The between class scatter matrix.
+        :param class_means: array containing the mean vector of every class.
+        :return: the between class scatter matrix.
         """
         # Instantiate an array for the between class scatter matrix.
         sb = np.zeros((self._n_features, self._n_features))
