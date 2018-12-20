@@ -186,8 +186,8 @@ class Lda(_Decomposer):
         :param y: the class labels.
         :return: an array of the eigenvectors created.
         """
-        self._check_if_possible(x)
         self.__set_state(x, y)
+        self._check_if_possible(x)
 
         # Calculate the x mean using float64 to get a more accurate result.
         x_mean = x.mean(axis=0, dtype=np.float64)
