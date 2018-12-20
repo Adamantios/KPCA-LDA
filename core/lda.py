@@ -1,12 +1,16 @@
+from typing import Union
+
 import numpy as np
-from core.decomposer import _Decomposer, NotFittedException
+from core.decomposer import _Decomposer, NotFittedException, InvalidNumberOfComponents
 
 
 class Lda(_Decomposer):
-    def __init__(self, remove_zeros=True):
+    def __init__(self, n_components: Union[int, float] = None, remove_zeros: bool = True):
         super().__init__()
 
+        self.n_components = n_components
         self.remove_zeros = remove_zeros
+        self.explained_var = None
         self._labels = None
         self._labels_counts = None
         self._n_classes = None
@@ -38,6 +42,56 @@ class Lda(_Decomposer):
         self._n_classes = len(self._labels)
         # Get the number of features.
         self._n_features = x.shape[1]
+
+    def _pov_to_n_components(self) -> int:
+        """
+        Gets the number of components needed in order to succeed the pov given.
+
+        :return: the number of components.
+        """
+        # Get the proportion of variance.
+        pov = np.cumsum(self.explained_var)
+
+        # Get the index of the nearest pov value with the given pov preference.
+        nearest_value_index = (np.abs(pov - self.n_components)).argmin()
+
+        return nearest_value_index + 1
+
+    def _check_n_components(self) -> None:
+        """
+        Adds a value to n components if needed.
+
+        If user has not given a value, set it with the number of features minus 1.
+
+        If the number passed is bigger than the number of features, set it with the number of features.
+
+        If proportion of variance has been given,
+        calculate the number of features which give the closest pov possible.
+
+        If an invalid number has been passed, raise an exception.
+        """
+        # If num of components has not been passed, return n_features - 1.
+        if self.n_components is None:
+            self.n_components = self._n_classes - 1
+        # If n_components passed is bigger than n_features, use n_features.
+        elif self.n_components > self._n_classes:
+            self.n_components = self._n_classes - 1
+        # If n components have been given a correct value, pass
+        elif 1 <= self.n_components <= self._n_classes:
+            pass
+        # If pov has been passed, return as many n_components as needed.
+        elif 0 < self.n_components < 1:
+            self.n_components = self._pov_to_n_components()
+        # Otherwise raise exception.
+        else:
+            raise InvalidNumberOfComponents('The number of components should be between 1 and {}, '
+                                            'or between (0, 1) for the pov, '
+                                            'in order to choose the number of components automatically.\n'
+                                            'Got {} instead.'
+                                            .format(self._n_classes, self.n_components))
+
+        # Keep explained var for n components only.
+        self.explained_var = self.explained_var[:self.n_components]
 
     def _class_means(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
@@ -90,7 +144,7 @@ class Lda(_Decomposer):
 
         return sw
 
-    def _sb(self, class_means: np.ndarray, x_mean) -> np.ndarray:
+    def _sb(self, class_means: np.ndarray, x_mean: np.ndarray) -> np.ndarray:
         """
         Calculates the between class scatter matrix.
 
@@ -142,7 +196,7 @@ class Lda(_Decomposer):
         # Get the eigenvalues and eigenvectors of the sw-1*sb, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(sw_inv_sb)
 
-        # TODO calc explained var.
+        self.explained_var = eigenvalues / np.sum(eigenvalues)
 
         # If user has chosen to remove the eigenvectors which have zero eigenvalues.
         if self.remove_zeros:
@@ -152,10 +206,14 @@ class Lda(_Decomposer):
             # Get all eigenvectors which have zero eigenvalues.
             eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
 
-        # Sort the eigenvalues and eigenvectors in descending order.
-        self._w = np.flip(eigenvectors, axis=1)
+        # Correct the number of components if needed.
+        self._check_n_components()
 
-        self._w = np.delete(eigenvectors, np.s_[self._n_classes - 1:], axis=1)
+        # Sort the eigenvectors in descending order.
+        eigenvectors = np.flip(eigenvectors, axis=1)
+
+        # Store only the needed eigenvectors.
+        self._w = np.delete(eigenvectors, np.s_[self.n_components:], axis=1)
 
         return self._w
 
