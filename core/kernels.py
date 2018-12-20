@@ -140,7 +140,7 @@ class Kernel:
         :return: The calculated kernel matrix.
         """
         if y is not None:
-            dists = cdist(x, y)
+            dists = cdist(x, y, 'sqeuclidean')
 
         else:
             # Calculate the Euclidean distances for every pair of values.
