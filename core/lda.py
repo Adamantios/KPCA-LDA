@@ -66,22 +66,26 @@ class Lda(_Decomposer):
         # Instantiate an array for the within class scatter matrix.
         sw = np.zeros((self._n_features, self._n_features))
 
-        # Calculate within class scatter matrix
+        # For every class label.
         for label, label_index in enumerate(self._labels):
             # Instantiate an array for the Si matrix.
             si = np.zeros((self._n_features, self._n_features))
+            # Create a mask with True values for the data of the current class.
             grouping_mask = y == label
+            # Get the samples of the current class.
             grouped_samples = x[grouping_mask]
+            # Get the number of the samples of the current class.
             n_grouped_samples = grouped_samples.shape[0]
-            diffs = np.zeros((n_grouped_samples, self._n_features))
 
-            # Calculate for every class the difference of each sample's feature from the mean feature.
+            # For every sample.
             for sample, sample_index in zip(grouped_samples, range(n_grouped_samples)):
-                for feature in range(self._n_features):
-                    diffs[sample_index, feature] = sample[feature] - class_means[label_index, feature]
-
-                sample_diff = np.expand_dims(diffs[sample_index], axis=1)
-                si += np.dot(sample_diff, sample_diff.T)
+                # Calculate the difference of the sample vector from the mean vector.
+                diff = sample - class_means[label_index]
+                # Make the sample's diff a column vector.
+                diff = np.expand_dims(diff, axis=1)
+                # Sum the dot product of the difference with itself's transpose to the Si matrix.
+                si += np.dot(diff, diff.T)
+            # Sum the Si results of all the classes to get Sw.
             sw += si
 
         return sw
