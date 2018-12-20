@@ -1,6 +1,6 @@
 import numpy as np
 from abc import abstractmethod, ABC
-from typing import Union
+from typing import Union, Tuple
 
 
 class NotFittedException(Exception):
@@ -49,6 +49,17 @@ class _Decomposer(ABC):
     @abstractmethod
     def _check_n_components(self) -> None:
         """ Checks the validity of the number of components. """
+        pass
+
+    @abstractmethod
+    def _clean_eigs(self, eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Processes the eigenvalues and eigenvectors and returns them clean.
+
+        :param eigenvalues: the eigenvalues to be cleaned.
+        :param eigenvectors: the eigenvectors to be cleaned.
+        :return: tuple containing the clean eigenvalues and eigenvectors.
+        """
         pass
 
     @abstractmethod

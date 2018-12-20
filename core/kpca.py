@@ -1,4 +1,5 @@
-from typing import Union
+import warnings
+from typing import Union, Tuple
 from core.abstract_models import _Decomposer, NotFittedException, InvalidNumOfComponentsException, \
     OneSamplePassedException, _Model
 from core.kernels import Kernels, Kernel
@@ -119,6 +120,37 @@ class KPCA(_Model, _Decomposer):
 
         return nearest_value_index + 1
 
+    def _clean_eigs(self, eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Processes the eigenvalues and eigenvectors and returns them clean.
+
+        :param eigenvalues: the eigenvalues to be cleaned.
+        :param eigenvectors: the eigenvectors to be cleaned.
+        :return: tuple containing the clean eigenvalues and eigenvectors.
+        """
+        # Get the indexes of the negative eigenvalues.
+        unwanted_indexes = np.where(eigenvalues < 0)
+
+        if unwanted_indexes.size > 0:
+            warnings.warn('Negative eigenvalues where encountered!', RuntimeWarning)
+
+        # Get all the eigenvalues which are not negative and eigenvectors corresponding to them.
+        eigenvalues = np.delete(eigenvalues, unwanted_indexes)
+        eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # If user has chosen to remove the eigenvectors which have zero eigenvalues.
+        if self.remove_zeros:
+            # Get the indexes of the zero eigenvalues.
+            unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
+            # Get all eigenvectors which do not have zero eigenvalues.
+            eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # Sort the eigenvectors and the eigenvalues in descending order.
+        eigenvectors = np.flip(eigenvectors, axis=1)
+        eigenvalues = np.flip(eigenvalues)
+
+        return eigenvalues, eigenvectors
+
     def fit(self, x: np.ndarray) -> np.ndarray:
         """
         Creates eigenvalues and eigenvectors.
@@ -133,20 +165,16 @@ class KPCA(_Model, _Decomposer):
 
         # Get the kernel matrix.
         kernel_matrix = self.kernel.calc_matrix(self._x_fit)
-
         # Center the kernel matrix.
         kernel_matrix = KPCA._center_symmetric_matrix(kernel_matrix)
 
         # Get the eigenvalues and eigenvectors of the kernel, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(kernel_matrix)
-
-        # Sort the eigenvalues and eigenvectors in descending order.
-        self.alphas = np.flip(eigenvectors, axis=1)
-        self.lambdas = np.flip(eigenvalues)
+        # Process the eigenvalues and eigenvectors and store them.
+        self.alphas, self.lambdas = self._clean_eigs(eigenvalues, eigenvectors)
 
         # Calculate explained var.
         self.explained_var = self.lambdas / np.sum(self.lambdas)
-
         # Correct the number of components if needed.
         self._check_n_components(self._x_fit.shape[1])
 
