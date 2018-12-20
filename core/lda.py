@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Union
+from typing import Union, Tuple
 from core.abstract_models import _Decomposer, NotFittedException, InvalidNumOfComponentsException, \
     OneSamplePassedException, _Model
 
@@ -191,37 +191,25 @@ class Lda(_Model, _Decomposer):
 
         # Calculate the x mean using float64 to get a more accurate result.
         x_mean = x.mean(axis=0, dtype=np.float64)
-
         # Get the class means of every feature.
         class_means = self._class_means(x, y)
 
         # Get the within class scatter matrix array.
         sw = self._sw(x, y, class_means)
-
         # Get the between class scatter matrix array. Pass x_mean as a column vector.
         sb = self._sb(class_means, np.expand_dims(x_mean, axis=1))
-
         # Calculate the product of the sw's inverse and sb.
         sw_inv_sb = np.dot(np.linalg.inv(sw), sb)
 
         # Get the eigenvalues and eigenvectors of the sw-1*sb, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(sw_inv_sb)
+        # Process the eigenvalues and eigenvectors.
+        eigenvalues, eigenvectors = self._clean_eigs(eigenvalues, eigenvectors)
 
-        self.explained_var = eigenvalues / np.sum(eigenvalues)
-
-        # If user has chosen to remove the eigenvectors which have zero eigenvalues.
-        if self.remove_zeros:
-            # Get the indexes of the zero eigenvalues.
-            unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
-
-            # Get all eigenvectors which have zero eigenvalues.
-            eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
-
+        # Calculate the explained variance.
+        self.explained_var = np.divide(eigenvalues, np.sum(eigenvalues))
         # Correct the number of components if needed.
         self._check_n_components()
-
-        # Sort the eigenvectors in descending order.
-        eigenvectors = np.flip(eigenvectors, axis=1)
 
         # Store only the needed eigenvectors.
         self._w = np.delete(eigenvectors, np.s_[self.n_components:], axis=1)
@@ -263,3 +251,30 @@ class Lda(_Model, _Decomposer):
                       remove_zeros=self.remove_zeros)
 
         return params
+
+    def _clean_eigs(self, eigenvalues: np.ndarray, eigenvectors: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Processes the eigenvalues and eigenvectors and returns them clean.
+
+        :param eigenvalues: the eigenvalues to be cleaned.
+        :param eigenvectors: the eigenvectors to be cleaned.
+        :return: tuple containing the clean eigenvalues and eigenvectors.
+        """
+        # Get the indexes of the negative eigenvalues.
+        unwanted_indexes = np.where(eigenvalues < 0)
+        # Get all the eigenvalues which are not negative and eigenvectors corresponding to them.
+        eigenvalues = np.delete(eigenvalues, unwanted_indexes)
+        eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # If user has chosen to remove the eigenvectors which have zero eigenvalues.
+        if self.remove_zeros:
+            # Get the indexes of the zero eigenvalues.
+            unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
+            # Get all eigenvectors which do not have zero eigenvalues.
+            eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
+
+        # Sort the eigenvectors and the eigenvalues in descending order.
+        eigenvectors = np.flip(eigenvectors, axis=1)
+        eigenvalues = np.flip(eigenvalues)
+
+        return eigenvalues, eigenvectors
