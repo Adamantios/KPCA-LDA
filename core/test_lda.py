@@ -1,16 +1,14 @@
+from helpers import plotter
 from unittest import TestCase
-import numpy as np
 from sklearn import datasets
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-
-import helpers
 from core import Lda
 
 
 class TestLda(TestCase):
     _x, _y = datasets.load_iris(return_X_y=True)
 
-    _plotter = helpers.plotter.Plotter('tests/plots/lda')
+    _plotter = plotter.Plotter('tests/plots/lda')
 
     def test_fit(self):
         lda = Lda()
