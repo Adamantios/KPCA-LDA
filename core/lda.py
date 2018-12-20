@@ -50,10 +50,9 @@ class Lda(_Decomposer):
         # Instantiate an array to hold the mean of every feature for each class.
         means = np.zeros((self._n_classes, self._n_features))
 
-        # Sum the means of the features of the same classes.
+        # Sum the means of the same classes.
         for c, label in zip(range(self._n_classes), self._labels):
-            for f in range(self._n_features):
-                means[c, f] += np.mean(x[y == label, f])
+            means[c] += np.mean(x[y == label], axis=0, dtype=np.float64)
 
         return means
 
