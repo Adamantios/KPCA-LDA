@@ -1,11 +1,7 @@
 from typing import Union
-from core.decomposer import _Decomposer, NotFittedException
+from core.decomposer import _Decomposer, NotFittedException, InvalidNumberOfComponents
 from core.kernels import Kernels, Kernel
 import numpy as np
-
-
-class InvalidNumberOfComponents(Exception):
-    pass
 
 
 class KPCA(_Decomposer):
@@ -20,6 +16,20 @@ class KPCA(_Decomposer):
         self._x_fit = None
 
     def _check_n_components(self, n_features: int) -> None:
+        """
+        Adds a value to n components if needed.
+
+        If user has not given a value, set it with the number of features minus 1.
+
+        If the number passed is bigger than the number of features, set it with the number of features.
+
+        If proportion of variance has been given,
+        calculate the number of features which give the closest pov possible.
+
+        If an invalid number has been passed, raise an exception.
+
+        :param n_features: the number of features.
+        """
         # If num of components has not been passed, return n_features - 1.
         if self.n_components is None:
             self.n_components = n_features - 1

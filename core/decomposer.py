@@ -6,6 +6,10 @@ class NotFittedException(Exception):
     pass
 
 
+class InvalidNumberOfComponents(Exception):
+    pass
+
+
 class _Decomposer(ABC):
     def __init__(self):
         pass
