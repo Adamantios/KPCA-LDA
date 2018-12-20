@@ -81,14 +81,14 @@ class Lda(_Model, _Decomposer):
 
         If an invalid number has been passed, raise an exception.
         """
-        # If num of components has not been passed, return n_features - 1.
+        # If num of components has not been passed, return number of classes - 1.
         if self.n_components is None:
             self.n_components = self._n_classes - 1
-        # If n_components passed is bigger than n_features, use n_features.
-        elif self.n_components > self._n_classes:
+        # If n_components passed is bigger than or equal with the number of classes, use number of classes - 1.
+        elif self.n_components >= self._n_classes:
             self.n_components = self._n_classes - 1
         # If n components have been given a correct value, pass
-        elif 1 <= self.n_components <= self._n_classes:
+        elif 1 <= self.n_components < self._n_classes:
             pass
         # If pov has been passed, return as many n_components as needed.
         elif 0 < self.n_components < 1:
