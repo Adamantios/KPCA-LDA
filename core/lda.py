@@ -133,6 +133,8 @@ class Lda(_Decomposer):
         # Get the eigenvalues and eigenvectors of the sw-1*sb, in ascending order.
         eigenvalues, eigenvectors = np.linalg.eigh(sw_inv_sb)
 
+        # TODO calc explained var.
+
         # If user has chosen to remove the eigenvectors which have zero eigenvalues.
         if self.remove_zeros:
             # Get the indexes of the zero eigenvalues.
