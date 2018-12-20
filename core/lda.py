@@ -45,7 +45,7 @@ class Lda(_Decomposer):
 
     def _pov_to_n_components(self) -> int:
         """
-        Gets the number of components needed in order to succeed the pov given.
+        Finds the number of components needed in order to succeed the pov given.
 
         :return: the number of components.
         """
