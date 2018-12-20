@@ -6,7 +6,11 @@ class NotFittedException(Exception):
     pass
 
 
-class InvalidNumberOfComponents(Exception):
+class InvalidNumOfComponentsException(Exception):
+    pass
+
+
+class OneSamplePassedException(Exception):
     pass
 
 

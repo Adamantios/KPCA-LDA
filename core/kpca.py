@@ -1,5 +1,5 @@
 from typing import Union
-from core.decomposer import _Decomposer, NotFittedException, InvalidNumberOfComponents
+from core.decomposer import _Decomposer, NotFittedException, InvalidNumOfComponentsException, OneSamplePassedException
 from core.kernels import Kernels, Kernel
 import numpy as np
 
@@ -44,11 +44,11 @@ class KPCA(_Decomposer):
             self.n_components = self._pov_to_n_components()
         # Otherwise raise exception.
         else:
-            raise InvalidNumberOfComponents('The number of components should be between 1 and {}, '
-                                            'or between (0, 1) for the pov, '
-                                            'in order to choose the number of components automatically.\n'
-                                            'Got {} instead.'
-                                            .format(n_features, self.n_components))
+            raise InvalidNumOfComponentsException('The number of components should be between 1 and {}, '
+                                                  'or between (0, 1) for the pov, '
+                                                  'in order to choose the number of components automatically.\n'
+                                                  'Got {} instead.'
+                                                  .format(n_features, self.n_components))
 
         # Keep explained var for n components only.
         self.explained_var = self.explained_var[:self.n_components]
@@ -124,6 +124,9 @@ class KPCA(_Decomposer):
         :param x: the array to be fitted.
         :return: n_components number of eigenvalues and eigenvectors.
         """
+        if x.shape[0] == 1:
+            raise OneSamplePassedException('Cannot perform KPCA for 1 sample.')
+
         self._x_fit = x
 
         # Get the kernel matrix.
