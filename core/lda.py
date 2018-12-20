@@ -133,7 +133,7 @@ class Lda(_Decomposer):
         sw = np.zeros((self._n_features, self._n_features))
 
         # For every class label.
-        for label, label_index in enumerate(self._labels):
+        for label_index, label in enumerate(self._labels):
             # Instantiate an array for the Si matrix.
             si = np.zeros((self._n_features, self._n_features))
             # Get the samples of the current class.
