@@ -36,7 +36,7 @@ class KPCA(_Decomposer):
         # If n_components passed is bigger than n_features, use n_features.
         elif self.n_components > n_features:
             self.n_components = n_features
-        # If n components have been given, pass
+        # If n components have been given a correct value, pass
         elif 1 <= self.n_components <= n_features:
             pass
         # If pov has been passed, return as many n_components as needed.
