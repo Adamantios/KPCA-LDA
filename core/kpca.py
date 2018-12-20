@@ -131,7 +131,7 @@ class KPCA(_Model, _Decomposer):
         # Get the indexes of the negative eigenvalues.
         unwanted_indexes = np.where(eigenvalues < 0)
 
-        if unwanted_indexes.size > 0:
+        if len(unwanted_indexes) > 0:
             warnings.warn('Negative eigenvalues where encountered!', RuntimeWarning)
 
         # Get all the eigenvalues which are not negative and eigenvectors corresponding to them.
