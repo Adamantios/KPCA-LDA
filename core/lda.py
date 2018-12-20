@@ -86,7 +86,7 @@ class Lda(_Decomposer):
 
         return sw
 
-    def _sb(self, x, y, class_means: np.ndarray, x_mean) -> np.ndarray:
+    def _sb(self, class_means: np.ndarray, x_mean) -> np.ndarray:
         """
         Calculates the between class scatter matrix.
 
@@ -96,10 +96,11 @@ class Lda(_Decomposer):
         # Instantiate an array for the between class scatter matrix.
         sb = np.zeros((self._n_features, self._n_features))
 
-        for label, mean_vec, count in zip(self._labels, class_means, self._labels_counts):
-            mean_vec_2d = np.expand_dims(mean_vec, axis=1)
-            x_mean_2d = np.expand_dims(x_mean, axis=1)
-            sb += count * (mean_vec_2d - x_mean_2d).dot((mean_vec_2d - x_mean_2d).T)
+        for mean_vec, count in zip(class_means, self._labels_counts):
+            mean_vec_column = np.expand_dims(mean_vec, axis=1)
+            x_mean_column = np.expand_dims(x_mean, axis=1)
+            diff = mean_vec_column - x_mean_column
+            sb += count * np.dot(diff, diff.T)
 
         return sb
 
@@ -124,7 +125,7 @@ class Lda(_Decomposer):
         sw = self._sw(x, y, class_means)
 
         # Get the between class scatter matrix array.
-        sb = self._sb(x, y, class_means, x_mean)
+        sb = self._sb(class_means, x_mean)
 
         # Calculate the product of the sw's inverse and sb.
         sw_inv_sb = np.dot(np.linalg.inv(sw), sb)
