@@ -103,10 +103,15 @@ class Lda(_Decomposer):
         # Instantiate an array for the between class scatter matrix.
         sb = np.zeros((self._n_features, self._n_features))
 
+        # For every class mean vector.
         for mean_vec, count in zip(class_means, self._labels_counts):
+            # Convert mean vector to a column vector.
             mean_vec_column = np.expand_dims(mean_vec, axis=1)
-            x_mean_column = np.expand_dims(x_mean, axis=1)
-            diff = mean_vec_column - x_mean_column
+            # Get the difference of the current mean vector with the overall mean vector.
+            diff = mean_vec_column - x_mean
+            # Multiply the number of the class instances
+            # with the dot product of the difference with itself's transpose
+            # and sum the result to the Sb matrix.
             sb += count * np.dot(diff, diff.T)
 
         return sb
@@ -131,8 +136,8 @@ class Lda(_Decomposer):
         # Get the within class scatter matrix array.
         sw = self._sw(x, y, class_means)
 
-        # Get the between class scatter matrix array.
-        sb = self._sb(class_means, x_mean)
+        # Get the between class scatter matrix array. Pass x_mean as a column vector.
+        sb = self._sb(class_means, np.expand_dims(x_mean, axis=1))
 
         # Calculate the product of the sw's inverse and sb.
         sw_inv_sb = np.dot(np.linalg.inv(sw), sb)
