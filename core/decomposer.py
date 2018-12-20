@@ -15,6 +15,20 @@ class _Decomposer(ABC):
         pass
 
     @abstractmethod
+    def _pov_to_n_components(self) -> int:
+        """
+        Finds the number of components needed in order to succeed the pov given.
+
+        :return: the number of components.
+        """
+        pass
+
+    @abstractmethod
+    def _check_n_components(self) -> None:
+        """ Checks the validity of the number of components. """
+        pass
+
+    @abstractmethod
     def fit(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         """
         Method to fit the decomposer.
