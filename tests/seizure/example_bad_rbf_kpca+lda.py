@@ -35,14 +35,16 @@ def preprocess(x_train, y_train, x_test):
 
     logger.log('\tApplying Principal Component Analysis with params:')
     pca = KPCA(Kernels.RBF, sigma=1, n_components=178)
-    logger.log('\t' + str(pca.get_params()))
+    pca_params = pca.get_params()
+    logger.log('\t' + str(pca_params))
     pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
     plotter.subfolder = 'pca_analysis/all_components'
     plotter.filename = 'rbf-bad'
     plotter.xlabel = 'Number of Principal Components'
-    plotter.title = 'PCA Analysis\nParameters: {}'.format(pca.get_params())
+    plotter.title = 'POV vs K\nKernel: {} Sigma: {}, Components: {}'. \
+        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.pov_analysis(pca.explained_var)
 
     logger.log('\tApplying Principal Component Analysis with params:')
@@ -53,16 +55,27 @@ def preprocess(x_train, y_train, x_test):
 
     # Plot pca pov vs k.
     plotter.subfolder = 'pca_analysis/pov_{}'.format(kpca_pov)
-    plotter.title = 'PCA Analysis\nParameters: {}'.format(pca.get_params())
+    pca_params = pca.get_params()
+    plotter.title = 'PCA vs K\nKernel: {} Sigma: {}, Components: {}'. \
+        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.pov_analysis(pca.explained_var)
 
     plotter.subfolder = 'scatters/pca/rbf-bad'
     plotter.filename = 'pov_{}_3pcs'.format(kpca_pov)
+    plotter.xlabel = 'pc1'
+    plotter.ylabel = 'pc2'
+    plotter.zlabel = 'pc3'
+    plotter.title = 'The first three Principal Components\nKernel: {} Sigma: {}, Components: {}'. \
+        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.scatter(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
 
+    plotter.title = 'The first two Principal Components\nKernel: {} Sigma: {}, Components: {}'. \
+        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.filename = 'pov_{}_2pcs'.format(kpca_pov)
     plotter.scatter(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
 
+    plotter.title = 'The first Principal Component\nKernel: {} Sigma: {}, Components: {}'. \
+        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.filename = 'pov_{}_1pcs'.format(kpca_pov)
     plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
@@ -81,13 +94,20 @@ def preprocess(x_train, y_train, x_test):
     plotter.title = 'LDA POV vs K\nParameters: {}'.format(pca.get_params())
     plotter.pov_analysis(lda.explained_var)
 
+    # Scatterplot LDA.
     plotter.subfolder = 'scatters/lda/rbf-bad'
+    plotter.title = 'The first 3 LDA features.\nParameters:{}'.format(lda.get_params())
+    plotter.xlabel = 'First LDA Feature'
+    plotter.ylabel = 'Second LDA Feature'
+    plotter.zlabel = 'Third LDA Feature'
     plotter.filename = 'pov_{}_3lds'.format(kpca_pov)
     plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
 
+    plotter.title = 'The first 2 LDA features.\nParameters:{}'.format(lda.get_params())
     plotter.filename = 'pov_{}_2lds'.format(kpca_pov)
     plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
 
+    plotter.title = 'The first LDA feature.\nParameters:{}'.format(lda.get_params())
     plotter.filename = 'pov_{}_1ld'.format(kpca_pov)
     plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
