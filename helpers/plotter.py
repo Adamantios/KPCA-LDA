@@ -39,6 +39,17 @@ class Plotter:
         fig.savefig(self._save_path)
         plt.show()
 
+    def reset_params(self):
+        """ Resets the parameters. """
+        self.subfolder: str = ''
+        self.suptitle: str = ''
+        self.title: str = ''
+        self.filename: str = 'plot'
+        self.extension: str = 'png'
+        self.xlabel: str = ''
+        self.ylabel: str = ''
+        self.zlabel: str = ''
+
     def _plot_eeg(self, eeg):
         """
         Plots an eeg.
