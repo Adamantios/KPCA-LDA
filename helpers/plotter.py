@@ -124,11 +124,13 @@ class Plotter:
         :param y_true: the real value of the classified eegs.
         :param num: the number of eegs to be plotted.
         """
+        filename = self.filename
+
         # Plot num of eegs randomly.
         for eeg, i in self._random_picker(x, num):
             self.suptitle = 'Classified as {}'.format(get_eeg_name(y_pred[eeg]))
             self.title = 'Correct condition is {}'.format(get_eeg_name(y_true[eeg]))
-            self.filename = '{}{}'.format(self.filename, str(i))
+            self.filename = '{}{}'.format(filename, str(i))
             self._plot_eeg(x[eeg])
 
     def plot_classified_genes(self, x, y_pred, y_true, num=None):
@@ -140,11 +142,13 @@ class Plotter:
         :param y_true: the real value of the classified gene expressions.
         :param num: the number of gene expressions to be plotted.
         """
+        filename = self.filename
+
         # Plot num of gene expressions randomly.
         for gene, i in self._random_picker(x, num):
             self.suptitle = 'Classified as {}'.format(get_gene_name(y_pred[gene]))
             self.title = 'Correct condition is {}'.format(get_gene_name(y_true[gene]))
-            self.filename = '{}{}'.format(self.filename, str(i))
+            self.filename = '{}{}'.format(filename, str(i))
             self._plot_gene(x[gene])
 
     def heatmap_correlation(self, data: np.ndarray) -> None:
