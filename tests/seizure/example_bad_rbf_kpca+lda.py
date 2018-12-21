@@ -148,6 +148,7 @@ def display_classification_results(x_test, y_test, y_predicted):
     eegs_indexes = numpy.where(y_test == y_predicted)[0]
     # Plot some random misclassified digits.
     plotter.filename = 'correct'
+    plotter.subfolder = 'eegs'
     plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4)
 
     logger.log('Plotting some random misclassified EEGs.')

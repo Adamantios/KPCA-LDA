@@ -148,6 +148,7 @@ def display_classification_results(x_test, y_test, y_predicted):
     genes_indexes = numpy.where(y_test == y_predicted)[0]
     # Plot some random misclassified Genes.
     plotter.filename = 'correct'
+    plotter.subfolder = 'genes'
     plotter.plot_classified_genes(x_test[genes_indexes, :], y_predicted[genes_indexes], y_test[genes_indexes], num=4)
 
     logger.log('Plotting some random misclassified Genes.')
