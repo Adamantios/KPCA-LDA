@@ -130,7 +130,7 @@ def get_eeg_name(class_num) -> str:
     return class_names.get(class_num, 'Invalid')
 
 
-def get_genes_name(class_num) -> str:
+def get_gene_name(class_num) -> str:
     """
     Return the name of the gene corresponding to the given index.
 
