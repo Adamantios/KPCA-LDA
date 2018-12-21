@@ -67,17 +67,17 @@ def preprocess(x_train, y_train, x_test):
     plotter.zlabel = 'pc3'
     plotter.title = 'The first three Principal Components\nKernel: {} Sigma: {}, Components: {}'. \
         format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
-    plotter.scatter(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
+    plotter.scatter(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_gene_name)
 
     plotter.title = 'The first two Principal Components\nKernel: {} Sigma: {}, Components: {}'. \
         format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.filename = 'pov_{}_2pcs'.format(kpca_pov)
-    plotter.scatter(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
+    plotter.scatter(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_gene_name)
 
     plotter.title = 'The first Principal Component\nKernel: {} Sigma: {}, Components: {}'. \
         format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.filename = 'pov_{}_1pcs'.format(kpca_pov)
-    plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
+    plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_gene_name)
 
     x_test = pca.transform(x_test)
 
@@ -101,15 +101,15 @@ def preprocess(x_train, y_train, x_test):
     plotter.ylabel = 'Second LDA Feature'
     plotter.zlabel = 'Third LDA Feature'
     plotter.filename = 'pov_{}_3lds'.format(kpca_pov)
-    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
+    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_gene_name)
 
     plotter.title = 'The first 2 LDA features.\nParameters:{}'.format(lda.get_params())
     plotter.filename = 'pov_{}_2lds'.format(kpca_pov)
-    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
+    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_gene_name)
 
     plotter.title = 'The first LDA feature.\nParameters:{}'.format(lda.get_params())
     plotter.filename = 'pov_{}_1ld'.format(kpca_pov)
-    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
+    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_gene_name)
 
     return x_train, y_train, x_test
 
