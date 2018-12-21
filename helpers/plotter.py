@@ -58,6 +58,9 @@ class Plotter:
         """
         self._create_plot_folder()
 
+        # Use a style.
+        plt.style.use('seaborn-white')
+
         # Create a subplot.
         fig, ax = plt.subplots(figsize=(9, 4))
         # Create a super title.
@@ -79,6 +82,9 @@ class Plotter:
         :param gene: the gene expression to be plotted.
         """
         self._create_plot_folder()
+
+        # Use a style.
+        plt.style.use('seaborn-white')
 
         # Create a subplot.
         fig, ax = plt.subplots(figsize=(9, 4))
@@ -159,6 +165,9 @@ class Plotter:
         """
         self._create_plot_folder()
 
+        # Use a style.
+        plt.style.use('seaborn-white')
+
         # Create a subplot.
         fig, ax = plt.subplots()
 
@@ -193,11 +202,11 @@ class Plotter:
 
         self._create_plot_folder()
 
-        # Create a figure.
-        fig = plt.figure(figsize=(10, 8))
-
         # Use a style.
         plt.style.use('seaborn-white')
+
+        # Create a figure.
+        fig = plt.figure(figsize=(10, 8))
 
         # Get the class labels and count each label's instances.
         labels, counts = np.unique(y, return_counts=True)
@@ -265,14 +274,15 @@ class Plotter:
         """
         self._create_plot_folder()
 
+        # Use a style.
+        plt.style.use('seaborn-darkgrid')
+
         # Convert values to percentage, round them and cumulative sum all the variance ratios, so that we get an array,
         # which contains the total proportion of variance explained with as many components as it's index.
         pov = np.cumsum(np.round(explained_var_ratio, decimals=4) * 100)
 
         # Create a subplot.
         fig, ax = plt.subplots(figsize=(10, 8))
-        # Use a style.
-        plt.style.use('seaborn-darkgrid')
 
         # Set labels, title and y tick limits and create the plot.
         ax.set_ylabel('POV')
