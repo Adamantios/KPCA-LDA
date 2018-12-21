@@ -145,15 +145,17 @@ def display_classification_results(x: numpy.ndarray, y_true: numpy.ndarray, y_pr
     # Get indexes of correctly classified digits.
     digits_indexes = numpy.where(y_true == y_predicted)[0]
     # Plot some random correctly classified digits.
+    plotter.filename = 'correct'
     plotter.plot_classified_digits(x[digits_indexes, :], y_predicted[digits_indexes], y_true[digits_indexes],
-                                   num=num_of_correct, filename='correct')
+                                   num=num_of_correct)
 
     logger.log('Plotting some random misclassified digits.')
     # Get indexes of misclassified digits.
     digits_indexes = numpy.where(y_true != y_predicted)[0]
     # Plot some random misclassified digits.
+    plotter.filename = 'misclassified'
     plotter.plot_classified_digits(x[digits_indexes, :], y_predicted[digits_indexes], y_true[digits_indexes],
-                                   num=num_of_missed, filename='misclassified')
+                                   num=num_of_missed)
 
 
 def main():
