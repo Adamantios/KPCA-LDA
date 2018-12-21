@@ -77,7 +77,7 @@ def preprocess(x_train, y_train, x_test):
     # Plot lda pov vs k.
     plotter.subfolder = 'lda_analysis/pov_{}'.format(kpca_pov)
     plotter.filename = 'rbf-bad'
-    plotter.xlabel = 'Number of LD Components'
+    plotter.xlabel = 'Number of LDA Features'
     plotter.title = 'LDA POV vs K\nParameters: {}'.format(pca.get_params())
     plotter.pov_analysis(lda.explained_var)
 
