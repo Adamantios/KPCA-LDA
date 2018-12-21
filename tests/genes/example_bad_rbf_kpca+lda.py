@@ -83,7 +83,8 @@ def preprocess(x_train, y_train, x_test):
 
     logger.log('\tApplying Linear Discriminant Analysis with params:')
     lda = Lda()
-    logger.log('\t' + str(lda.get_params()))
+    lda_params = lda.get_params()
+    logger.log('\t' + str(lda_params))
     x_train = lda.fit_transform(x_train, y_train)
     x_test = lda.transform(x_test)
 
@@ -91,23 +92,23 @@ def preprocess(x_train, y_train, x_test):
     plotter.subfolder = 'lda_analysis/pov_{}'.format(kpca_pov)
     plotter.filename = 'rbf-bad'
     plotter.xlabel = 'Number of LDA Features'
-    plotter.title = 'LDA POV vs K\nParameters: {}'.format(pca.get_params())
+    plotter.title = 'LDA POV vs K\nComponents: {}'.format(lda_params['n_components'])
     plotter.pov_analysis(lda.explained_var)
 
     # Scatterplot LDA.
     plotter.subfolder = 'scatters/lda/rbf-bad'
-    plotter.title = 'The first 3 LDA features.\nParameters:{}'.format(lda.get_params())
+    plotter.title = 'The first 3 LDA features.\nComponents: {}'.format(lda_params['n_components'])
     plotter.xlabel = 'First LDA Feature'
     plotter.ylabel = 'Second LDA Feature'
     plotter.zlabel = 'Third LDA Feature'
     plotter.filename = 'pov_{}_3lds'.format(kpca_pov)
     plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_gene_name)
 
-    plotter.title = 'The first 2 LDA features.\nParameters:{}'.format(lda.get_params())
+    plotter.title = 'The first 2 LDA features.\nComponents: {}'.format(lda_params['n_components'])
     plotter.filename = 'pov_{}_2lds'.format(kpca_pov)
     plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_gene_name)
 
-    plotter.title = 'The first LDA feature.\nParameters:{}'.format(lda.get_params())
+    plotter.title = 'The first LDA feature.\nComponents: {}'.format(lda_params['n_components'])
     plotter.filename = 'pov_{}_1ld'.format(kpca_pov)
     plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_gene_name)
 
