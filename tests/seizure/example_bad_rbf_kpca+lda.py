@@ -56,7 +56,7 @@ def preprocess(x_train, y_train, x_test):
     # Plot pca pov vs k.
     plotter.subfolder = 'pca_analysis/pov_{}'.format(kpca_pov)
     pca_params = pca.get_params()
-    plotter.title = 'PCA vs K\nKernel: {} Sigma: {}, Components: {}'. \
+    plotter.title = 'POV vs K\nKernel: {} Sigma: {}, Components: {}'. \
         format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
     plotter.pov_analysis(pca.explained_var)
 
