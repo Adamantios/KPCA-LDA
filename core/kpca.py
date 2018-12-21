@@ -143,7 +143,8 @@ class KPCA(_Model, _Decomposer):
         if self.remove_zeros:
             # Get the indexes of the zero eigenvalues.
             unwanted_indexes = np.where(np.isclose(eigenvalues, 0))
-            # Get all eigenvectors which do not have zero eigenvalues.
+            # Get all the eigenvalues which are not zero and eigenvectors corresponding to them.
+            eigenvalues = np.delete(eigenvalues, unwanted_indexes)
             eigenvectors = np.delete(eigenvectors, unwanted_indexes, axis=1)
 
         # Sort the eigenvectors and the eigenvalues in descending order.
