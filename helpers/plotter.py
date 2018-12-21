@@ -223,8 +223,8 @@ class Plotter:
 
         # Set labels, title and y tick limits and create the plot.
         ax.set_ylabel('POV')
-        ax.set_xlabel('Number of Features')
-        ax.set_title('POV Analysis')
+        ax.set_xlabel(self.xlabel)
+        ax.set_title(self.title)
         ax.set_ylim(0, 100)
         ax.plot(range(1, len(pov) + 1, 1), pov)
 
