@@ -4,7 +4,7 @@ from os.path import join
 from typing import Generator, Tuple, Callable
 from matplotlib import pyplot as plt
 from helpers.utils import create_folder
-from helpers.datasets import get_eeg_name
+from helpers.datasets import get_eeg_name, get_gene_name
 from mpl_toolkits.mplot3d import Axes3D
 
 
@@ -72,6 +72,28 @@ class Plotter:
 
         self._save_and_show(fig)
 
+    def _plot_gene(self, gene):
+        """
+        Plots a gene expression.
+
+        :param gene: the gene expression to be plotted.
+        """
+        self._create_plot_folder()
+
+        # Create a subplot.
+        fig, ax = plt.subplots(figsize=(9, 4))
+        # Create a super title.
+        fig.suptitle('{}\n{}'.format(self.suptitle, self.title), fontsize='large')
+        # Create the plot.
+        ax.plot(gene)
+
+        # Remove xticks, add xlabel and ylabel.
+        ax.set_xticks([])
+        ax.set_xlabel("Gene expression", fontsize='large')
+        ax.set_ylabel("Value", fontsize='large')
+
+        self._save_and_show(fig)
+
     @staticmethod
     def _random_picker(x: np.ndarray, num: int) -> Generator[Tuple[np.ndarray, int], None, None]:
         """
@@ -108,6 +130,22 @@ class Plotter:
             self.title = 'Correct condition is {}'.format(get_eeg_name(y_true[eeg]))
             self.filename = '{}{}'.format(self.filename, str(i))
             self._plot_eeg(x[eeg])
+
+    def plot_classified_genes(self, x, y_pred, y_true, num=None):
+        """
+        Plots and saves a certain number of classified gene expressions.
+
+        :param x: the gene expressions.
+        :param y_pred: the predicted values of the classified gene expressions.
+        :param y_true: the real value of the classified gene expressions.
+        :param num: the number of gene expressions to be plotted.
+        """
+        # Plot num of gene expressions randomly.
+        for gene, i in self._random_picker(x, num):
+            self.suptitle = 'Classified as {}'.format(get_gene_name(y_pred[gene]))
+            self.title = 'Correct condition is {}'.format(get_gene_name(y_true[gene]))
+            self.filename = '{}{}'.format(self.filename, str(i))
+            self._plot_gene(x[gene])
 
     def heatmap_correlation(self, data: np.ndarray) -> None:
         """
