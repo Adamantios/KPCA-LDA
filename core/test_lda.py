@@ -17,14 +17,14 @@ class TestLda(TestCase):
 
         w = lda.transform(self._x)
         print('Transformed X:\n{}\n'.format(w))
-        self._plotter.scatter_pcs(w, self._y)
+        self._plotter.scatter(w, self._y)
 
         print('Scikit:\n')
 
         scikit_lda = LinearDiscriminantAnalysis(solver='eigen')
         scikit_w = scikit_lda.fit_transform(self._x, self._y)
         print('Transformed X:\n{}\n'.format(scikit_w))
-        self._plotter.scatter_pcs(scikit_w, self._y)
+        self._plotter.scatter(scikit_w, self._y)
 
     def test_transform(self):
         self.fail()

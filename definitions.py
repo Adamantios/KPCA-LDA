@@ -14,11 +14,6 @@ DATASET_SEIZURE_TRAIN = 'epileptic_seizure_train.csv'
 # The seizure detection test dataset's filename.
 DATASET_SEIZURE_TEST = 'epileptic_seizure_test.csv'
 
-# The digits recognition train dataset's filename.
-DATASET_DIGITS_TRAIN = 'mnist_train.csv'
-# The digits recognition test dataset's filename.
-DATASET_DIGITS_TEST = 'mnist_test.csv'
-
 # The genes data filename.
 DATA_GENES = 'genes.csv'
 # The genes labels filename.
@@ -43,11 +38,6 @@ __SEIZURE_PATH = join(__ROOT, DATASETS, DATASET_SEIZURE)
 __SEIZURE_TRAIN_PATH = join(__ROOT, DATASETS, DATASET_SEIZURE_TRAIN)
 # The path to the seizure detection test dataset.
 __SEIZURE_TEST_PATH = join(__ROOT, DATASETS, DATASET_SEIZURE_TEST)
-
-# The path to the digits recognition train dataset.
-__DIGITS_TRAIN_PATH = join(__ROOT, DATASETS, DATASET_DIGITS_TRAIN)
-# The path to the digits recognition train dataset.
-__DIGITS_TEST_PATH = join(__ROOT, DATASETS, DATASET_DIGITS_TEST)
 
 # The path to the genes data.
 __GENES_DATA_PATH = join(__ROOT, DATASETS, DATA_GENES)

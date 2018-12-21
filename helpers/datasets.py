@@ -3,27 +3,11 @@ from pathlib import Path
 from typing import Tuple, List
 from pandas import read_csv, DataFrame
 from sklearn.model_selection import train_test_split
-from definitions import __DIGITS_TEST_PATH, __DIGITS_TRAIN_PATH, __SEIZURE_PATH, __SEIZURE_TEST_PATH, \
-    __SEIZURE_TRAIN_PATH, __GENES_DATA_PATH, __GENES_LABELS_PATH, __GENES_TEST_PATH, __GENES_TRAIN_PATH
+from definitions import __SEIZURE_PATH, __SEIZURE_TEST_PATH, __SEIZURE_TRAIN_PATH, __GENES_DATA_PATH, \
+    __GENES_LABELS_PATH, __GENES_TEST_PATH, __GENES_TRAIN_PATH
 
 Labels = List[str]
 Dataset = Tuple[numpy.ndarray, numpy.ndarray]
-
-
-def _get_mnist_labels() -> Labels:
-    """
-    Creates labels for the mnist dataset attributes.
-
-    :return: List of strings containing the labels.
-    """
-    # Create a list with the prediction label's name.
-    names = ['number']
-
-    # For every pixel, create a label containing the word 'pixel', followed by its index.
-    for i in range(784):
-        names.append('pixel' + str(i))
-
-    return names
 
 
 def load_genes(train: bool = True) -> Dataset:
@@ -39,32 +23,6 @@ def load_genes(train: bool = True) -> Dataset:
     le = preprocessing.LabelEncoder()
 
     return x, le.fit_transform(y)
-
-
-def load_digits(train: bool = True) -> Dataset:
-    """
-    Loads the mnist handwritten digits dataset.
-
-    :param train: whether to load the train or the test data.
-    If True, returns the train.
-
-    If False, returns the test.
-
-    Default value: True
-
-    :return: Array containing the mnist handwritten digits dataset.
-    """
-    # Create a filename based on the train value.
-    filename = __DIGITS_TRAIN_PATH if train else __DIGITS_TEST_PATH
-
-    # Read the dataset and get its values.
-    dataset = read_csv(filename, names=_get_mnist_labels(), nrows=2500).values
-
-    # Get x and y.
-    x = dataset[:, 1:]
-    y = dataset[:, 0]
-
-    return x, y
 
 
 def load_seizure(train: bool = True) -> Dataset:

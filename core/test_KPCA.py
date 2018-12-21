@@ -26,7 +26,7 @@ class TestLinearKPCA(TestCase):
     print('Mine \n{}'.format(my_results))
     print('Scikit\'s \n{}'.format(scikit_results))
 
-    plotter.scatter_pcs(kpca.alphas[:, 0], np.array([0, 1, 1, 0]))
+    plotter.scatter(kpca.alphas[:, 0], np.array([0, 1, 1, 0]))
 
 
 class TestPolyKPCA(TestCase):
@@ -64,17 +64,17 @@ class TestMinKernel(TestCase):
 class TestPlot(TestCase):
     x, y = make_moons(n_samples=100, random_state=123)
 
-    plotter.scatter_pcs(x, y)
+    plotter.scatter(x, y)
 
     kpca = KPCA(Kernels.RBF, sigma=0.17, n_components=2)
     kpca.fit_transform(x)
 
-    plotter.scatter_pcs(kpca.alphas, y)
+    plotter.scatter(kpca.alphas, y)
 
     kpca = KPCA(Kernels.RBF, sigma=0.17, n_components=1)
     kpca.fit_transform(x)
 
-    plotter.scatter_pcs(kpca.alphas, y)
+    plotter.scatter(kpca.alphas, y)
 
     from matplotlib import pyplot as plt
     plt.figure(figsize=(8, 6))
