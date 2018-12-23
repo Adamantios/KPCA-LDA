@@ -1,6 +1,16 @@
 from os.path import dirname, abspath, join
 
 """------------------------- Can be modified. ------------------------"""
+# TODO change values before handing in.
+
+# Whether plots should be created or not.
+CREATE_PLOTS = False
+
+# Whether plots should be saved or not.
+SAVE_PLOTS = True
+
+# Whether predictions should be saved as an excel file or not.
+SAVE_PRED_RESULTS = False
 
 # The output directory's name.
 OUT_DIR_NAME = 'out'
