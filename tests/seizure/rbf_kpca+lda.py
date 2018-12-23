@@ -117,7 +117,7 @@ def preprocess(x_train, y_train, x_test):
 
 def fit_predict(x_train, y_train, x_test):
     logger.log('Creating KNN model with params:')
-    model = neighbors.KNeighborsClassifier(30)
+    model = neighbors.KNeighborsClassifier(50)
     logger.log(model.get_params())
 
     logger.log('Fitting model...')
