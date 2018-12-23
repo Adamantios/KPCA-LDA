@@ -33,7 +33,7 @@ def preprocess(x_train, y_train, x_test):
     x_train = scaler.fit_transform(x_train.astype(float))
     x_test = scaler.transform(x_test.astype(float))
 
-    # logger.log('\tApplying Principal Component Analysis with params:')
+    logger.log('\tApplying Principal Component Analysis with params:')
     pca = KPCA(Kernels.LINEAR, n_components=178)
     pca_params = pca.get_params()
     logger.log('\t' + str(pca_params))
