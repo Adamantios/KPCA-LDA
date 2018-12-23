@@ -1,13 +1,10 @@
 import time
 import numpy
-import pandas
 import helpers
-from core import KPCA, Kernels
+from core import KPCA, Kernels, Lda
 from sklearn import metrics, neighbors
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 # Create a logger and a plotter.
 logger, plotter = helpers.Logger(folder='logs/seizure-tests', filename='poly_kpca+lda'), helpers.Plotter(
@@ -33,57 +30,94 @@ def preprocess(x_train, y_train, x_test):
     logger.log('\tScaling data, using Min Max Scaler with params:')
     scaler = preprocessing.MinMaxScaler((-1, 1))
     logger.log('\t' + str(scaler.get_params()))
-    scaler.fit(x_train.astype(float))
-    x_train = scaler.transform(x_train.astype(float))
+    x_train = scaler.fit_transform(x_train.astype(float))
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.POLYNOMIAL, alpha=0.1, degree=2, n_components=178)
-    logger.log('\t' + str(pca.get_params()))
+    pca = KPCA(Kernels.POLYNOMIAL, degree=3, n_components=178)
+    pca_params = pca.get_params()
+    logger.log('\t' + str(pca_params))
     pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
-    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/all_components', filename='polynomial')
+    plotter.subfolder = 'pca_analysis/all_components'
+    plotter.filename = 'polynomial'
+    plotter.xlabel = 'Number of Principal Components'
+    plotter.title = 'POV vs K\nKernel: {} Degree: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.pov_analysis(pca.explained_var)
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.POLYNOMIAL, alpha=0.1, degree=2, n_components=0.99)
+    kpca_pov = 0.95
+    pca = KPCA(Kernels.POLYNOMIAL, degree=3, n_components=kpca_pov)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
     # Plot pca pov vs k.
-    plotter.pov_analysis(pca.explained_var, subfolder='pca_analysis/pov_0.9', filename='polynomial')
+    plotter.subfolder = 'pca_analysis/pov_{}'.format(kpca_pov)
+    pca_params = pca.get_params()
+    plotter.title = 'POV vs K\nKernel: {} Degree: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.pov_analysis(pca.explained_var)
 
-    plotter.scatter_pcs(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/pca/polynomial', filename='pov_0.9_3pcs')
-    plotter.scatter_pcs(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/pca/polynomial', filename='pov_0.9_2pcs')
-    plotter.scatter_pcs(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/pca/polynomial', filename='pov_0.9_1pc')
+    plotter.subfolder = 'scatters/pca/polynomial'
+    plotter.filename = 'pov_{}_3pcs'.format(kpca_pov)
+    plotter.xlabel = 'pc1'
+    plotter.ylabel = 'pc2'
+    plotter.zlabel = 'pc3'
+    plotter.title = 'The first three Principal Components\nKernel: {} Degree: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.scatter(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
+
+    plotter.title = 'The first two Principal Components\nKernel: {} Degree: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.filename = 'pov_{}_2pcs'.format(kpca_pov)
+    plotter.scatter(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
+
+    plotter.title = 'The first Principal Component\nKernel: {} Degree: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.filename = 'pov_{}_1pcs'.format(kpca_pov)
+    plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     x_test = pca.transform(x_test)
 
     logger.log('\tApplying Linear Discriminant Analysis with params:')
-    lda = LinearDiscriminantAnalysis()
-    logger.log('\t' + str(lda.get_params()))
+    lda = Lda()
+    lda_params = lda.get_params()
+    logger.log('\t' + str(lda_params))
     x_train = lda.fit_transform(x_train, y_train)
     x_test = lda.transform(x_test)
 
     # Plot lda pov vs k.
-    plotter.pov_analysis(lda.explained_variance_ratio_, subfolder='lda_analysis/pov_0.9', filename='polynomial')
+    plotter.subfolder = 'lda_analysis/pov_{}'.format(kpca_pov)
+    plotter.filename = 'polynomial'
+    plotter.xlabel = 'Number of LDA Features'
+    plotter.title = 'LDA POV vs K\nComponents: {}'.format(lda_params['n_components'])
+    plotter.pov_analysis(lda.explained_var)
 
-    plotter.scatter_pcs(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/lda/polynomial', filename='pov_0.9_3pcs')
-    plotter.scatter_pcs(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/lda/polynomial', filename='pov_0.9_2pcs')
-    plotter.scatter_pcs(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name,
-                        subfolder='scatters/lda/polynomial', filename='pov_0.9_1pc')
+    # Scatterplot LDA.
+    plotter.subfolder = 'scatters/lda/polynomial'
+    plotter.title = 'The first 3 LDA features.\nComponents: {}'.format(lda_params['n_components'])
+    plotter.xlabel = 'First LDA Feature'
+    plotter.ylabel = 'Second LDA Feature'
+    plotter.zlabel = 'Third LDA Feature'
+    plotter.filename = 'pov_{}_3lds'.format(kpca_pov)
+    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
+
+    plotter.title = 'The first 2 LDA features.\nComponents: {}'.format(lda_params['n_components'])
+    plotter.filename = 'pov_{}_2lds'.format(kpca_pov)
+    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
+
+    plotter.title = 'The first LDA feature.\nComponents: {}'.format(lda_params['n_components'])
+    plotter.filename = 'pov_{}_1ld'.format(kpca_pov)
+    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     return x_train, y_train, x_test
 
 
 def fit_predict(x_train, y_train, x_test):
     logger.log('Creating KNN model with params:')
-    model = neighbors.KNeighborsClassifier()
+    model = neighbors.KNeighborsClassifier(30)
     logger.log(model.get_params())
 
     logger.log('Fitting model...')
@@ -101,8 +135,8 @@ def fit_predict(x_train, y_train, x_test):
     return y_predicted
 
 
-def show_prediction_info(y_test, y_predicted, save: bool = True, folder: str = 'results',
-                         filename: str = 'seizure_detection_train', extension: str = 'xlsx',
+def show_prediction_info(y_test, y_predicted, save: bool = True, folder: str = 'results/seizure-tests',
+                         filename: str = 'polynomial', extension: str = 'xlsx',
                          sheet_name: str = 'results'):
     # Get the accuracy of each class.
     accuracies = helpers.utils.cm_to_accuracies(metrics.confusion_matrix(y_test, y_predicted))
@@ -134,42 +168,33 @@ def display_classification_results(x_test, y_test, y_predicted):
     # Get indexes of misclassified digits.
     eegs_indexes = numpy.where(y_test == y_predicted)[0]
     # Plot some random misclassified digits.
-    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4,
-                                 filename='correct')
+    plotter.filename = 'correct'
+    plotter.subfolder = 'eegs'
+    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4)
 
     logger.log('Plotting some random misclassified EEGs.')
     # Get indexes of misclassified digits.
     eegs_indexes = numpy.where(y_test != y_predicted)[0]
     # Plot some random misclassified digits.
-    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4,
-                                 filename='misclassified')
+    plotter.filename = 'misclassified'
+    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4)
 
 
 def main():
     # Get x and y pairs.
     x_train, y_train, x_test, y_test = get_x_y()
 
-    # logger.log('Creating heatmap of the training samples correlation...')
-    # plotter.heatmap_correlation(pandas.DataFrame(x_train).corr(), 'Features', 'Features')
-
     # Preprocess data.
     x_train_clean, y_train_clean, x_test_clean = preprocess(x_train, y_train, x_test)
-
-    # logger.log('Creating heatmap of the principal components correlation...')
-    # plotter.heatmap_correlation(pandas.DataFrame(pca_components).corr(),
-    #                             'Principal components', 'Principal components', filename='heatmap_pca_corr')
-
-    # logger.log('Creating heatmap of the principal components and initial features correlation...')
-    # plotter.heatmap_correlation(pca_components, 'Features', 'Principal components', filename='heatmap_pca')
 
     # Create model, fit and predict.
     y_predicted = fit_predict(x_train_clean, y_train_clean, x_test_clean)
 
     # Show prediction information.
-    show_prediction_info(y_test, y_predicted)
+    show_prediction_info(y_test, y_predicted, save=False)
 
     # Show some of the classification results.
-    display_classification_results(x_test, y_test, y_predicted)
+    # display_classification_results(x_test, y_test, y_predicted)
 
     # Close the logger.
     logger.close()
