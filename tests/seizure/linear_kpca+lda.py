@@ -136,7 +136,7 @@ def fit_predict(x_train, y_train, x_test):
 
 
 def show_prediction_info(y_test, y_predicted, save: bool = True, folder: str = 'results/seizure-tests',
-                         filename: str = 'example-bad', extension: str = 'xlsx',
+                         filename: str = 'linear', extension: str = 'xlsx',
                          sheet_name: str = 'results'):
     # Get the accuracy of each class.
     accuracies = helpers.utils.cm_to_accuracies(metrics.confusion_matrix(y_test, y_predicted))
