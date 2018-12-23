@@ -34,7 +34,7 @@ def preprocess(x_train, y_train, x_test):
     x_test = scaler.transform(x_test.astype(float))
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.POLYNOMIAL, degree=3, n_components=178)
+    pca = KPCA(Kernels.POLYNOMIAL, degree=3, alpha=0.001, n_components=178)
     pca_params = pca.get_params()
     logger.log('\t' + str(pca_params))
     pca.fit_transform(x_train)
@@ -49,7 +49,7 @@ def preprocess(x_train, y_train, x_test):
 
     logger.log('\tApplying Principal Component Analysis with params:')
     kpca_pov = 0.95
-    pca = KPCA(Kernels.POLYNOMIAL, degree=3, n_components=kpca_pov)
+    pca = KPCA(Kernels.POLYNOMIAL, degree=3, alpha=0.001, n_components=kpca_pov)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
@@ -65,17 +65,17 @@ def preprocess(x_train, y_train, x_test):
     plotter.xlabel = 'pc1'
     plotter.ylabel = 'pc2'
     plotter.zlabel = 'pc3'
-    plotter.title = 'The first three Principal Components\nKernel: {} Degree: {} Components: {}'. \
-        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.title = 'The first three Principal Components\nKernel: {} Degree: {} Alpha: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['alpha'], pca_params['n_components'])
     plotter.scatter(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
 
-    plotter.title = 'The first two Principal Components\nKernel: {} Degree: {} Components: {}'. \
-        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.title = 'The first two Principal Components\nKernel: {} Degree: {} Alpha: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['alpha'], pca_params['n_components'])
     plotter.filename = 'pov_{}_2pcs'.format(kpca_pov)
     plotter.scatter(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
 
-    plotter.title = 'The first Principal Component\nKernel: {} Degree: {} Components: {}'. \
-        format(pca_params['kernel'], pca_params['degree'], pca_params['n_components'])
+    plotter.title = 'The first Principal Component\nKernel: {} Degree: {} Alpha: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['degree'], pca_params['alpha'], pca_params['n_components'])
     plotter.filename = 'pov_{}_1pcs'.format(kpca_pov)
     plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
