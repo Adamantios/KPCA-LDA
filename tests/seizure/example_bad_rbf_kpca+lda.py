@@ -102,15 +102,15 @@ def preprocess(x_train, y_train, x_test):
     plotter.ylabel = 'Second LDA Feature'
     plotter.zlabel = 'Third LDA Feature'
     plotter.filename = 'pov_{}_3lds'.format(kpca_pov)
-    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_gene_name)
+    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     plotter.title = 'The first 2 LDA features.\nComponents: {}'.format(lda_params['n_components'])
     plotter.filename = 'pov_{}_2lds'.format(kpca_pov)
-    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_gene_name)
+    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     plotter.title = 'The first LDA feature.\nComponents: {}'.format(lda_params['n_components'])
     plotter.filename = 'pov_{}_1ld'.format(kpca_pov)
-    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_gene_name)
+    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     return x_train, y_train, x_test
 
