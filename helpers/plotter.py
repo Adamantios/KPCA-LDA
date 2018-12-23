@@ -3,6 +3,7 @@ import numpy as np
 from os.path import join
 from typing import Generator, Tuple, Callable
 from matplotlib import pyplot as plt
+from definitions import SAVE_PLOTS
 from helpers.utils import create_folder
 from helpers.datasets import get_eeg_name, get_gene_name
 from mpl_toolkits.mplot3d import Axes3D
@@ -36,7 +37,9 @@ class Plotter:
         filename = self.filename + '.' + self.extension
         self._save_path = join(self._folder, self.subfolder, filename)
 
-        fig.savefig(self._save_path)
+        if SAVE_PLOTS:
+            fig.savefig(self._save_path)
+
         plt.show()
 
     def reset_params(self):
