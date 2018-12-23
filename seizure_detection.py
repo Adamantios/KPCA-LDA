@@ -6,9 +6,10 @@ from sklearn import metrics, neighbors
 from sklearn import preprocessing
 from definitions import CREATE_PLOTS, SAVE_PRED_RESULTS
 
-# Create a logger and a plotter.
+# Create a logger.
 logger = helpers.Logger(folder='logs', filename='seizure_detection')
 
+# If plots are enabled, create a plotter.
 if CREATE_PLOTS:
     plotter = helpers.Plotter(folder='plots')
 
