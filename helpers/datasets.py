@@ -32,8 +32,8 @@ def load_genes(train: bool = True) -> Dataset:
         # Read the dataset an get its values.
         # Use string datatypes, so that we take the information as it is.
         # If floats were to be used, then the labels would be converted to floats too.
-        x = read_csv(__GENES_DATA_PATH)
-        y = read_csv(__GENES_LABELS_PATH)
+        x = read_csv(__GENES_DATA_PATH, engine='python')
+        y = read_csv(__GENES_LABELS_PATH, engine='python')
         # Get x and y.
         x, y = x.iloc[:, 1:].values, y.iloc[:, 1].values
 
@@ -46,7 +46,7 @@ def load_genes(train: bool = True) -> Dataset:
     # Create a filename based on the train value.
     filename = train_file.absolute() if train else test_file.absolute()
     # Read the dataset.
-    dataset = read_csv(filename)
+    dataset = read_csv(filename, engine='python')
     # Get x and y.
     x, y = dataset.iloc[:, :-1].values, dataset.iloc[:, -1].values
 
@@ -75,7 +75,7 @@ def load_seizure(train: bool = True) -> Dataset:
         # Read the dataset an get its values.
         # Use string datatypes, so that we take the information as it is.
         # If floats were to be used, then the labels would be converted to floats too.
-        dataset = read_csv(__SEIZURE_PATH)
+        dataset = read_csv(__SEIZURE_PATH, engine='python')
         # Get x and y.
         x, y = dataset.iloc[:, :-1].values, dataset.iloc[:, -1].values
         database_split(x, y, train_file.absolute(), test_file.absolute())
@@ -83,7 +83,7 @@ def load_seizure(train: bool = True) -> Dataset:
     # Create a filename based on the train value.
     filename = train_file.absolute() if train else test_file.absolute()
     # Read the dataset.
-    dataset = read_csv(filename)
+    dataset = read_csv(filename, engine='python')
     # Drop irrelevant data.
     dataset.drop(dataset.columns[[0]], axis=1, inplace=True)
     # Get x and y.
