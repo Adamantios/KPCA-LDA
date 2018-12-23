@@ -194,7 +194,7 @@ def main():
     show_prediction_info(y_test, y_predicted)
 
     # Show some of the classification results.
-    display_classification_results(x_test, y_test, y_predicted)
+    # display_classification_results(x_test, y_test, y_predicted)
 
     # Close the logger.
     logger.close()
