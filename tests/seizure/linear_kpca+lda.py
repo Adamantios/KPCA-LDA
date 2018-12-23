@@ -33,7 +33,7 @@ def preprocess(x_train, y_train, x_test):
     x_train = scaler.fit_transform(x_train.astype(float))
     x_test = scaler.transform(x_test.astype(float))
 
-    logger.log('\tApplying Principal Component Analysis with params:')
+    # logger.log('\tApplying Principal Component Analysis with params:')
     pca = KPCA(Kernels.LINEAR, n_components=178)
     pca_params = pca.get_params()
     logger.log('\t' + str(pca_params))
@@ -102,22 +102,22 @@ def preprocess(x_train, y_train, x_test):
     plotter.ylabel = 'Second LDA Feature'
     plotter.zlabel = 'Third LDA Feature'
     plotter.filename = 'pov_{}_3lds'.format(kpca_pov)
-    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_gene_name)
+    plotter.scatter(x_train[:, :3], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     plotter.title = 'The first 2 LDA features.\nComponents: {}'.format(lda_params['n_components'])
     plotter.filename = 'pov_{}_2lds'.format(kpca_pov)
-    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_gene_name)
+    plotter.scatter(x_train[:, :2], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     plotter.title = 'The first LDA feature.\nComponents: {}'.format(lda_params['n_components'])
     plotter.filename = 'pov_{}_1ld'.format(kpca_pov)
-    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_gene_name)
+    plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
     return x_train, y_train, x_test
 
 
 def fit_predict(x_train, y_train, x_test):
     logger.log('Creating KNN model with params:')
-    model = neighbors.KNeighborsClassifier(15)
+    model = neighbors.KNeighborsClassifier(30)
     logger.log(model.get_params())
 
     logger.log('Fitting model...')
