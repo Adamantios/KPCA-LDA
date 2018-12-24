@@ -27,6 +27,10 @@ def get_x_y():
 def preprocess(x_train, y_train, x_test):
     logger.log('Preprocessing...')
 
+    logger.log('\tSymmetrizing training dataset...')
+    x_train, y_train = helpers.preprocessing.symmetrize_dataset(x_train, y_train, 70)
+    logger.log('\t' + str(len(y_train)) + ' training data remained')
+
     logger.log('\tScaling data, using Min Max Scaler with params:')
     scaler = preprocessing.MinMaxScaler()
     logger.log('\t' + str(scaler.get_params()))
@@ -48,8 +52,8 @@ def preprocess(x_train, y_train, x_test):
     plotter.pov_analysis(pca.explained_var)
 
     logger.log('\tApplying Principal Component Analysis with params:')
-    kpca_pov = 0.99
-    pca = KPCA(Kernels.RBF, sigma=1, n_components=kpca_pov)
+    kpca_pov = 0.9
+    pca = KPCA(Kernels.RBF, sigma=50, n_components=kpca_pov)
     logger.log('\t' + str(pca.get_params()))
     x_train = pca.fit_transform(x_train)
 
