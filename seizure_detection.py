@@ -104,9 +104,6 @@ def preprocess(x_train, y_train, x_test):
     x_train = pca.fit_transform(x_train)
     x_test = pca.transform(x_test)
 
-    if CREATE_PLOTS:
-        plot_pca(pca, y_train)
-
     # Apply LDA.
     logger.log('\tApplying Linear Discriminant Analysis with params:')
     lda = Lda()
@@ -115,6 +112,7 @@ def preprocess(x_train, y_train, x_test):
     x_test = lda.transform(x_test)
 
     if CREATE_PLOTS:
+        plot_pca(pca, y_train)
         plot_lda(lda, x_train, y_train)
 
     return x_train, y_train, x_test
