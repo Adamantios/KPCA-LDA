@@ -191,10 +191,10 @@ def main():
     y_predicted = fit_predict(x_train_clean, y_train_clean, x_test_clean)
 
     # Show prediction information.
-    show_prediction_info(y_test, y_predicted)
+    show_prediction_info(y_test, y_predicted, save=False)
 
     # Show some of the classification results.
-    display_classification_results(x_test, y_test, y_predicted)
+    # display_classification_results(x_test, y_test, y_predicted)
 
     # Close the logger.
     logger.close()
