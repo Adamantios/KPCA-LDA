@@ -1,13 +1,12 @@
 from os.path import dirname, abspath, join
 
 """------------------------- Can be modified. ------------------------"""
-# TODO change values before handing in.
 
 # Whether plots should be created or not.
-CREATE_PLOTS = False
+CREATE_PLOTS = True
 
 # Whether plots should be saved or not.
-SAVE_PLOTS = True
+SAVE_PLOTS = False
 
 # Whether predictions should be saved as an excel file or not.
 SAVE_PRED_RESULTS = False
