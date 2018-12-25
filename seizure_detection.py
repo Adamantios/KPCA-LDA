@@ -1,5 +1,5 @@
 import time
-import numpy
+import numpy as np
 import helpers
 from core import KPCA, Kernels, Lda
 from sklearn import metrics, neighbors
@@ -168,7 +168,7 @@ def show_prediction_info(y_test, y_predicted, folder: str = 'results/seizure-tes
 def display_classification_results(x_test, y_test, y_predicted):
     logger.log('Plotting some random correctly classified EEGs.')
     # Get indexes of misclassified digits.
-    eegs_indexes = numpy.where(y_test == y_predicted)[0]
+    eegs_indexes = np.where(y_test == y_predicted)[0]
     # Plot some random misclassified digits.
     plotter.filename = 'correct'
     plotter.subfolder = 'eegs'
@@ -176,7 +176,7 @@ def display_classification_results(x_test, y_test, y_predicted):
 
     logger.log('Plotting some random misclassified EEGs.')
     # Get indexes of misclassified digits.
-    eegs_indexes = numpy.where(y_test != y_predicted)[0]
+    eegs_indexes = np.where(y_test != y_predicted)[0]
     # Plot some random misclassified digits.
     plotter.filename = 'misclassified'
     plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=8)
