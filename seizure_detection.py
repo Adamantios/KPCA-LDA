@@ -220,14 +220,14 @@ def display_classification_results(x_test: np.ndarray, y_test: np.ndarray, y_pre
     # Plot some random misclassified digits.
     plotter.filename = 'correct'
     plotter.subfolder = 'eegs'
-    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=8)
+    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4)
 
     logger.log('Plotting some random misclassified EEGs.')
     # Get indexes of misclassified digits.
     eegs_indexes = np.where(y_test != y_predicted)[0]
     # Plot some random misclassified digits.
     plotter.filename = 'misclassified'
-    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=8)
+    plotter.plot_classified_eegs(x_test[eegs_indexes, :], y_predicted[eegs_indexes], y_test[eegs_indexes], num=4)
 
 
 def main():
