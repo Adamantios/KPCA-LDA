@@ -5,6 +5,7 @@ from core import KPCA, Kernels, LDA
 from sklearn import metrics, neighbors
 from sklearn import preprocessing
 from definitions import CREATE_PLOTS, SAVE_PRED_RESULTS
+from typing import Tuple
 
 # Create a logger.
 logger = helpers.Logger(folder='logs', filename='seizure_detection')
@@ -14,7 +15,8 @@ if CREATE_PLOTS:
     plotter = helpers.Plotter(folder='plots')
 
 
-def get_x_y():
+def get_x_y() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """ Gets x and y train and test pairs. """
     logger.log('Loading Dataset...')
     x_train, y_train = helpers.datasets.load_seizure()
     logger.log(str(len(y_train)) + ' training data loaded')
@@ -25,7 +27,13 @@ def get_x_y():
     return x_train, y_train, x_test, y_test
 
 
-def plot_pca(pca, y_train):
+def plot_pca(pca: KPCA, y_train: np.ndarray) -> None:
+    """
+    Creates pca related plots.
+
+    :param pca: the pca object.
+    :param y_train: the y train values.
+    """
     # Plot pca pov vs k.
     pca_params = pca.get_params()
     plotter.subfolder = 'pov_analysis'
@@ -58,7 +66,14 @@ def plot_pca(pca, y_train):
     plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
 
-def plot_lda(lda, x_train, y_train):
+def plot_lda(lda: LDA, x_train: np.ndarray, y_train: np.ndarray) -> None:
+    """
+    Creates lda related plots.
+
+    :param lda: the lda object.
+    :param x_train: the x train values.
+    :param y_train: the y train values.
+    """
     # Plot lda pov vs k.
     lda_params = lda.get_params()
     plotter.subfolder = 'pov_analysis'
@@ -87,7 +102,16 @@ def plot_lda(lda, x_train, y_train):
     plotter.scatter(x_train[:, 0], y_train, class_labels=helpers.datasets.get_eeg_name)
 
 
-def preprocess(x_train, y_train, x_test):
+def preprocess(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarray) \
+        -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Prepocesses data.
+
+    :param x_train: the x train values.
+    :param y_train: the y train values.
+    :param x_test: the x test values.
+    :return: Preprocessed x_train, y_train and x_test.
+    """
     logger.log('Preprocessing...')
 
     # Scale data.
@@ -118,7 +142,15 @@ def preprocess(x_train, y_train, x_test):
     return x_train, y_train, x_test
 
 
-def fit_predict(x_train, y_train, x_test):
+def fit_predict(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarray) -> np.ndarray:
+    """
+    Fits a KNN model and predicts.
+
+    :param x_train: the x train values.
+    :param y_train: the y train values.
+    :param x_test: the x test values.
+    :return: the predicted labels.
+    """
     logger.log('Creating KNN model with params:')
     model = neighbors.KNeighborsClassifier(50)
     logger.log(model.get_params())
@@ -138,8 +170,18 @@ def fit_predict(x_train, y_train, x_test):
     return y_predicted
 
 
-def show_prediction_info(y_test, y_predicted, folder: str = 'results/seizure-tests', filename: str = 'rbf',
-                         extension: str = 'xlsx', sheet_name: str = 'results'):
+def show_prediction_info(y_test: np.ndarray, y_predicted: np.ndarray, folder: str = 'results/genes-tests',
+                         filename: str = 'example-bad', extension: str = 'xlsx', sheet_name: str = 'results') -> None:
+    """
+    Shows information about the predicted data and saves them to an excel file.
+
+    :param y_test: the test label values.
+    :param y_predicted: the predicted label values.
+    :param folder: the folder for the results excel file to be saved.
+    :param filename: the name of the excel file.
+    :param extension: the file's extension.
+    :param sheet_name: the the excel's sheet name.
+    """
     # Get the accuracy of each class.
     accuracies = helpers.utils.cm_to_accuracies(metrics.confusion_matrix(y_test, y_predicted))
 
@@ -165,7 +207,13 @@ def show_prediction_info(y_test, y_predicted, folder: str = 'results/seizure-tes
         helpers.utils.create_excel(results, folder, filename, extension, sheet_name)
 
 
-def display_classification_results(x_test, y_test, y_predicted):
+def display_classification_results(x_test: np.ndarray, y_test: np.ndarray, y_predicted: np.ndarray) -> None:
+    """
+    Randomly plots some correctly classified eegs and some misclassified eegs.
+    :param x_test: the test eeg data.
+    :param y_test: the eeg test labels.
+    :param y_predicted: the predicted labels.
+    """
     logger.log('Plotting some random correctly classified EEGs.')
     # Get indexes of misclassified digits.
     eegs_indexes = np.where(y_test == y_predicted)[0]
