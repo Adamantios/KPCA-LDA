@@ -1,5 +1,4 @@
 import time
-import numpy
 import helpers
 from core import KPCA, Kernels, Lda
 from sklearn import metrics, neighbors
@@ -102,23 +101,23 @@ def preprocess(x_train, y_train, x_test):
     x_train = scaler.fit_transform(x_train.astype(float))
     x_test = scaler.transform(x_test.astype(float))
 
-    # # Apply KPCA
-    # logger.log('\tApplying Principal Component Analysis with params:')
-    # pca = KPCA(Kernels.LINEAR, n_components=0.9)
-    # logger.log('\t' + str(pca.get_params()))
-    # x_train = pca.fit_transform(x_train)
-    # x_test = pca.transform(x_test)
-    #
-    # # Apply LDA
-    # logger.log('\tApplying Linear Discriminant Analysis with params:')
-    # lda = Lda()
-    # logger.log('\t' + str(lda.get_params()))
-    # x_train = lda.fit_transform(x_train, y_train)
-    # x_test = lda.transform(x_test)
-    #
-    # if CREATE_PLOTS:
-    #     plot_pca(pca, y_train)
-    #     plot_lda(lda, x_train, y_train)
+    # Apply KPCA
+    logger.log('\tApplying Principal Component Analysis with params:')
+    pca = KPCA(Kernels.LINEAR, n_components=0.9)
+    logger.log('\t' + str(pca.get_params()))
+    x_train = pca.fit_transform(x_train)
+    x_test = pca.transform(x_test)
+
+    # Apply LDA
+    logger.log('\tApplying Linear Discriminant Analysis with params:')
+    lda = Lda()
+    logger.log('\t' + str(lda.get_params()))
+    x_train = lda.fit_transform(x_train, y_train)
+    x_test = lda.transform(x_test)
+
+    if CREATE_PLOTS:
+        plot_pca(pca, y_train)
+        plot_lda(lda, x_train, y_train)
 
     return x_train, y_train, x_test
 
