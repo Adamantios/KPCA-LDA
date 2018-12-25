@@ -92,7 +92,7 @@ def preprocess(x_train, y_train, x_test):
 
     # Symmetrize dataset.
     logger.log('\tSymmetrizing training dataset...')
-    x_train, y_train = helpers.preprocessing.symmetrize_dataset(x_train, y_train)
+    x_train, y_train = helpers.preprocessing.symmetrize_dataset(x_train, y_train, 87)
     logger.log('\t' + str(len(y_train)) + ' training data remained')
 
     # Scale data
@@ -102,23 +102,23 @@ def preprocess(x_train, y_train, x_test):
     x_train = scaler.fit_transform(x_train.astype(float))
     x_test = scaler.transform(x_test.astype(float))
 
-    # Apply KPCA
-    logger.log('\tApplying Principal Component Analysis with params:')
-    pca = KPCA(Kernels.LINEAR, n_components=0.9)
-    logger.log('\t' + str(pca.get_params()))
-    x_train = pca.fit_transform(x_train)
-    x_test = pca.transform(x_test)
-
-    # Apply LDA
-    logger.log('\tApplying Linear Discriminant Analysis with params:')
-    lda = Lda()
-    logger.log('\t' + str(lda.get_params()))
-    x_train = lda.fit_transform(x_train, y_train)
-    x_test = lda.transform(x_test)
-
-    if CREATE_PLOTS:
-        plot_pca(pca, y_train)
-        plot_lda(lda, x_train, y_train)
+    # # Apply KPCA
+    # logger.log('\tApplying Principal Component Analysis with params:')
+    # pca = KPCA(Kernels.LINEAR, n_components=0.9)
+    # logger.log('\t' + str(pca.get_params()))
+    # x_train = pca.fit_transform(x_train)
+    # x_test = pca.transform(x_test)
+    #
+    # # Apply LDA
+    # logger.log('\tApplying Linear Discriminant Analysis with params:')
+    # lda = Lda()
+    # logger.log('\t' + str(lda.get_params()))
+    # x_train = lda.fit_transform(x_train, y_train)
+    # x_test = lda.transform(x_test)
+    #
+    # if CREATE_PLOTS:
+    #     plot_pca(pca, y_train)
+    #     plot_lda(lda, x_train, y_train)
 
     return x_train, y_train, x_test
 
@@ -170,23 +170,6 @@ def show_prediction_info(y_test, y_predicted, folder: str = 'results/genes-tests
         helpers.utils.create_excel(results, folder, filename, extension, sheet_name)
 
 
-def display_classification_results(x_test, y_test, y_predicted):
-    logger.log('Plotting some random correctly classified Genes.')
-    # Get indexes of misclassified Genes.
-    genes_indexes = numpy.where(y_test == y_predicted)[0]
-    # Plot some random misclassified Genes.
-    plotter.filename = 'correct'
-    plotter.subfolder = 'genes'
-    plotter.plot_classified_genes(x_test[genes_indexes, :], y_predicted[genes_indexes], y_test[genes_indexes], num=4)
-
-    logger.log('Plotting some random misclassified Genes.')
-    # Get indexes of misclassified Genes.
-    genes_indexes = numpy.where(y_test != y_predicted)[0]
-    # Plot some random misclassified Genes.
-    plotter.filename = 'misclassified'
-    plotter.plot_classified_genes(x_test[genes_indexes, :], y_predicted[genes_indexes], y_test[genes_indexes], num=4)
-
-
 def main():
     # Get x and y pairs.
     x_train, y_train, x_test, y_test = get_x_y()
@@ -199,10 +182,6 @@ def main():
 
     # Show prediction information.
     show_prediction_info(y_test, y_predicted)
-
-    # Show some of the classification results.
-    if CREATE_PLOTS:
-        display_classification_results(x_test, y_test, y_predicted)
 
     # Close the logger.
     logger.close()

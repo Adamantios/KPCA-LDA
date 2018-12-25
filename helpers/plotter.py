@@ -3,11 +3,9 @@ import numpy as np
 from os.path import join
 from typing import Generator, Tuple, Callable
 from matplotlib import pyplot as plt
-from scipy.stats import ttest_ind
-
 from definitions import SAVE_PLOTS
 from helpers.utils import create_folder
-from helpers.datasets import get_eeg_name, get_gene_name
+from helpers.datasets import get_eeg_name
 from mpl_toolkits.mplot3d import Axes3D
 
 
@@ -118,23 +116,6 @@ class Plotter:
             self.title = 'Correct condition is {}'.format(get_eeg_name(y_true[eeg]))
             self.filename = '{}{}'.format(filename, str(i))
             self._plot_eeg(x[eeg])
-
-    def compare_genes(self, x_missed, y_pred, x, y_true, num=None):
-        """
-        Plots and saves a certain number of classified genes samples.
-
-        :param x_missed: the misclassified genes samples.
-        :param y_pred: the predicted values of the classified gene expressions.
-        :param x: the x test data.
-        :param y_true: the real value of the classified gene expressions.
-        :param num: the number of gene expressions to be plotted.
-        """
-        filename = self.filename
-
-        # Plot num of genes samples randomly.
-        for gene, i in self._random_picker(x_missed, num):
-            self.filename = '{}{}'.format(filename, str(i))
-            self.volcano(x_missed[gene], x[y_true == y_pred][0])
 
     def heatmap_correlation(self, data: np.ndarray) -> None:
         """
@@ -273,69 +254,5 @@ class Plotter:
         # If there are less than 9 features, specify the tick labels.
         if len(pov) < 9:
             ax.set_xticks(range(1, len(pov) + 1, 1))
-
-        self._save_and_show(fig)
-
-    def volcano(self, sample1_genes: np.ndarray, sample2_genes: np.ndarray) -> None:
-        """
-        Create a volcano plot to show genes differences between two cases.
-
-        :param sample1_genes: the genes of the first sample.
-        :param sample2_genes: the genes of the second sample.
-        """
-        self._create_plot_folder()
-
-        # Get the genes number.
-        genes_num = sample1_genes.size
-
-        # Check samples size.
-        if genes_num != sample2_genes.size:
-            raise ValueError()
-
-        # Calculate p values and fold change.
-        p_vals = np.empty(genes_num)
-        fold_change = np.empty(genes_num)
-        colors = np.empty(genes_num, dtype=np.str)
-
-        sample2_mean = sample2_genes.mean()
-
-        for i in range(genes_num):
-            #
-            _, p_vals[i] = ttest_ind(sample1_genes[i], sample2_mean)
-
-            if sample2_genes[i] == 0:
-                fold_change[i] = None
-            else:
-                fold_change[i] = sample1_genes[i] / sample2_genes[i]
-
-            #
-            if -1 < fold_change[i] < -1 and p_vals[i] >= 0.05:
-                colors[i] = 'gray'
-            else:
-                colors[i] = 'red'
-
-        # Replace zeros.
-        zeros = np.where(p_vals == 0)
-        p_vals[zeros] = p_vals.min()
-
-        # Convert P-value to -log10 normalized P-value
-        p_vals = -(np.log10(p_vals))
-
-        # Use a style.
-        # plt.style.use('seaborn-white')
-
-        # Create a figure.
-        fig, ax = plt.subplots(figsize=(10, 8))
-
-        # Create volcano scatterplot.
-        ax.scatter(fold_change, p_vals, colors)
-
-        # Set x and y label.
-        ax.set_xlabel('log2 Fold Change')
-        ax.set_ylabel('-log10 P-value')
-
-        #
-        # plt.text(4.09, 53.65, "CPuORF26")
-        # plt.text(-2.23, 39.73, "CIA")
 
         self._save_and_show(fig)
