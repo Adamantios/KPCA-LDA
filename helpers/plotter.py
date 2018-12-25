@@ -16,7 +16,8 @@ class TooManyDimensionsError(Exception):
 class Plotter:
     def __init__(self, folder='plots'):
         # Create a folder for the plots.
-        self._folder = create_folder(folder)
+        if SAVE_PLOTS:
+            self._folder = create_folder(folder)
 
         self.subfolder: str = ''
         self.suptitle: str = ''
@@ -58,7 +59,8 @@ class Plotter:
 
         :param eeg: the eeg to be plotted.
         """
-        self._create_plot_folder()
+        if SAVE_PLOTS:
+            self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -122,7 +124,8 @@ class Plotter:
 
         :param data: the correlated data to be plotted.
         """
-        self._create_plot_folder()
+        if SAVE_PLOTS:
+            self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -159,7 +162,8 @@ class Plotter:
         elif x.shape[1] > 3:
             raise TooManyDimensionsError('Cannot plot more than 3 dimensions.')
 
-        self._create_plot_folder()
+        if SAVE_PLOTS:
+            self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -231,7 +235,8 @@ class Plotter:
 
         :param explained_var_ratio: the explained variance ratio.
         """
-        self._create_plot_folder()
+        if SAVE_PLOTS:
+            self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-darkgrid')
