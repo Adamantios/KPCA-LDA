@@ -14,7 +14,6 @@ class TooManyDimensionsError(Exception):
 
 
 class Plotter:
-    # TODO add getters setters.
     def __init__(self, folder='plots'):
         # Create a folder for the plots.
         self._folder = create_folder(folder)
