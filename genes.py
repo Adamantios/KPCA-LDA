@@ -54,14 +54,14 @@ def plot_pca(pca: KPCA, y_train: np.ndarray) -> None:
     plotter.scatter(pca.alphas[:, :3], y_train, class_labels=helpers.datasets.get_gene_name)
 
     # Plot first two PCs.
-    plotter.title = 'The first two Principal Components\nKernel: {} Sigma: {}, Components: {}'. \
-        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
+    plotter.title = 'The first two Principal Components\nKernel: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['n_components'])
     plotter.filename = '2pcs'
     plotter.scatter(pca.alphas[:, :2], y_train, class_labels=helpers.datasets.get_gene_name)
 
     # Plot first PC.
-    plotter.title = 'The first Principal Component\nKernel: {} Sigma: {}, Components: {}'. \
-        format(pca_params['kernel'], pca_params['sigma'], pca_params['n_components'])
+    plotter.title = 'The first Principal Component\nKernel: {} Components: {}'. \
+        format(pca_params['kernel'], pca_params['n_components'])
     plotter.filename = '1pc'
     plotter.scatter(pca.alphas[:, 0], y_train, class_labels=helpers.datasets.get_gene_name)
 
