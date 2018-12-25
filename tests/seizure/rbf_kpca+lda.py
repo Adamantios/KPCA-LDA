@@ -1,7 +1,7 @@
 import time
 import numpy
 import helpers
-from core import KPCA, Kernels, Lda
+from core import KPCA, Kernels, LDA
 from sklearn import metrics, neighbors
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -82,7 +82,7 @@ def preprocess(x_train, y_train, x_test):
     x_test = pca.transform(x_test)
 
     logger.log('\tApplying Linear Discriminant Analysis with params:')
-    lda = Lda()
+    lda = LDA()
     lda_params = lda.get_params()
     logger.log('\t' + str(lda_params))
     x_train = lda.fit_transform(x_train, y_train)

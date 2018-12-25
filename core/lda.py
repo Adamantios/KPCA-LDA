@@ -8,7 +8,7 @@ class LdaNotFeasibleException(Exception):
     pass
 
 
-class Lda(_Model, _Decomposer):
+class LDA(_Model, _Decomposer):
     def __init__(self, n_components: Union[int, float] = None, remove_zeros: bool = True):
         super().__init__()
 

@@ -110,7 +110,7 @@ def preprocess(x_train, y_train, x_test):
 
     # Apply LDA
     logger.log('\tApplying Linear Discriminant Analysis with params:')
-    lda = Lda()
+    lda = LDA()
     logger.log('\t' + str(lda.get_params()))
     x_train = lda.fit_transform(x_train, y_train)
     x_test = lda.transform(x_test)

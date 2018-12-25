@@ -2,7 +2,7 @@ from helpers import plotter
 from unittest import TestCase
 from sklearn import datasets
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from core import Lda
+from core import LDA
 
 
 class TestLda(TestCase):
@@ -11,7 +11,7 @@ class TestLda(TestCase):
     _plotter = plotter.Plotter('tests/plots/lda')
 
     def test_fit(self):
-        lda = Lda()
+        lda = LDA()
         w = lda.fit(self._x, self._y)
         print('W:\n{}\n'.format(w))
 
