@@ -35,9 +35,9 @@ class Plotter:
     def _save_and_show(self, fig: plt.Figure) -> None:
         """ Save and plot a figure. """
         filename = self.filename + '.' + self.extension
-        self._save_path = join(self._folder, self.subfolder, filename)
 
         if SAVE_PLOTS:
+            self._save_path = join(self._folder, self.subfolder, filename)
             fig.savefig(self._save_path)
 
         plt.show()
