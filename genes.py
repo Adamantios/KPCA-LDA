@@ -5,14 +5,14 @@ from typing import Tuple
 from core import KPCA, Kernels, LDA
 from sklearn import metrics, neighbors
 from sklearn import preprocessing
-from definitions import CREATE_PLOTS, SAVE_PRED_RESULTS
+from definitions import SAVE_PRED_RESULTS, CREATE_PLOTS, MODE
 
 # Create a logger.
 logger = helpers.Logger(folder='logs', filename='genes')
 
 # If plots are enabled, create a plotter.
 if CREATE_PLOTS:
-    plotter = helpers.Plotter(folder='plots')
+    plotter = helpers.Plotter(folder='plots', mode=MODE)
 
 
 def get_x_y() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:

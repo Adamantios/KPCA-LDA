@@ -1,12 +1,14 @@
 from os.path import dirname, abspath, join
+from helpers.plotter import Mode
 
 """------------------------- Can be modified. ------------------------"""
 
 # Whether plots should be created or not.
 CREATE_PLOTS = True
 
-# Whether plots should be saved or not.
-SAVE_PLOTS = False
+# The plotter's mode. It can be save images (SAVE), show them (SHOW), or both (SHOW_AND_SAVE).
+# Ignored if CREATE_PLOTS has been set to False.
+MODE = Mode.SHOW
 
 # Whether predictions should be saved as an excel file or not.
 SAVE_PRED_RESULTS = False

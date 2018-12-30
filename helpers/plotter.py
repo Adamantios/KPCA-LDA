@@ -1,9 +1,9 @@
 import random
 import numpy as np
+from enum import Enum, auto
 from os.path import join
 from typing import Generator, Tuple, Callable
 from matplotlib import pyplot as plt
-from definitions import SAVE_PLOTS
 from helpers.utils import create_folder
 from helpers.datasets import get_eeg_name
 from mpl_toolkits.mplot3d import Axes3D
@@ -13,12 +13,17 @@ class TooManyDimensionsError(Exception):
     pass
 
 
-class Plotter:
-    def __init__(self, folder='plots'):
-        # Create a folder for the plots.
-        if SAVE_PLOTS:
-            self._folder = create_folder(folder)
+class Mode(Enum):
+    SHOW = auto()
+    SAVE = auto()
+    SHOW_AND_SAVE = auto()
 
+
+class Plotter:
+    def __init__(self, folder: str = 'plots', mode: Mode = Mode.SHOW):
+        # Create a folder for the plots.
+        self._folder = create_folder(folder)
+        self.mode = mode
         self.subfolder: str = ''
         self.suptitle: str = ''
         self.title: str = ''
@@ -30,20 +35,22 @@ class Plotter:
 
     def _create_plot_folder(self) -> None:
         """" Create a plot's subfolder. """
-        create_folder(self._folder + '/' + self.subfolder)
+        if self.mode == Mode.SAVE or self.mode == Mode.SHOW_AND_SAVE:
+            create_folder(self._folder + '/' + self.subfolder)
 
     def _save_and_show(self, fig: plt.Figure) -> None:
         """ Save and plot a figure. """
-        filename = self.filename + '.' + self.extension
-
-        if SAVE_PLOTS:
+        if self.mode == Mode.SAVE or self.mode == Mode.SHOW_AND_SAVE:
+            filename = self.filename + '.' + self.extension
             self._save_path = join(self._folder, self.subfolder, filename)
             fig.savefig(self._save_path)
 
-        plt.show()
+        if self.mode == Mode.SHOW:
+            plt.show()
 
     def reset_params(self):
         """ Resets the parameters. """
+        self.mode = Mode.SHOW
         self.subfolder: str = ''
         self.suptitle: str = ''
         self.title: str = ''
@@ -59,8 +66,7 @@ class Plotter:
 
         :param eeg: the eeg to be plotted.
         """
-        if SAVE_PLOTS:
-            self._create_plot_folder()
+        self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -124,8 +130,7 @@ class Plotter:
 
         :param data: the correlated data to be plotted.
         """
-        if SAVE_PLOTS:
-            self._create_plot_folder()
+        self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -162,8 +167,7 @@ class Plotter:
         elif x.shape[1] > 3:
             raise TooManyDimensionsError('Cannot plot more than 3 dimensions.')
 
-        if SAVE_PLOTS:
-            self._create_plot_folder()
+        self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-white')
@@ -235,8 +239,7 @@ class Plotter:
 
         :param explained_var_ratio: the explained variance ratio.
         """
-        if SAVE_PLOTS:
-            self._create_plot_folder()
+        self._create_plot_folder()
 
         # Use a style.
         plt.style.use('seaborn-darkgrid')
