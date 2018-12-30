@@ -1,3 +1,3 @@
-from core.kpca import KPCA
-from core.kernels import Kernels
-from core.lda import LDA
+from .kpca import KPCA
+from .kernels import Kernels
+from .lda import LDA
