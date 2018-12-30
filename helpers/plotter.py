@@ -1,6 +1,5 @@
 import random
 import numpy as np
-from enum import Enum, auto
 from os.path import join
 from typing import Generator, Tuple, Callable
 from matplotlib import pyplot as plt
@@ -13,17 +12,17 @@ class TooManyDimensionsError(Exception):
     pass
 
 
-class Mode(Enum):
-    SHOW = auto()
-    SAVE = auto()
-    SHOW_AND_SAVE = auto()
-
-
 class Plotter:
-    def __init__(self, folder: str = 'plots', mode: Mode = Mode.SHOW):
+    def __init__(self, folder: str = 'plots', mode: str = 'show'):
         # Create a folder for the plots.
         self._folder = create_folder(folder)
+
+        # Get plotter's mode and check it's value.
         self.mode = mode
+        if self.mode != 'show' and self.mode != 'save' and self.mode != 'both':
+            raise ValueError('Plotter\'s mode can be \'save\', \'show\' or \'both\'.\nGot {} instead.'
+                             .format(self.mode))
+
         self.subfolder: str = ''
         self.suptitle: str = ''
         self.title: str = ''
@@ -35,22 +34,22 @@ class Plotter:
 
     def _create_plot_folder(self) -> None:
         """" Create a plot's subfolder. """
-        if self.mode == Mode.SAVE or self.mode == Mode.SHOW_AND_SAVE:
+        if self.mode == 'save' or self.mode == 'both':
             create_folder(self._folder + '/' + self.subfolder)
 
     def _save_and_show(self, fig: plt.Figure) -> None:
         """ Save and plot a figure. """
-        if self.mode == Mode.SAVE or self.mode == Mode.SHOW_AND_SAVE:
+        if self.mode == 'save' or self.mode == 'both':
             filename = self.filename + '.' + self.extension
             self._save_path = join(self._folder, self.subfolder, filename)
             fig.savefig(self._save_path)
 
-        if self.mode == Mode.SHOW:
+        if self.mode == 'show':
             plt.show()
 
     def reset_params(self):
         """ Resets the parameters. """
-        self.mode = Mode.SHOW
+        self.mode = 'show'
         self.subfolder: str = ''
         self.suptitle: str = ''
         self.title: str = ''

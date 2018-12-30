@@ -4,15 +4,15 @@ import helpers
 from core import KPCA, Kernels, LDA
 from sklearn import metrics, neighbors
 from sklearn import preprocessing
-from definitions import SAVE_PRED_RESULTS, MODE, CREATE_PLOTS
+from definitions import SAVE_PRED_RESULTS, PLOTTING_MODE
 from typing import Tuple
 
 # Create a logger.
 logger = helpers.Logger(folder='logs', filename='seizure_detection')
 
 # If plots are enabled, create a plotter.
-if CREATE_PLOTS:
-    plotter = helpers.Plotter(folder='plots', mode=MODE)
+if PLOTTING_MODE != 'none':
+    plotter = helpers.Plotter(folder='plots', mode=PLOTTING_MODE)
 
 
 def get_x_y() -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
@@ -135,7 +135,7 @@ def preprocess(x_train: np.ndarray, y_train: np.ndarray, x_test: np.ndarray) \
     x_train = lda.fit_transform(x_train, y_train)
     x_test = lda.transform(x_test)
 
-    if CREATE_PLOTS:
+    if PLOTTING_MODE != 'none':
         plot_pca(pca, y_train)
         plot_lda(lda, x_train, y_train)
 
@@ -244,7 +244,7 @@ def main():
     show_prediction_info(y_test, y_predicted)
 
     # Show some of the classification results.
-    if CREATE_PLOTS:
+    if PLOTTING_MODE != 'none':
         display_classification_results(x_test, y_test, y_predicted)
 
     # Close the logger.
