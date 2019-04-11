@@ -54,3 +54,23 @@ Precision: 0.5863
 Recall: 0.595
 F1: 0.5869
 ```
+
+#### Images
+
+##### KPCA on Genes Dataset.
+![KPCA on Genes](./examples/Genes_KPCA.png)
+
+##### LDA on Genes Dataset, after KPCA.
+![LDA on Genes](./examples/Genes_LDA.png)
+
+##### LDA on EEG Dataset
+![LDA on EEG](./examples/EEG_LDA.png)
+
+##### POV vs K with Linear KPCA (same result as PCA) on Genes Dataset
+![POV vs K](./examples/POV_vs_K.png)
+
+##### EEG of eyes closed example.
+![EEG eyes closed](./examples/EEG_eyes_closed.png)
+
+##### EEG of epileptic seizure example.
+![EEG epileptic seizure](./examples/EEG_epileptic.png)
